@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net461;netcoreapp3.1;net5.0-windows</TargetFrameworks>
+    <UseWPF>true</UseWPF>        
+    <RootNamespace>NUnitForImages</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="..\Version.props" />
+  <Import Project="..\PackageInfo.props" />
+
+  <PropertyGroup>
+    <Description>
+      NUnit utilities that can be used to render a WPF control inside a NUnit test.
+    </Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NUnitForImages\NUnitForImages.csproj" />
+  </ItemGroup>  
+
+</Project>
