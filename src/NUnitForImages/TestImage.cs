@@ -16,29 +16,29 @@ namespace NUnitForImages
     [System.Diagnostics.DebuggerDisplay("{Width}×{Height}")]
     public abstract partial class TestImage : IEquatable<TestImage>
     {
+        #region lifecycle
+
+        protected TestImage()
+        {
+            _Rgba32Bitmap = new Lazy<Rgba32.Bitmap>(CreateBitmapRgba32);
+        }
+
+        #endregion
+
         #region data
-        
+
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         private int? _HashCode;
+
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+        private readonly Lazy<Rgba32.Bitmap> _Rgba32Bitmap;
 
         /// <inheritdoc />
         public override int GetHashCode()
         {
             if (!_HashCode.HasValue)
             {
-                var bytes = GetPixelsBytes();
-
-                int h = 0;
-
-                for (int x = 0; x < bytes.Length; ++x)
-                {
-                    h += bytes[x];
-                    h <<= 3;
-                }
-
-                h += this.Width * this.Height;
-
-                _HashCode = h;
+                _HashCode = GetBitmapRgba32().GetHashCode();
             }
 
             return _HashCode.Value;
@@ -58,13 +58,9 @@ namespace NUnitForImages
         /// <returns>true if both images are equal.</returns>
         public static bool AreEqual(TestImage a, TestImage b)
         {
-            if (a.Width != b.Width) return false;
-            if (a.Height != b.Height) return false;
-
-            var aBytes = a.GetPixelsBytes();
-            var bBytes = b.GetPixelsBytes();
-
-            return aBytes.SequenceEqual(bBytes);
+            var aa = a.GetBitmapRgba32();
+            var bb = b.GetBitmapRgba32();
+            return Rgba32.Bitmap.AreEqual(aa, bb);
         }
 
         #endregion
@@ -85,15 +81,16 @@ namespace NUnitForImages
 
         #region API
 
+        protected abstract Rgba32.Bitmap CreateBitmapRgba32();
+
         /// <summary>
-        /// Gets the pixel data.
+        /// Gets the underlaying bitmap, converted to Rgba32 format.
         /// </summary>
-        /// <returns>a read only sequence of bytes.</returns>
-        /// <remarks>
-        /// This is a temporary method, awaiting for a better definition
-        /// on how to get the data in a specific format.
-        /// </remarks>
-        protected abstract ReadOnlySpan<Byte> GetPixelsBytes();
+        /// <returns>The bitmap.</returns>
+        protected Rgba32.Bitmap GetBitmapRgba32()
+        {
+            return _Rgba32Bitmap.Value;
+        }
 
         /// <summary>
         /// Writes the underlaying image to a file.

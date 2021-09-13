@@ -35,10 +35,7 @@ namespace NUnitForImages
 
         private WpfImage(BitmapSource bmp)
         {
-            bmp = WpfRenderFactory.ConvertBitmap(bmp, PixelFormats.Bgra32);
-
-            _Bitmap = bmp;            
-            _Pixels = new Lazy<Byte[]>(() => WpfRenderFactory.GetBytesRGBA32(_Bitmap));
+            _Bitmap = WpfRenderFactory.ConvertBitmap(bmp, PixelFormats.Bgra32);
         }
 
         #endregion
@@ -46,10 +43,7 @@ namespace NUnitForImages
         #region data
 
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        private readonly BitmapSource _Bitmap;
-
-        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        private readonly Lazy<Byte[]> _Pixels;
+        private readonly BitmapSource _Bitmap;        
 
         #endregion
 
@@ -62,15 +56,17 @@ namespace NUnitForImages
 
         #region API        
 
-        protected override ReadOnlySpan<Byte> GetPixelsBytes()
+        protected override Rgba32.Bitmap CreateBitmapRgba32()
         {
-            return _Pixels.Value;
+            if (_Bitmap == null) return null;
+            var pixels = WpfRenderFactory.GetBytesRGBA32(_Bitmap);
+            return new Rgba32.Bitmap(pixels, _Bitmap.PixelWidth, _Bitmap.PixelHeight, 0);
         }
 
         protected override void SaveToFile(string filePath)
         {
             WpfRenderFactory.SaveTo(_Bitmap, filePath);            
-        }        
+        }
 
         #endregion
     }    
