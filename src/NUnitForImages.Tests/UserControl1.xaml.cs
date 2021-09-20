@@ -7,8 +7,8 @@ namespace NUnitForImages
 {
     /// <summary>
     /// Interaction logic for UserControl1.xaml
-    /// </summary>
-    [RequiresThread(ApartmentState.STA)]
+    /// </summary>    
+    [Apartment(ApartmentState.STA)]
     public partial class UserControl1 : UserControl
     {
         public UserControl1()

@@ -31,13 +31,39 @@ namespace NUnitForImages
 
         public static RenderTargetBitmap RenderToBitmap(Visual visual, double dpi = 96)
         {
-            if (visual == null) throw new ArgumentNullException(nameof(visual));            
+            if (visual == null) throw new ArgumentNullException(nameof(visual));
 
+            var tryShrink = true;
+
+            // windows cannot be rendered "as is", but their content can.
+            if (visual is Window wnd) 
+            {
+                // wnd.SizeToContent = SizeToContent.WidthAndHeight;
+                // UpdateLayout(wnd, new Size(FIT_SIZE, FIT_SIZE));
+
+                visual = wnd.Content as Visual;
+                if (visual == null) return null;
+                // tryShrink = false;
+            }
+            
+            var s = _PrepareContent(visual, tryShrink);
+
+            var fmt = PixelFormats.Pbgra32; // PixelFormats.Default; also works.
+
+            var rt = new RenderTargetBitmap((int)s.Width, (int)s.Height, dpi, dpi, fmt);
+
+            rt.Render(visual);
+            // rt.Freeze();
+            return rt;
+        }
+
+        private static Size _PrepareContent(Visual visual, bool tryShrink)
+        {
             // maximum available size
             var s = new Size(FIT_SIZE, FIT_SIZE);
 
             // change the alignments so it shrinks to its minimum size on layout update.
-            if (visual is FrameworkElement fe)
+            if (tryShrink && visual is FrameworkElement fe)
             {
                 fe.HorizontalAlignment = HorizontalAlignment.Left;
                 fe.VerticalAlignment = VerticalAlignment.Top;
@@ -51,24 +77,22 @@ namespace NUnitForImages
 
             if (visual is UIElement uie)
             {
-                uie.SnapsToDevicePixels = true;
-
-                uie.UpdateLayout();
-
-                uie.Measure(s);
-                uie.Arrange(new Rect(s));
-                uie.UpdateLayout();
+                UpdateLayout(uie, s);
 
                 s = uie.RenderSize; // take the size from the control after layout.
             }
 
-            var fmt = PixelFormats.Pbgra32; // PixelFormats.Default; also works.
+            return s;
+        }
 
-            var rt = new RenderTargetBitmap((int)s.Width, (int)s.Height, dpi, dpi, fmt);
+        private static void UpdateLayout(UIElement uie, Size availableSize)
+        {
+            uie.SnapsToDevicePixels = true;
 
-            rt.Render(visual);
-            // rt.Freeze();
-            return rt;
+            uie.UpdateLayout();
+            uie.Measure(availableSize);
+            uie.Arrange(new Rect(availableSize));
+            uie.UpdateLayout();
         }
 
         public static BitmapSource ConvertBitmap(BitmapSource bitmap, PixelFormat fmt)
