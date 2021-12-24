@@ -20,7 +20,7 @@ namespace NUnitForImages
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    [Apartment(ApartmentState.STA)]
+    [Apartment(ApartmentState.STA)]    
     public partial class Window1 : Window
     {
         public Window1()
@@ -28,19 +28,13 @@ namespace NUnitForImages
             InitializeComponent();
         }
 
-        [Test]
+        [Test]        
         public void RenderTest()
         {
             var render = WpfImage
-                .Render(this)                           // renders this WPF control to a bitmap.
-                .SaveToCurrentTest("window.png")        // saves the bitmap to current test directory.
-                .AttachToTest("Window1 render");    // attaches the saved file to the test output.
-                
-
-
-            // var reference = WpfImage.Load("UserControl1.reference.png");
-
-            // Assert.AreEqual(reference, render);         // compare the rendered bitmap against the reference.
+                .Render(this)                           // renders this WPF control to a bitmap.                
+                .SaveTo(TestContext.CurrentContext.GetAttachmentPath("window.png").FullName)        // saves the bitmap to current test directory.
+                .AttachToTest("Window1 render");    // attaches the saved file to the test output.            
         }
     }
 }

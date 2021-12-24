@@ -17,13 +17,13 @@ namespace NUnitForImages
             #region lifecycle
             public Bitmap(Byte[] pixels, int width, int height, int stride = 0)
             {
-                stride = Math.Max(stride, width * 4);
-
                 if (pixels == null) throw new ArgumentNullException(nameof(pixels));
-                if (pixels.Length < stride * height) throw new ArgumentException(nameof(pixels));
+                if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
+                if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
 
-                _Width = width;
-                _Height = height;                
+                stride = Math.Max(stride, width * 4);
+                
+                if (pixels.Length < stride * height) throw new ArgumentException(nameof(pixels));                
 
                 ReadOnlySpan<Rgba32> getRow(int y)
                 {
@@ -31,7 +31,20 @@ namespace NUnitForImages
                     return System.Runtime.InteropServices.MemoryMarshal.Cast<byte, Rgba32>(row);
                 }
 
+                _Width = width;
+                _Height = height;
                 _RowEvaluator = getRow;
+            }
+
+            public Bitmap(BitmapRowEvaluator rows, int width, int height)
+            {
+                if (rows == null) throw new ArgumentNullException(nameof(rows));
+                if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
+                if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
+
+                _Width = width;
+                _Height = height;
+                _RowEvaluator = rows;
             }
 
             #endregion
@@ -125,7 +138,23 @@ namespace NUnitForImages
 
             #endregion
 
-            #region API
+            #region API            
+
+            public Bitmap Crop(int x, int y, int w, int h)
+            {
+                if (w > _Width) throw new ArgumentOutOfRangeException(nameof(w));
+                if (h > _Height) throw new ArgumentOutOfRangeException(nameof(h));
+
+                if (x < 0 || x >= _Width - w) throw new ArgumentOutOfRangeException(nameof(x));
+                if (y < 0 || y >= _Height - h) throw new ArgumentOutOfRangeException(nameof(y));
+
+                ReadOnlySpan<Rgba32> getRow(int yy)
+                {
+                    return this.GetRow(yy + y).Slice(x, w);
+                }
+
+                return new Bitmap(getRow, w, h);
+            }
 
             /// <summary>
             /// Gets a row of pixels for the given row index.

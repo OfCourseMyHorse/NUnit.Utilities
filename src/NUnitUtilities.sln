@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31624.102
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32002.185
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{91DBCC8D-A083-4D22-AEE5-345B09553EED}"
 EndProject
@@ -9,6 +9,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitForImages.WPF", "NUnitForImages.WPF\NUnitForImages.WPF.csproj", "{E88700F9-4D2B-4F5A-9FEA-0EA08B9053B1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitForImages.Tests", "NUnitForImages.Tests\NUnitForImages.Tests.csproj", "{9ABCD66B-54B5-4E8F-A198-E4A30ED28E0B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitExtensions.Attachments", "NUnitExtensions.Attachments\NUnitExtensions.Attachments.csproj", "{217888D4-FDB6-4CB8-8562-E42489ABE6F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitForImages.MonoGame", "NUnitForImages.MonoGame\NUnitForImages.MonoGame.csproj", "{AF8C0212-FC19-4F55-99FC-035E48E53D8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,6 +32,14 @@ Global
 		{9ABCD66B-54B5-4E8F-A198-E4A30ED28E0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9ABCD66B-54B5-4E8F-A198-E4A30ED28E0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9ABCD66B-54B5-4E8F-A198-E4A30ED28E0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{217888D4-FDB6-4CB8-8562-E42489ABE6F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{217888D4-FDB6-4CB8-8562-E42489ABE6F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{217888D4-FDB6-4CB8-8562-E42489ABE6F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{217888D4-FDB6-4CB8-8562-E42489ABE6F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF8C0212-FC19-4F55-99FC-035E48E53D8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF8C0212-FC19-4F55-99FC-035E48E53D8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF8C0212-FC19-4F55-99FC-035E48E53D8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF8C0212-FC19-4F55-99FC-035E48E53D8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -36,6 +48,8 @@ Global
 		{90196296-025E-4689-BDC0-BE83AE8D4676} = {91DBCC8D-A083-4D22-AEE5-345B09553EED}
 		{E88700F9-4D2B-4F5A-9FEA-0EA08B9053B1} = {91DBCC8D-A083-4D22-AEE5-345B09553EED}
 		{9ABCD66B-54B5-4E8F-A198-E4A30ED28E0B} = {91DBCC8D-A083-4D22-AEE5-345B09553EED}
+		{217888D4-FDB6-4CB8-8562-E42489ABE6F2} = {91DBCC8D-A083-4D22-AEE5-345B09553EED}
+		{AF8C0212-FC19-4F55-99FC-035E48E53D8B} = {91DBCC8D-A083-4D22-AEE5-345B09553EED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8A8233E3-48DC-4947-BCAC-E3A7A1DB8B30}

@@ -2,21 +2,19 @@
 
   <PropertyGroup>
     <TargetFrameworks>net461;netcoreapp3.1;net5.0-windows;net6.0-windows</TargetFrameworks>
-    <UseWPF>true</UseWPF>        
     <RootNamespace>NUnitForImages</RootNamespace>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <Import Project="..\Version.props" />
   <Import Project="..\PackageInfo.props" />
-
-  <PropertyGroup>
-    <Description>
-      NUnit utilities that can be used to render a WPF control inside a NUnit test.
-    </Description>
-  </PropertyGroup>
-
-  <ItemGroup>
+  <ItemGroup>    
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
+    <PackageReference Include="StbImageSharp" Version="2.22.6" />
+    <PackageReference Include="StbImageWriteSharp" Version="1.13.5" />
+  </ItemGroup>
+  <ItemGroup>    
     <ProjectReference Include="..\NUnitForImages\NUnitForImages.csproj" />
-  </ItemGroup>  
+  </ItemGroup>
 
 </Project>
