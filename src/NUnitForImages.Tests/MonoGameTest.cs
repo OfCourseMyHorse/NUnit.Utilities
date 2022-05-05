@@ -52,7 +52,7 @@ namespace NUnitForImages
 
             var frame = SubmitFrame();
 
-            frame.Save(TestContext.CurrentContext.GetAttachmentPath("render.bmp").FullName, "render result");
+            frame.Save(TestContext.CurrentContext.GetAttachmentFileInfo("render.bmp").FullName, "render result");
         }
     }
 }

@@ -33,7 +33,7 @@ namespace NUnitForImages
         {
             var render = WpfImage
                 .Render(this)                           // renders this WPF control to a bitmap.                
-                .SaveTo(TestContext.CurrentContext.GetAttachmentPath("window.png").FullName)        // saves the bitmap to current test directory.
+                .SaveTo(TestContext.CurrentContext.GetAttachmentFileInfo("window.png").FullName)        // saves the bitmap to current test directory.
                 .AttachToTest("Window1 render");    // attaches the saved file to the test output.            
         }
     }

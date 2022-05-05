@@ -10,9 +10,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitForImages.WPF", "NUnit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitForImages.Tests", "NUnitForImages.Tests\NUnitForImages.Tests.csproj", "{9ABCD66B-54B5-4E8F-A198-E4A30ED28E0B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitExtensions.Attachments", "NUnitExtensions.Attachments\NUnitExtensions.Attachments.csproj", "{217888D4-FDB6-4CB8-8562-E42489ABE6F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAttachments.NUnit", "NUnitExtensions.Attachments\TestAttachments.NUnit.csproj", "{217888D4-FDB6-4CB8-8562-E42489ABE6F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitForImages.MonoGame", "NUnitForImages.MonoGame\NUnitForImages.MonoGame.csproj", "{AF8C0212-FC19-4F55-99FC-035E48E53D8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitForImages.MonoGame", "NUnitForImages.MonoGame\NUnitForImages.MonoGame.csproj", "{AF8C0212-FC19-4F55-99FC-035E48E53D8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

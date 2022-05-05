@@ -20,7 +20,7 @@ namespace NUnit.Framework
             return localLinkPath;
         }
 
-        private static string CreateLinkContent(string targetPath)
+        public static string CreateLinkContent(string targetPath)
         {
             if (!Uri.TryCreate(targetPath, UriKind.Absolute, out Uri uri)) throw new UriFormatException(nameof(targetPath));
 

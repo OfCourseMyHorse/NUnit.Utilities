@@ -9,12 +9,12 @@
 
   <PropertyGroup>
     <Description>
-      Defines extensions and attributes to handle attachments.
+      Defines extensions and attributes to handle file attachments.
     </Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.13.2" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
   </ItemGroup>
 
 </Project>
