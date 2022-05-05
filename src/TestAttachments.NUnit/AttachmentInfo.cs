@@ -21,8 +21,23 @@ namespace NUnit.Framework
             File = context.GetAttachmentFileInfo(fileName);
             Description = description;
         }        
+
         public System.IO.FileInfo File { get; }
         public string Description { get; set; }
+
+        public static implicit operator System.IO.FileInfo(AttachmentInfo attachment)
+        {
+            // we need to write a dummy file for the attachment to work before writing the file.
+            return attachment.WriteBytes(Array.Empty<Byte>());
+        }
+
+        public System.IO.Stream CreateStream()
+        {
+            // we need to create a file so we can attach it.
+            // another strategy would be to create a stream derived class that would do the attachment on stream close.            
+
+            return WriteBytes(Array.Empty<Byte>()).Create();
+        }
 
         public System.IO.FileInfo WriteFile(Action<System.IO.FileInfo> writeAction)
         {
@@ -35,7 +50,7 @@ namespace NUnit.Framework
             return File;
         }
 
-        public System.IO.FileInfo WriteText(string textContent)
+        public System.IO.FileInfo WriteText(String textContent)
         {
             void writeText(System.IO.FileInfo finfo)
             {
@@ -55,17 +70,17 @@ namespace NUnit.Framework
             return WriteFile(writeBytes);
         }
 
-        public System.IO.Stream CreateStream()
+        public System.IO.FileInfo WriteBytes(ArraySegment<Byte> byteContent)
         {
-            // we need to create a file so we can attach it.
-            // another strategy would be to create a stream derived class that would do the attachment on stream close.
-
-            void writeDummy(System.IO.FileInfo finfo)
+            void writeBytes(System.IO.FileInfo finfo)
             {
-                System.IO.File.WriteAllBytes(finfo.FullName, Array.Empty<Byte>());
+                using(var stream = finfo.Create())
+                {
+                    stream.Write(byteContent.Array,byteContent.Offset,byteContent.Count);
+                }                
             }
 
-            return WriteFile(writeDummy).Create();
-        }
+            return WriteFile(writeBytes);
+        }        
     }
 }

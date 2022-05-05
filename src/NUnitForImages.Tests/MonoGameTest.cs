@@ -11,7 +11,7 @@ using MonoGame.Tests.Graphics;
 
 using NUnit.Framework;
 
-namespace NUnitForImages
+namespace TestImages
 {    
     internal sealed class MonoGameTest : GraphicsDeviceTestFixtureBase, IAttachmentWriter
     {

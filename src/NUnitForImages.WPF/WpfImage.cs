@@ -4,7 +4,7 @@ using System.Threading;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace NUnitForImages
+namespace TestImages
 {
     /// <summary>
     /// Represents the rendered bitmap of a WPF <see cref="Visual"/> control.
@@ -63,10 +63,10 @@ namespace NUnitForImages
             return new Rgba32.Bitmap(pixels, _Bitmap.PixelWidth, _Bitmap.PixelHeight, 0);
         }
 
-        protected override void SaveToFile(string filePath)
+        protected override void WriteTo(System.IO.FileInfo finfo)
         {
-            WpfRenderFactory.SaveTo(_Bitmap, filePath);            
-        }
+            WpfRenderFactory.SaveTo(_Bitmap, finfo);            
+        }        
 
         #endregion
     }    

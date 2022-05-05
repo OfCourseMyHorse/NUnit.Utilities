@@ -9,7 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace NUnitForImages
+namespace TestImages
 {
     /// <summary>
     /// Used to render an WPF control to a bitmap.
@@ -44,7 +44,7 @@ namespace NUnitForImages
                 visual = wnd.Content as Visual;
                 if (visual == null) return null;
                 // tryShrink = false;
-            }
+            }            
             
             var s = _PrepareContent(visual, tryShrink);
 
@@ -54,13 +54,14 @@ namespace NUnitForImages
 
             rt.Render(visual);
             // rt.Freeze();
+
             return rt;
         }
 
         private static Size _PrepareContent(Visual visual, bool tryShrink)
         {
             // maximum available size
-            var s = new Size(FIT_SIZE, FIT_SIZE);
+            var s = new Size(FIT_SIZE, FIT_SIZE);            
 
             // change the alignments so it shrinks to its minimum size on layout update.
             if (tryShrink && visual is FrameworkElement fe)
@@ -101,22 +102,20 @@ namespace NUnitForImages
             return new FormatConvertedBitmap(bitmap, fmt, null, 0);
         }
 
-        public static void SaveTo(BitmapSource bitmap, string filePath)
+        public static void SaveTo(BitmapSource bitmap, System.IO.FileInfo finfo)
         {
             var frame = BitmapFrame.Create(bitmap);
 
             BitmapEncoder encoder = null;
 
-            var ext = System.IO.Path.GetExtension(filePath).ToLower();
+            var ext = System.IO.Path.GetExtension(finfo.Name).ToLower();
             if (ext.EndsWith(".png")) encoder = new PngBitmapEncoder();
             if (ext.EndsWith(".jpg")) encoder = new JpegBitmapEncoder();
             if (ext.EndsWith(".gif")) encoder = new GifBitmapEncoder();
 
-            using (var fileStream = System.IO.File.Create(filePath))
-            {
-                encoder.Frames.Add(frame);
-                encoder.Save(fileStream);
-            }            
+            encoder.Frames.Add(frame);
+
+            using (var s = finfo.Create()) encoder.Save(s);
         }        
 
         public static Byte[] GetBytesRGBA32(BitmapSource bitmap)

@@ -2,38 +2,38 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NUnitForImages
+namespace TestImages
 {
     partial struct Rgba32
     {
         public delegate ReadOnlySpan<Rgba32> BitmapRowEvaluator(int y);
 
         /// <summary>
-        /// Represents a memory bitmap in Rgba32 format.
+        /// Represents a bitmap in Rgba32 format.
         /// </summary>
         [System.Diagnostics.DebuggerDisplay("{Width}×{Height}")]
-        public sealed class Bitmap : IEquatable<Bitmap>
+        public sealed partial class Bitmap : IEquatable<Bitmap>
         {
             #region lifecycle
-            public Bitmap(Byte[] pixels, int width, int height, int stride = 0)
-            {
-                if (pixels == null) throw new ArgumentNullException(nameof(pixels));
-                if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
-                if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
+            public Bitmap(Byte[] pixels, int width, int height, int byteStride = 0)
+                : this(_GetRowEvaluator(pixels, width, height, byteStride), width, height)
+            { }
 
-                stride = Math.Max(stride, width * 4);
-                
-                if (pixels.Length < stride * height) throw new ArgumentException(nameof(pixels));                
+            private static BitmapRowEvaluator _GetRowEvaluator(Byte[] pixels, int width, int height, int byteStride = 0)
+            {
+                width *= 4; // pixels to bytes
+
+                byteStride = Math.Max(byteStride, width);
+
+                if (pixels.Length < (byteStride * (height - 1)) + width) throw new ArgumentException(nameof(pixels));
 
                 ReadOnlySpan<Rgba32> getRow(int y)
                 {
-                    var row = pixels.AsSpan(y * stride, _Width * 4);
+                    var row = pixels.AsSpan(y * byteStride, width);
                     return System.Runtime.InteropServices.MemoryMarshal.Cast<byte, Rgba32>(row);
                 }
 
-                _Width = width;
-                _Height = height;
-                _RowEvaluator = getRow;
+                return getRow;
             }
 
             public Bitmap(BitmapRowEvaluator rows, int width, int height)
@@ -136,6 +136,24 @@ namespace NUnitForImages
             /// </summary>
             public int Height => _Height;
 
+            /// <summary>
+            /// Gets the pixel at the given coordinates
+            /// </summary>
+            /// <param name="x">the horizontal pixel coordinate</param>
+            /// <param name="y">the vertical pixel coordinate</param>
+            /// <returns></returns>
+            public Rgba32 this[int x, int y]
+            {
+                get
+                {
+                    if (x<0) throw new ArgumentOutOfRangeException(nameof(x));
+                    else if (x >= _Width) throw new ArgumentOutOfRangeException(nameof(x));                    
+
+                    return GetRow(y)[x];
+                }
+            }
+                
+
             #endregion
 
             #region API            
@@ -167,7 +185,7 @@ namespace NUnitForImages
                 var row = _RowEvaluator(y);
                 if (row.Length != _Width) throw new InvalidOperationException($"Expected {_Width}, found {row.Length}");
                 return row;
-            }
+            }            
 
             #endregion
         }

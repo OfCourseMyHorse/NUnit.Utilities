@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 [assembly: AttachmentPathFormat("{WorkDirectory}/AssemblyResults/{ID}")]
 
-namespace NUnitForImages
+namespace TestAttachments
 {
     [AttachmentPathFormat("{WorkDirectory}/AttachmentResults/{ID}")]
     public class Attachments : IAttachmentWriter
@@ -41,6 +41,8 @@ namespace NUnitForImages
         [AttachmentPathFormat("?")]
         public void WriteTextAttachment2()
         {
+            TestContext.CurrentContext.AttachFolderBrowserShortcut();
+
             var finfo = this.Attach("hello.txt").WriteText("hello world");
 
             Assert.IsTrue(finfo.Exists);

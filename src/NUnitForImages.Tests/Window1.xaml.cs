@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 
 using NUnit.Framework;
 
-namespace NUnitForImages
+namespace TestImages
 {
     /// <summary>
     /// Interaction logic for Window1.xaml
@@ -34,8 +34,9 @@ namespace NUnitForImages
         public void RenderTest()
         {
             var render = WpfImage
-                .Render(this)                       // renders this WPF control to a bitmap.                
-                .SaveTo(Attach("window.png", "Window1 render"));  // saves the bitmap to current test directory.                
+                .Render(this)                                       // renders this WPF control to a bitmap.                
+                .SaveTo( Attach("window.png", "Window1 render") )   // saves the bitmap to current test directory.
+                .VerifyCodeIsAnyOf(-686246400);                     // checks the hash code didn't change
         }
     }
 }

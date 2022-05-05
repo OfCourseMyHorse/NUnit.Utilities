@@ -4,7 +4,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <IsPackable>false</IsPackable>
-    <RootNamespace>NUnitForImages</RootNamespace>
+    <RootNamespace>TestImages</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,8 +29,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TestAttachments.NUnit\TestAttachments.NUnit.csproj" />
-    <ProjectReference Include="..\NUnitForImages.MonoGame\NUnitForImages.MonoGame.csproj" />
-    <ProjectReference Include="..\NUnitForImages.WPF\NUnitForImages.WPF.csproj" />
+    <ProjectReference Include="..\NUnitForImages.MonoGame\MonoGame.NUnitRunner.csproj" />
+    <ProjectReference Include="..\NUnitForImages.WPF\TestImages.WPF.csproj" />
   </ItemGroup>
 
 </Project>

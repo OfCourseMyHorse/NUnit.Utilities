@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NUnitForImages
+namespace TestImages
 {
     /// <summary>
     /// Represents a bitmap that can be used for testing purposes.
     /// </summary>
     /// <remarks>
-    /// The underlaying image may have a different pixel format,
-    /// representation or might contain rich metadata.
+    /// The framework image may have a different pixel format,
+    /// representation or might contain rich metadata, so comparison operations
+    /// are performed using an internal bitmap using RGBA32 color space.
     /// </remarks>
     [System.Diagnostics.DebuggerDisplay("{Width}×{Height}")]
     public abstract partial class TestImage : IEquatable<TestImage>
@@ -31,38 +32,37 @@ namespace NUnitForImages
         private int? _HashCode;
 
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        private readonly Lazy<Rgba32.Bitmap> _Rgba32Bitmap;
+        private Lazy<Rgba32.Bitmap> _Rgba32Bitmap;
 
         /// <inheritdoc />
         public override int GetHashCode()
         {
             if (!_HashCode.HasValue)
             {
-                _HashCode = GetBitmapRgba32().GetHashCode();
+                _HashCode = this.GetBitmapRgba32().GetHashCode();
             }
 
             return _HashCode.Value;
         }
 
         /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return obj is TestImage other && Equals(other);
+        }
+
+        /// <inheritdoc />
         public virtual bool Equals(TestImage other)
         {
-            return AreEqual(this, other);
-        }
+            if (other == null) return false;
 
-        /// <summary>
-        /// Indicates whether the the two images are equal by comparing the size and pixels.
-        /// </summary>
-        /// <param name="a">The first image to compare.</param>
-        /// <param name="b">The second image to compare.</param>
-        /// <returns>true if both images are equal.</returns>
-        public static bool AreEqual(TestImage a, TestImage b)
-        {
-            var aa = a.GetBitmapRgba32();
-            var bb = b.GetBitmapRgba32();
-            return Rgba32.Bitmap.AreEqual(aa, bb);
-        }
+            if (Object.ReferenceEquals(this, other)) return true;
 
+            var thisBitmap = this.GetBitmapRgba32();
+            var otherBitmap = other.GetBitmapRgba32();
+            return Rgba32.Bitmap.AreEqual(thisBitmap, otherBitmap);
+        }
+        
         #endregion
 
         #region properties
@@ -81,43 +81,52 @@ namespace NUnitForImages
 
         #region API
 
+        protected virtual void Invalidate()
+        {
+            _HashCode = null;
+            _Rgba32Bitmap = new Lazy<Rgba32.Bitmap>();
+        }
+
+        /// <summary>
+        /// used to convert from the framework image being tested to our internal bitmap format.
+        /// </summary>
+        /// <returns>A <see cref="Rgba32.Bitmap"/> object.</returns>
         protected abstract Rgba32.Bitmap CreateBitmapRgba32();
 
         /// <summary>
         /// Gets the underlaying bitmap, converted to Rgba32 format.
         /// </summary>
-        /// <returns>The bitmap.</returns>
+        /// <returns>A <see cref="Rgba32.Bitmap"/> object.</returns>
         protected Rgba32.Bitmap GetBitmapRgba32()
         {
             return _Rgba32Bitmap.Value;
         }
 
         /// <summary>
-        /// Writes the underlaying image to a file.
-        /// </summary>
-        /// <param name="filePath">The file path.</param>
-        protected abstract void SaveToFile(string filePath);        
+        /// Writes the framework image to a stream.
+        /// </summary>        
+        protected abstract void WriteTo(System.IO.FileInfo finfo);        
 
         /// <summary>
-        /// Writes the underlaying image to a file.
+        /// Writes the framework image to a file.
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <returns>Fluent self.</returns>
         public TestImage SaveTo(string filePath)
         {
-            SaveToFile(filePath);
+            var finfo = new System.IO.FileInfo(filePath);
 
-            _LastSavedPath = filePath;
+            WriteTo(finfo);
 
             return this;
         }        
 
-        public TestImage SaveTo(NUnit.Framework.AttachmentInfo ainfo)
+        public TestImage SaveTo(System.IO.FileInfo finfo)
         {
-            ainfo.WriteFile(finfo => SaveTo(finfo.FullName));
+            WriteTo(finfo);
 
             return this;
-        }
+        }        
 
         #endregion
     }

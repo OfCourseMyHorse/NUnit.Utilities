@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NUnitForImages
+namespace TestImages
 {
     /// <summary>
     /// Represents a 32 bit, pixel color in R,G,B,A format

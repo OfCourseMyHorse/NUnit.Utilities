@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 using NUnit.Framework;
 
-namespace NUnitForImages
+namespace TestImages
 {
     /// <summary>
     /// Interaction logic for UserControl1.xaml
@@ -24,8 +24,7 @@ namespace NUnitForImages
             var render = WpfImage
                 .Render(this)                           // renders this WPF control to a bitmap.
                 .SaveTo(Attach("render.png"))        // saves the bitmap to current test directory.                
-                .AssertHashCodeIsAnyOf(79668204);      // Asserts that the rendered bitmap has the reference hash code.            
-
+                .VerifyCodeIsAnyOf(79668204);      // Asserts that the rendered bitmap has the reference hash code.
 
             var reference = WpfImage.Load("UserControl1.reference.png");
 
