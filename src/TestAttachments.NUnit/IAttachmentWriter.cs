@@ -19,6 +19,6 @@ namespace NUnit.Framework
         /// This method is usually implemented like this:<br/><br/>
         /// <c>public AttachmentInfo Attachment(string name, string desc = null) => new AttachmentInfo(name, desc);</c>
         /// </remarks>
-        AttachmentInfo Attachment(string fileName, string description = null);
+        AttachmentInfo Attach(string fileName, string description = null);
     }
 }

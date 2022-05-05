@@ -11,10 +11,18 @@
     <Description>
       Defines extensions and attributes to handle file attachments.
     </Description>
+    <PackageReadmeFile>README.MD</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="NUnit" Version="3.13.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.MD">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

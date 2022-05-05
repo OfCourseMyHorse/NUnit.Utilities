@@ -40,13 +40,13 @@ predefined relative path macross:
 | Date | DateTime.Now 'yyyMMdd' |
 | Time | DateTime.Now 'hhmmss' |
 
-By using these macros, we can define the attribute
+By using these macros, we can define the attribute like this:
 
 ```c#
 [AttachmentPathFormat("{WorkDirectory}/{ID}/{Date}")]
 ```
 
-That, when run inside a test, will replace the macros with the appropiate
+when runnung a test, it will replace the macros with the appropiate
 values taken from the current test context.
 
 
@@ -60,20 +60,22 @@ using NUnit.Framework;
 
 namespace TestNamespace
 {
-    [AttachmentPathFormat("{WorkDirectory}/{ID}")] // create a directory per test method
+    [AttachmentPathFormat("{WorkDirectory}/{ID}")] // Alternatively: [AttachmentPathFormat("?")]
     public class TestClass
     {
+        static AttachmentInfo Attach(string name, string desc = null) => new AttachmentInfo(name,desc);
+
         [Test]
         public void WriteTextAttachment()
         {
-            TestContext.CurrentContext.Attachment("hello.txt").WriteText("hello world");            
+            Attach("hello.txt").WriteText("hello world");            
         }
 
         [Test]
         [AttachmentPathFormat("{WorkDirectory}/ExplicitMethodResult-{Date}-{Time}")]
         public void WriteExplicitTextAttachment()
         {
-            TestContext.CurrentContext.Attachment("hello.txt").WriteText("hello world");
+            Attach("hello.txt").WriteText("hello world");
         }
     }
 }

@@ -13,12 +13,12 @@ namespace NUnitForImages
     [AttachmentPathFormat("{WorkDirectory}/AttachmentResults/{ID}")]
     public class Attachments : IAttachmentWriter
     {
-        public AttachmentInfo Attachment(string fileName, string desc = null) => new AttachmentInfo(fileName, desc);
+        public AttachmentInfo Attach(string fileName, string desc = null) => new AttachmentInfo(fileName, desc);
 
         [Test]
         public void WriteTextAttachment()
         {
-            var finfo = this.Attachment("hello.text").WriteText("hello world");
+            var finfo = this.Attach("hello.text").WriteText("hello world");
             Assert.IsTrue(finfo.Exists);
 
             TestContext.WriteLine(finfo);
@@ -28,7 +28,7 @@ namespace NUnitForImages
         [AttachmentPathFormat("{WorkDirectory}/ExplicitMethodResult-{Date}")]
         public void WriteExplicitTextAttachment()
         {
-            var finfo = this.Attachment("hello.txt").WriteText("hello world");
+            var finfo = this.Attach("hello.txt").WriteText("hello world");
 
             Assert.IsTrue(finfo.Exists);
 
@@ -41,7 +41,7 @@ namespace NUnitForImages
         [AttachmentPathFormat("?")]
         public void WriteTextAttachment2()
         {
-            var finfo = this.Attachment("hello.txt").WriteText("hello world");
+            var finfo = this.Attach("hello.txt").WriteText("hello world");
 
             Assert.IsTrue(finfo.Exists);
         }

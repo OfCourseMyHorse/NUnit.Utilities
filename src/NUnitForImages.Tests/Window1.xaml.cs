@@ -23,7 +23,7 @@ namespace NUnitForImages
     [Apartment(ApartmentState.STA)]    
     public partial class Window1 : Window , IAttachmentWriter
     {
-        public AttachmentInfo Attachment(string fileName, string description = null) => new AttachmentInfo(fileName, description);
+        public AttachmentInfo Attach(string fileName, string description = null) => new AttachmentInfo(fileName, description);
 
         public Window1()
         {
@@ -35,7 +35,7 @@ namespace NUnitForImages
         {
             var render = WpfImage
                 .Render(this)                       // renders this WPF control to a bitmap.                
-                .SaveTo(Attachment("window.png", "Window1 render"));  // saves the bitmap to current test directory.                
+                .SaveTo(Attach("window.png", "Window1 render"));  // saves the bitmap to current test directory.                
         }
     }
 }

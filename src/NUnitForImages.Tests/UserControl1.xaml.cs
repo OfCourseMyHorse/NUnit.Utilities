@@ -16,14 +16,14 @@ namespace NUnitForImages
             InitializeComponent();
         }
 
-        public AttachmentInfo Attachment(string fileName, string description = null) => new AttachmentInfo(fileName, description);
+        public AttachmentInfo Attach(string fileName, string description = null) => new AttachmentInfo(fileName, description);
 
         [Test]
         public void RenderTest()
         {
             var render = WpfImage
                 .Render(this)                           // renders this WPF control to a bitmap.
-                .SaveTo(Attachment("render.png"))        // saves the bitmap to current test directory.                
+                .SaveTo(Attach("render.png"))        // saves the bitmap to current test directory.                
                 .AssertHashCodeIsAnyOf(79668204);      // Asserts that the rendered bitmap has the reference hash code.            
 
 

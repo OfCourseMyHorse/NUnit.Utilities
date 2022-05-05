@@ -15,7 +15,7 @@ namespace NUnitForImages
 {    
     internal sealed class MonoGameTest : GraphicsDeviceTestFixtureBase, IAttachmentWriter
     {
-        public AttachmentInfo Attachment(string fileName, string description = null) => new AttachmentInfo(fileName, description);
+        public AttachmentInfo Attach(string fileName, string description = null) => new AttachmentInfo(fileName, description);
 
         private SpriteBatch _spriteBatch;
         private Texture2D _texture;        
@@ -54,7 +54,7 @@ namespace NUnitForImages
 
             var frame = SubmitFrame();
 
-            frame.SaveTo(Attachment("render.bmp", "render result"));
+            frame.SaveTo(Attach("render.bmp", "render result"));
         }
 
         

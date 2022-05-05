@@ -4,7 +4,7 @@
   <PropertyGroup>
 
     <Authors>Vicente Penades</Authors>
-    <Copyright>Copyright (c) 2021 NUnit Utilities</Copyright>
+    <Copyright>Copyright (c) 2022 Vicente Penades</Copyright>
     <Description>NUnit utilities</Description>
 
     <RepositoryType>git</RepositoryType>
