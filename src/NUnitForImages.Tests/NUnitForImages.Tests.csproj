@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NUnitExtensions.Attachments\TestAttachments.NUnit.csproj" />
+    <ProjectReference Include="..\TestAttachments.NUnit\TestAttachments.NUnit.csproj" />
     <ProjectReference Include="..\NUnitForImages.MonoGame\NUnitForImages.MonoGame.csproj" />
     <ProjectReference Include="..\NUnitForImages.WPF\NUnitForImages.WPF.csproj" />
   </ItemGroup>
