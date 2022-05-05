@@ -14,7 +14,7 @@
     <PackageReference Include="StbImageWriteSharp" Version="1.13.5" />
   </ItemGroup>
   <ItemGroup>    
-    <ProjectReference Include="..\NUnitForImages\TestImages.Abstractions.csproj" />    
+    <ProjectReference Include="..\TestImages.Abstractions\TestImages.Abstractions.csproj" />    
     <ProjectReference Include="..\TestAttachments.NUnit\TestAttachments.NUnit.csproj" />
   </ItemGroup>
 

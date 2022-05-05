@@ -4,15 +4,15 @@ VisualStudioVersion = 17.0.32002.185
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{91DBCC8D-A083-4D22-AEE5-345B09553EED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestImages.Abstractions", "NUnitForImages\TestImages.Abstractions.csproj", "{90196296-025E-4689-BDC0-BE83AE8D4676}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestImages.Abstractions", "TestImages.Abstractions\TestImages.Abstractions.csproj", "{90196296-025E-4689-BDC0-BE83AE8D4676}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestImages.WPF", "NUnitForImages.WPF\TestImages.WPF.csproj", "{E88700F9-4D2B-4F5A-9FEA-0EA08B9053B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestImages.WPF", "TestImages.WPF\TestImages.WPF.csproj", "{E88700F9-4D2B-4F5A-9FEA-0EA08B9053B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestImages.Tests", "NUnitForImages.Tests\TestImages.Tests.csproj", "{9ABCD66B-54B5-4E8F-A198-E4A30ED28E0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestImages.Tests", "TestImages.Tests\TestImages.Tests.csproj", "{9ABCD66B-54B5-4E8F-A198-E4A30ED28E0B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAttachments.NUnit", "TestAttachments.NUnit\TestAttachments.NUnit.csproj", "{217888D4-FDB6-4CB8-8562-E42489ABE6F2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.NUnitRunner", "NUnitForImages.MonoGame\MonoGame.NUnitRunner.csproj", "{AF8C0212-FC19-4F55-99FC-035E48E53D8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.NUnitRunner", "MonoGame.NUnitRunner\MonoGame.NUnitRunner.csproj", "{AF8C0212-FC19-4F55-99FC-035E48E53D8B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{518EA44B-96E5-4B45-A150-874686DB634E}"
 	ProjectSection(SolutionItems) = preProject
