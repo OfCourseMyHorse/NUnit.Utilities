@@ -24,20 +24,20 @@ namespace MonoGame.Tests
 			return frame;
         }
 
-        public unsafe void Save(string filename, string attachmentDescription = null)
+        public unsafe void SaveTo(NUnit.Framework.AttachmentInfo ainfo)
         {
-			using (var stream = new FileStream(filename, FileMode.Create))
-			{
-				fixed (Color* ptr = &Data[0])
-				{
-                    var writer = new ImageWriter();
-					writer.WriteBmp(ptr, Width, Height, StbImageWriteSharp.ColorComponents.RedGreenBlueAlpha, stream);
-				}
-			}
-
-            if (attachmentDescription != null)
+			using (var stream = ainfo.CreateStream())
             {
-                NUnit.Framework.TestContext.AddTestAttachment(filename, attachmentDescription);
+                WriteTo(stream);
+            }
+        }
+
+        public unsafe void WriteTo(Stream stream)
+        {
+            fixed (Color* ptr = &Data[0])
+            {
+                var writer = new ImageWriter();
+                writer.WriteBmp(ptr, Width, Height, StbImageWriteSharp.ColorComponents.RedGreenBlueAlpha, stream);
             }
         }
     }

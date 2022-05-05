@@ -96,7 +96,7 @@ namespace NUnitForImages
         /// Writes the underlaying image to a file.
         /// </summary>
         /// <param name="filePath">The file path.</param>
-        protected abstract void SaveToFile(string filePath);
+        protected abstract void SaveToFile(string filePath);        
 
         /// <summary>
         /// Writes the underlaying image to a file.
@@ -111,6 +111,13 @@ namespace NUnitForImages
 
             return this;
         }        
+
+        public TestImage SaveTo(NUnit.Framework.AttachmentInfo ainfo)
+        {
+            ainfo.WriteFile(finfo => SaveTo(finfo.FullName));
+
+            return this;
+        }
 
         #endregion
     }

@@ -13,8 +13,10 @@ using NUnit.Framework;
 
 namespace NUnitForImages
 {    
-    internal sealed class MonoGameTest : GraphicsDeviceTestFixtureBase
+    internal sealed class MonoGameTest : GraphicsDeviceTestFixtureBase, IAttachmentWriter
     {
+        public AttachmentInfo Attachment(string fileName, string description = null) => new AttachmentInfo(fileName, description);
+
         private SpriteBatch _spriteBatch;
         private Texture2D _texture;        
         
@@ -52,8 +54,10 @@ namespace NUnitForImages
 
             var frame = SubmitFrame();
 
-            frame.Save(TestContext.CurrentContext.GetAttachmentFileInfo("render.bmp").FullName, "render result");
+            frame.SaveTo(Attachment("render.bmp", "render result"));
         }
+
+        
     }
 }
 

@@ -151,7 +151,6 @@ namespace NUnitForImages
             if (fmt == PixelFormats.Prgba64) return true;
             if (fmt == PixelFormats.Prgba128Float) return true;
             return false;
-        }
-        
+        }        
     }
 }

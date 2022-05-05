@@ -9,20 +9,21 @@ namespace NUnitForImages
     /// Interaction logic for UserControl1.xaml
     /// </summary>    
     [Apartment(ApartmentState.STA)]
-    public partial class UserControl1 : UserControl
+    public partial class UserControl1 : UserControl, IAttachmentWriter
     {
         public UserControl1()
         {
             InitializeComponent();
         }
 
+        public AttachmentInfo Attachment(string fileName, string description = null) => new AttachmentInfo(fileName, description);
+
         [Test]
         public void RenderTest()
         {
             var render = WpfImage
                 .Render(this)                           // renders this WPF control to a bitmap.
-                .SaveToCurrentTest("render.png")        // saves the bitmap to current test directory.
-                .AttachToTest("UserControl1 render")    // attaches the saved file to the test output.
+                .SaveTo(Attachment("render.png"))        // saves the bitmap to current test directory.                
                 .AssertHashCodeIsAnyOf(79668204);      // Asserts that the rendered bitmap has the reference hash code.            
 
 

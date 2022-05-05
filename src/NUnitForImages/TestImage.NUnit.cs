@@ -33,44 +33,7 @@ namespace NUnitForImages
 
         #endregion
 
-        #region API
-
-        /// <summary>
-        /// Configures a new attachment test path solver.
-        /// </summary>
-        /// <param name="solver">the path solver</param>
-        /// <returns>Fluent self.</returns>
-        public TestImage WithTestPathSolver(Func<string, string> solver)
-        {
-            _LocalTestPathSolver = solver;
-            return this;
-        }
-
-        /// <summary>
-        /// Saves the underlaying bitmap to the current test path.
-        /// </summary>
-        /// <param name="fileName">The file name to save.</param>
-        /// <returns>Fluent self.</returns>
-        public TestImage SaveToCurrentTest(string fileName)
-        {
-            if (fileName == null) throw new ArgumentNullException(nameof(fileName));
-
-            var pathSolver = _LocalTestPathSolver ?? _DefaultTestPathSolver;
-
-            return SaveTo(pathSolver(fileName));
-        }
-
-        /// <summary>
-        /// Attaches the last saved bitmap file to the current test.
-        /// </summary>
-        /// <param name="description">Optional description of attachment.</param>
-        /// <returns>Fluent self.</returns>
-        public TestImage AttachToTest(string description = null)
-        {
-            if (System.IO.File.Exists(_LastSavedPath)) TestContext.AddTestAttachment(_LastSavedPath, description);
-
-            return this;
-        }
+        #region API        
 
         /// <summary>
         /// Asserts that bitmap hash code is one of the provided hash codes

@@ -18,6 +18,8 @@ namespace MonoGame.Tests.Graphics
 {
     public class GraphicsDeviceTestFixtureBase
     {
+        static AttachmentInfo Attachment(string fileName, string description = null) => new AttachmentInfo(fileName, description);
+
         protected TestGameBase game;
         protected GraphicsDeviceManager gdm;
         protected GraphicsDevice gd;
@@ -184,7 +186,7 @@ namespace MonoGame.Tests.Graphics
                     {
                         Directory.CreateDirectory(outputDirectory);
                         _writerThread.AddAction(() =>
-                            frame.Save(capturedPath, "Capture"));
+                            frame.SaveTo(new AttachmentInfo(capturedPath, "Capture")));
                     }
                     noReference.Add(referencePath);
                     continue;
@@ -210,7 +212,7 @@ namespace MonoGame.Tests.Graphics
                 {
                     Directory.CreateDirectory(outputDirectory);
                     _writerThread.AddAction(() =>
-                        result.CapturedData.Save(result.CapturedImagePath, "Capture"));
+                        result.CapturedData.SaveTo(new AttachmentInfo(result.CapturedImagePath, "Capture")));
                 }
 
                 if (result.SaveDiff)
@@ -315,7 +317,7 @@ namespace MonoGame.Tests.Graphics
         {
             var diff = CreateDiff(capture, reference);
             Normalize(diff);
-            diff.Save(outputPath, "Diff");
+            diff.SaveTo(new AttachmentInfo(outputPath, "Diff"));
         }
         
         private static FramePixelData CreateDiff (FramePixelData a, FramePixelData b)
@@ -380,7 +382,7 @@ namespace MonoGame.Tests.Graphics
 
 				frame.Data[i] = pixel;
 			}
-		}
+		}        
 
         #endregion
 

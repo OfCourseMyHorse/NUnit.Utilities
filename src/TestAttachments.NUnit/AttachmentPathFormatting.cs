@@ -19,15 +19,21 @@ namespace NUnit.Framework
             return properties.Get("AttachmentPathFormat") as string;
         }
 
+        /// <summary>
+        /// formats the current path with.
+        /// </summary>
+        /// <param name="format">The format string taken from <see cref="AttachmentPathFormatAttribute"/></param>
+        /// <param name="context">The current test context</param>
+        /// <returns></returns>
         public static string FormatPath(this string format, TestContext context)
         {
-            // default behavior
+            // defaults
 
             if (string.IsNullOrWhiteSpace(format)) format = "{WorkDirectory}";
 
-            // shortcuts
-
             if (format == "?") format = "*/?";
+
+            // shortcuts
 
             format = format.Replace("*", "{WorkDirectory}");
             format = format.Replace("?", "{ID}");
@@ -44,6 +50,7 @@ namespace NUnit.Framework
             format = format.Replace("{Date}", DateTime.Now.ToString("yyyyMMdd"));
             format = format.Replace("{Time}", DateTime.Now.ToString("hhmmss"));
 
+            format = format.Replace("{Id}", context.Test.ID);
             format = format.Replace("{ID}", context.Test.ID);
             format = format.Replace("{Name}", context.Test.Name);
             format = format.Replace("{FullName}", context.Test.FullName);

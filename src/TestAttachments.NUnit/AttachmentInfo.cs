@@ -55,8 +55,11 @@ namespace NUnit.Framework
             return WriteFile(writeBytes);
         }
 
-        public System.IO.Stream CreateStream(string fileName)
+        public System.IO.Stream CreateStream()
         {
+            // we need to create a file so we can attach it.
+            // another strategy would be to create a stream derived class that would do the attachment on stream close.
+
             void writeDummy(System.IO.FileInfo finfo)
             {
                 System.IO.File.WriteAllBytes(finfo.FullName, Array.Empty<Byte>());

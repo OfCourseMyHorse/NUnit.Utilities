@@ -21,20 +21,21 @@ namespace NUnitForImages
     /// Interaction logic for Window1.xaml
     /// </summary>
     [Apartment(ApartmentState.STA)]    
-    public partial class Window1 : Window
+    public partial class Window1 : Window , IAttachmentWriter
     {
+        public AttachmentInfo Attachment(string fileName, string description = null) => new AttachmentInfo(fileName, description);
+
         public Window1()
         {
             InitializeComponent();
-        }
+        }        
 
         [Test]        
         public void RenderTest()
         {
             var render = WpfImage
-                .Render(this)                           // renders this WPF control to a bitmap.                
-                .SaveTo(TestContext.CurrentContext.GetAttachmentFileInfo("window.png").FullName)        // saves the bitmap to current test directory.
-                .AttachToTest("Window1 render");    // attaches the saved file to the test output.            
+                .Render(this)                       // renders this WPF control to a bitmap.                
+                .SaveTo(Attachment("window.png", "Window1 render"));  // saves the bitmap to current test directory.                
         }
     }
 }
