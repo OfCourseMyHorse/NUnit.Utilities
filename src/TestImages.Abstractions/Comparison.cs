@@ -80,6 +80,17 @@ namespace TestImages
                 return other => Math.Abs( (img.Width * img.Height) - (other.Width * other.Height) );
             }
         }
+
+        /// <summary>
+        /// Gets the number of times the smaller image is within the larger image
+        /// </summary>
+        public TestImageEvaluator<int> ByOccurrences
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 
 
