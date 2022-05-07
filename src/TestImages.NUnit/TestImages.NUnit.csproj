@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
+    <RootNamespace>NUnit.Framework</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="..\Version.props" />
+  <Import Project="..\PackageInfo.props" />
+
+  <PropertyGroup>
+    <Description>
+      Defines method extensions for TestImage and NUnit.
+    </Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.13.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TestImages.Abstractions\TestImages.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

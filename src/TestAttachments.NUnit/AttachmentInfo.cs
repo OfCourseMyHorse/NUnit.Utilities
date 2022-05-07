@@ -25,18 +25,14 @@ namespace NUnit.Framework
         public System.IO.FileInfo File { get; }
         public string Description { get; set; }
 
-        public static implicit operator System.IO.FileInfo(AttachmentInfo attachment)
+        /// <summary>
+        /// This is a special callback used to consume <see cref="AttachmentInfo"/>
+        /// without importing this library dependency.
+        /// </summary>
+        /// <param name="ainfo">A <see cref="AttachmentInfo"/> instance.</param>
+        public static implicit operator Action<Action<System.IO.FileInfo>>(AttachmentInfo ainfo)
         {
-            // we need to write a dummy file for the attachment to work before writing the file.
-            return attachment.WriteBytes(Array.Empty<Byte>());
-        }
-
-        public System.IO.Stream CreateStream()
-        {
-            // we need to create a file so we can attach it.
-            // another strategy would be to create a stream derived class that would do the attachment on stream close.            
-
-            return WriteBytes(Array.Empty<Byte>()).Create();
+            return action => ainfo.WriteFile(action);
         }
 
         public System.IO.FileInfo WriteFile(Action<System.IO.FileInfo> writeAction)
@@ -50,6 +46,14 @@ namespace NUnit.Framework
             return File;
         }
 
+        public System.IO.Stream CreateStream()
+        {
+            // we need to create a file so we can attach it.
+            // another strategy would be to create a stream derived class that would do the attachment on stream close.            
+
+            return WriteBytes(Array.Empty<Byte>()).Create();
+        }
+        
         public System.IO.FileInfo WriteText(String textContent)
         {
             void writeText(System.IO.FileInfo finfo)

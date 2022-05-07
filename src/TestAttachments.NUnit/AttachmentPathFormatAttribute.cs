@@ -43,6 +43,10 @@ namespace NUnit.Framework
 
         #region constructors
         
+        /// <summary>
+        /// Declares a directory formatter to write test attachments.
+        /// </summary>
+        /// <param name="format">Recommended patterns are: "?" , "*/?" or "*/yourClassName/?" </param>
         public AttachmentPathFormatAttribute(string format) : base(format) { }        
 
         #endregion

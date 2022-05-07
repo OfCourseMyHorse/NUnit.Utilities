@@ -34,9 +34,10 @@ namespace TestImages
         public void RenderTest()
         {
             var render = WpfImage
-                .Render(this)                                       // renders this WPF control to a bitmap.                
-                .SaveTo( Attach("window.png", "Window1 render") )   // saves the bitmap to current test directory.
-                .VerifyCodeIsAnyOf(-686246400);                     // checks the hash code didn't change
+                .Render(this)
+                .AssertThat(Property.PixelArea, Is.GreaterThan(0))
+                .SaveTo( Attach("window.png", "Window1 render") )
+                .AssertThat(Property.PixelsHashCode, Is.EqualTo(-686246400));            
         }
     }
 }

@@ -9,7 +9,12 @@ namespace TestImages
 {    
     partial class TestImage
     {
-        #region API        
+        #region API
+
+        public static double GetStandardDeviation(TestImage left, TestImage right)
+        {
+            return Bgra32.Bitmap.GetStandardDeviation(left.GetBitmapRgba32(), right.GetBitmapRgba32());
+        }
 
         /// <summary>
         /// checks that bitmap hash code is one of the provided hash codes
@@ -27,7 +32,19 @@ namespace TestImages
             return hashCodes.Contains(this.GetHashCode());            
         }
 
-        public TestImage VerifyCodeIsAnyOf(params int[] hashCodes)
+        #if NET6_0_OR_GREATER
+        [System.Diagnostics.StackTraceHidden]
+        #endif
+        public TestImage Assert(Predicate<TestImage> other, string message = null)
+        {
+            if (!other.Invoke(this)) Exceptions.ReportFail(message);
+            return this;
+        }
+
+        #if NET6_0_OR_GREATER
+        [System.Diagnostics.StackTraceHidden]
+        #endif
+        public TestImage AssertHashCodeIsAnyOf(params int[] hashCodes)
         {
             var h = this.GetHashCode();
 
@@ -35,9 +52,9 @@ namespace TestImages
             {
                 var expected = hashCodes.Length == 1
                     ? hashCodes[0].ToString()
-                    : "any of " + string.Join(", ", hashCodes);                
+                    : "any of " + string.Join(", ", hashCodes);
 
-                throw new InvalidOperationException($"Expected {expected} but was: {h}");
+                Exceptions.ReportFail($"Expected {expected} but was: {h}");
             }
 
             return this;

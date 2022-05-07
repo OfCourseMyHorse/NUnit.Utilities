@@ -15,9 +15,18 @@ namespace TestImages
 
         public static WpfImage Load(string filePath)
         {
+            const BitmapCreateOptions createOptions = BitmapCreateOptions.None;
+            const BitmapCacheOption cacheOptions = BitmapCacheOption.None; // we're running without an actual WPF context, so we can't cache anything
+
+            if (Uri.TryCreate(filePath,UriKind.RelativeOrAbsolute,out var imageUri))
+            {
+                var bmp = BitmapFrame.Create(imageUri, createOptions, cacheOptions);
+                return new WpfImage(bmp);
+            }
+
             using(var s = System.IO.File.OpenRead(filePath))
             {
-                var bmp = BitmapFrame.Create(s, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                var bmp = BitmapFrame.Create(s, createOptions, cacheOptions);
                 return new WpfImage(bmp);
             }            
         }
@@ -56,11 +65,11 @@ namespace TestImages
 
         #region API        
 
-        protected override Rgba32.Bitmap CreateBitmapRgba32()
+        protected override Bgra32.Bitmap CreateBitmapRgba32()
         {
             if (_Bitmap == null) return null;
             var pixels = WpfRenderFactory.GetBytesRGBA32(_Bitmap);
-            return new Rgba32.Bitmap(pixels, _Bitmap.PixelWidth, _Bitmap.PixelHeight, 0);
+            return new Bgra32.Bitmap(pixels, _Bitmap.PixelWidth, _Bitmap.PixelHeight, 0);
         }
 
         protected override void WriteTo(System.IO.FileInfo finfo)

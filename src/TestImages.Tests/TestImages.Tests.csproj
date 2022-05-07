@@ -8,13 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="UserControl1.reference.png" />
+    <None Remove="*.png" />
+    <None Remove="*.jpg" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="UserControl1.reference.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="*.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="*.jpg" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TestAttachments.NUnit\TestAttachments.NUnit.csproj" />
     <ProjectReference Include="..\MonoGame.NUnitRunner\MonoGame.NUnitRunner.csproj" />
+    <ProjectReference Include="..\TestImages.NUnit\TestImages.NUnit.csproj" />
     <ProjectReference Include="..\TestImages.WPF\TestImages.WPF.csproj" />
   </ItemGroup>
 

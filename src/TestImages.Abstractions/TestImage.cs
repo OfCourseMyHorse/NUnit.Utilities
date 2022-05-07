@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace TestImages
 {
+    public delegate T TestImageEvaluator<T>(TestImage other);
+
     /// <summary>
     /// Represents a bitmap that can be used for testing purposes.
     /// </summary>
@@ -19,9 +21,13 @@ namespace TestImages
     {
         #region lifecycle
 
+        public static TestImage FromFile(string imagePath) { return new FileImage(imagePath); }
+
+        public static TestImage FromFile(System.IO.FileInfo finfo) { return new FileImage(finfo); }
+
         protected TestImage()
         {
-            _Rgba32Bitmap = new Lazy<Rgba32.Bitmap>(CreateBitmapRgba32);
+            _Rgba32Bitmap = new Lazy<Bgra32.Bitmap>(CreateBitmapRgba32);
         }
 
         #endregion
@@ -32,7 +38,7 @@ namespace TestImages
         private int? _HashCode;
 
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        private Lazy<Rgba32.Bitmap> _Rgba32Bitmap;
+        private Lazy<Bgra32.Bitmap> _Rgba32Bitmap;
 
         /// <inheritdoc />
         public override int GetHashCode()
@@ -60,7 +66,7 @@ namespace TestImages
 
             var thisBitmap = this.GetBitmapRgba32();
             var otherBitmap = other.GetBitmapRgba32();
-            return Rgba32.Bitmap.AreEqual(thisBitmap, otherBitmap);
+            return Bgra32.Bitmap.AreEqual(thisBitmap, otherBitmap);
         }
         
         #endregion
@@ -84,20 +90,20 @@ namespace TestImages
         protected virtual void Invalidate()
         {
             _HashCode = null;
-            _Rgba32Bitmap = new Lazy<Rgba32.Bitmap>();
+            _Rgba32Bitmap = new Lazy<Bgra32.Bitmap>();
         }
 
         /// <summary>
         /// used to convert from the framework image being tested to our internal bitmap format.
         /// </summary>
-        /// <returns>A <see cref="Rgba32.Bitmap"/> object.</returns>
-        protected abstract Rgba32.Bitmap CreateBitmapRgba32();
+        /// <returns>A <see cref="Bgra32.Bitmap"/> object.</returns>
+        protected abstract Bgra32.Bitmap CreateBitmapRgba32();
 
         /// <summary>
         /// Gets the underlaying bitmap, converted to Rgba32 format.
         /// </summary>
-        /// <returns>A <see cref="Rgba32.Bitmap"/> object.</returns>
-        protected Rgba32.Bitmap GetBitmapRgba32()
+        /// <returns>A <see cref="Bgra32.Bitmap"/> object.</returns>
+        internal protected Bgra32.Bitmap GetBitmapRgba32()
         {
             return _Rgba32Bitmap.Value;
         }
@@ -126,7 +132,22 @@ namespace TestImages
             WriteTo(finfo);
 
             return this;
-        }        
+        }
+
+        /// <summary>
+        /// Writes the image to a writing callback.
+        /// </summary>
+        /// <param name="writeCallback">The callback.</param>
+        /// <returns>Self</returns>
+        /// <remarks>
+        /// The callback is a placeholder for TestAttachments.NUnit's <see cref="AttachmentInfo"/> object
+        /// </remarks>
+        public TestImage SaveTo(Action<Action<System.IO.FileInfo>> writeCallback)
+        {
+            writeCallback(finfo => SaveTo(finfo));
+
+            return this;
+        }
 
         #endregion
     }

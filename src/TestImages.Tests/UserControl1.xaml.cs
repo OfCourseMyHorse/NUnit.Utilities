@@ -21,14 +21,13 @@ namespace TestImages
         [Test]
         public void RenderTest()
         {
-            var render = WpfImage
+            WpfImage
                 .Render(this)                           // renders this WPF control to a bitmap.
-                .SaveTo(Attach("render.png"))        // saves the bitmap to current test directory.                
-                .VerifyCodeIsAnyOf(79668204);      // Asserts that the rendered bitmap has the reference hash code.
-
-            var reference = WpfImage.Load("UserControl1.reference.png");
-
-            Assert.AreEqual(reference, render);         // compare the rendered bitmap against the reference.
+                .AssertThat(Property.PixelArea, Is.GreaterThan(0))
+                .SaveTo(Attach("render.png"))           // saves the bitmap to current test directory.                
+                .AssertThat(Property.PixelsHashCode, Is.EqualTo(79668204))
+                .AssertThat(Is.EqualTo(WpfImage.Load("UserControl1.reference.png")))
+                .AssertThat(Comparison.With(WpfImage.Load("UserControl1.reference.png")).ByStandardDeviation, Is.LessThan(1));
         }
     }
 }
