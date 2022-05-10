@@ -5,15 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TestImages"
         mc:Ignorable="d"
+        x:Name="mySelf"
         Title="Window1" Height="450" Width="800">
     <Grid>
         <GroupBox Header="header">
             <StackPanel>
                 <TextBlock>hello</TextBlock>
-                <Button Content="A" />
+                <Button Content="A" Name="myButtonA" Command="{Binding ElementName=mySelf, Path=ButtonAClickCmd}" />
                 <Button Content="B" />
                 <Button Content="C" />
                 <Button Content="D" />
+                <TextBlock Text="{Binding ElementName=mySelf, Path=DynamicProperty}" />
             </StackPanel>
             
         </GroupBox>

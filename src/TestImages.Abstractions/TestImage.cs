@@ -27,7 +27,7 @@ namespace TestImages
 
         protected TestImage()
         {
-            _Rgba32Bitmap = new Lazy<Bgra32.Bitmap>(CreateBitmapRgba32);
+            _Rgba32Bitmap = new Lazy<Bitmaps.Bgra32.Bitmap>(CreateBitmapRgba32);
         }
 
         #endregion
@@ -38,7 +38,7 @@ namespace TestImages
         private int? _HashCode;
 
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        private Lazy<Bgra32.Bitmap> _Rgba32Bitmap;
+        private Lazy<Bitmaps.Bgra32.Bitmap> _Rgba32Bitmap;
 
         /// <inheritdoc />
         public override int GetHashCode()
@@ -66,7 +66,7 @@ namespace TestImages
 
             var thisBitmap = this.GetBitmapRgba32();
             var otherBitmap = other.GetBitmapRgba32();
-            return Bgra32.Bitmap.AreEqual(thisBitmap, otherBitmap);
+            return Bitmaps.Bgra32.Bitmap.AreEqual(thisBitmap, otherBitmap);
         }
         
         #endregion
@@ -90,20 +90,20 @@ namespace TestImages
         protected virtual void Invalidate()
         {
             _HashCode = null;
-            _Rgba32Bitmap = new Lazy<Bgra32.Bitmap>();
+            _Rgba32Bitmap = new Lazy<Bitmaps.Bgra32.Bitmap>();
         }
 
         /// <summary>
         /// used to convert from the framework image being tested to our internal bitmap format.
         /// </summary>
-        /// <returns>A <see cref="Bgra32.Bitmap"/> object.</returns>
-        protected abstract Bgra32.Bitmap CreateBitmapRgba32();
+        /// <returns>A <see cref="Bitmaps.Bgra32.Bitmap"/> object.</returns>
+        protected abstract Bitmaps.Bgra32.Bitmap CreateBitmapRgba32();
 
         /// <summary>
         /// Gets the underlaying bitmap, converted to Rgba32 format.
         /// </summary>
-        /// <returns>A <see cref="Bgra32.Bitmap"/> object.</returns>
-        internal protected Bgra32.Bitmap GetBitmapRgba32()
+        /// <returns>A <see cref="Bitmaps.Bgra32.Bitmap"/> object.</returns>
+        internal protected Bitmaps.Bgra32.Bitmap GetBitmapRgba32()
         {
             return _Rgba32Bitmap.Value;
         }
@@ -111,7 +111,10 @@ namespace TestImages
         /// <summary>
         /// Writes the framework image to a stream.
         /// </summary>        
-        protected abstract void WriteTo(System.IO.FileInfo finfo);        
+        protected virtual void WriteTo(System.IO.FileInfo finfo)
+        {
+            GetBitmapRgba32().SaveTo(finfo);
+        }
 
         /// <summary>
         /// Writes the framework image to a file.
@@ -147,6 +150,12 @@ namespace TestImages
             writeCallback(finfo => SaveTo(finfo));
 
             return this;
+        }
+
+        public TestImage Crop(int x, int y, int w, int h)
+        {
+            var rect = new System.Drawing.Rectangle(x, y, w, h);
+            return new CroppedImage(this, rect);
         }
 
         #endregion

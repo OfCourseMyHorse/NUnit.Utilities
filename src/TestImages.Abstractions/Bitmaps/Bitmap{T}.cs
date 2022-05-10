@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
-namespace TestImages
+namespace TestImages.Bitmaps
 {
     public delegate ReadOnlySpan<T> BitmapRowEvaluator<T>(int y) where T : unmanaged;
 
@@ -35,11 +36,11 @@ namespace TestImages
             return getRow;
         }
 
-        public Bitmap(BitmapRowEvaluator<T> rows, int width, int height)
+        private Bitmap(BitmapRowEvaluator<T> rows, int width, int height)
         {
             if (rows == null) throw new ArgumentNullException(nameof(rows));
-            if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
-            if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
+            if (width < 0) throw new ArgumentOutOfRangeException(nameof(width));
+            if (height < 0) throw new ArgumentOutOfRangeException(nameof(height));
 
             _Width = width;
             _Height = height;
@@ -154,22 +155,31 @@ namespace TestImages
 
         #endregion
 
-        #region API            
+        #region API
 
-        public Bitmap<T> Crop(int x, int y, int w, int h)
+        protected void CropFrom(Bitmap<T> source, int x, int y, int w, int h)
         {
-            if (w > _Width) throw new ArgumentOutOfRangeException(nameof(w));
-            if (h > _Height) throw new ArgumentOutOfRangeException(nameof(h));
+            if (w > source.Width) throw new ArgumentOutOfRangeException(nameof(w));
+            if (h > source.Height) throw new ArgumentOutOfRangeException(nameof(h));
 
-            if (x < 0 || x >= _Width - w) throw new ArgumentOutOfRangeException(nameof(x));
-            if (y < 0 || y >= _Height - h) throw new ArgumentOutOfRangeException(nameof(y));
+            if (x < 0 || x >= source.Width - w) throw new ArgumentOutOfRangeException(nameof(x));
+            if (y < 0 || y >= source.Height - h) throw new ArgumentOutOfRangeException(nameof(y));
 
             ReadOnlySpan<T> getRow(int yy)
             {
-                return this.GetRow(yy + y).Slice(x, w);
+                return source.GetRow(yy + y).Slice(x, w);
             }
 
-            return new Bitmap<T>(getRow, w, h);
+            this._RowEvaluator = getRow;
+            this._Width = w;
+            this._Height = h;
+        }
+
+        public Bitmap<T> Crop(int x, int y, int w, int h)
+        {
+            var bmp = new Bitmap<T>(Array.Empty<Byte>(), 0, 0);
+            bmp.CropFrom(this, x, y, w, h);
+            return bmp;
         }
 
         /// <summary>
@@ -189,17 +199,36 @@ namespace TestImages
         {
             if (leftBitmap.Width != rightBitmap.Width || leftBitmap.Height != rightBitmap.Height) throw new ArgumentException("dimensions mismatch", nameof(rightBitmap));
 
-            var leftRow = new T[rightBitmap.Width];
-            var rightRow = new T[rightBitmap.Width];
+            return leftBitmap.EnumeratePixels().Zip(rightBitmap.EnumeratePixels(), (l,r) => (l,r) );
+        }
 
-            for (int y = 0; y < rightBitmap.Height; ++y)
+        public IEnumerable<T> EnumeratePixels()
+        {
+            var row = new T[Width];
+
+            for (int y = 0; y < Height; ++y)
             {
-                leftBitmap.GetRow(y).CopyTo(leftRow);
-                rightBitmap.GetRow(y).CopyTo(rightRow);
+                GetRow(y).CopyTo(row);                
 
-                for (int x = 0; x < rightRow.Length; ++x)
+                for (int x = 0; x < row.Length; ++x)
                 {
-                    yield return (leftRow[x], rightRow[x]);
+                    yield return row[x];
+                }
+            }
+        }
+
+        public IEnumerable<System.Drawing.Point> FindOccurences(Bitmap<T> other)
+        {
+            if (other.Width > this.Width) yield break;
+            if (other.Height > this.Height) yield break;            
+
+            for (int y = 0; y < this.Height - other.Height; ++y)
+            {
+                for (int x = 0; x < this.Width - other.Width; ++x)
+                {
+                    var thisCrop = this.Crop(x, y, other.Width, other.Height);
+
+                    if (thisCrop.Equals(other)) yield return new System.Drawing.Point(x, y);
                 }
             }
         }

@@ -17,14 +17,9 @@ namespace TestImages
 
         public override int Height => this.GetBitmapRgba32().Height;
 
-        protected override Bgra32.Bitmap CreateBitmapRgba32()
+        protected override Bitmaps.Bgra32.Bitmap CreateBitmapRgba32()
         {
-            return Bgra32.Bitmap.LoadFrom(_File);
-        }
-
-        protected override void WriteTo(FileInfo finfo)
-        {
-            throw new NotImplementedException();
-        }
+            return Bitmaps.Bgra32.Bitmap.LoadFrom(_File);
+        }        
     }
 }

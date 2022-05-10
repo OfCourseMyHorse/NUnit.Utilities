@@ -4,8 +4,8 @@
   <PropertyGroup>
 
     <Authors>Vicente Penades</Authors>
-    <Copyright>Copyright (c) 2022 Vicente Penades</Copyright>
-    <Description>NUnit utilities</Description>
+    <Copyright>Copyright (c) 2022 Of Course my Horse</Copyright>
+    <Description>Unit Testing utilities</Description>
 
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/OfCourseMyHorse/NUnit.Utilities</RepositoryUrl>    

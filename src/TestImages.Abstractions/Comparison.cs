@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace TestImages
@@ -41,7 +42,7 @@ namespace TestImages
             get
             {
                 var img = _Image;
-                return other => Bgra32.Bitmap.GetStandardDeviation(img.GetBitmapRgba32(), other.GetBitmapRgba32());
+                return other => Bitmaps.Bgra32.Bitmap.GetStandardDeviation(img.GetBitmapRgba32(), other.GetBitmapRgba32());
             }
         }
 
@@ -50,7 +51,7 @@ namespace TestImages
             get
             {
                 var img = _Image;
-                return other => Bgra32.Bitmap.GetVariance(img.GetBitmapRgba32(), other.GetBitmapRgba32());
+                return other => Bitmaps.Bgra32.Bitmap.GetVariance(img.GetBitmapRgba32(), other.GetBitmapRgba32());
             }
         }
 
@@ -88,7 +89,8 @@ namespace TestImages
         {
             get
             {
-                throw new NotImplementedException();
+                var img = _Image;
+                return other => other.GetBitmapRgba32().FindOccurences(img.GetBitmapRgba32()).Count();
             }
         }
     }

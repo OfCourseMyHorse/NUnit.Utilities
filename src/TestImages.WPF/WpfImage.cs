@@ -65,11 +65,11 @@ namespace TestImages
 
         #region API        
 
-        protected override Bgra32.Bitmap CreateBitmapRgba32()
+        protected override Bitmaps.Bgra32.Bitmap CreateBitmapRgba32()
         {
             if (_Bitmap == null) return null;
             var pixels = WpfRenderFactory.GetBytesRGBA32(_Bitmap);
-            return new Bgra32.Bitmap(pixels, _Bitmap.PixelWidth, _Bitmap.PixelHeight, 0);
+            return new Bitmaps.Bgra32.Bitmap(pixels, _Bitmap.PixelWidth, _Bitmap.PixelHeight, 0);
         }
 
         protected override void WriteTo(System.IO.FileInfo finfo)

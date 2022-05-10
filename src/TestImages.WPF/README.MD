@@ -37,6 +37,14 @@ namespace WpfRenderingTests
 ```
 
 
-#### Bonus track
+#### References
 
-When debugging images, it's good to use Visual Studio [ImageVisualizer](https://github.com/aberus/ImageVisualizer) extension.
+- [FlaUI test framework](https://github.com/FlaUI/FlaUI)
+  - [White test framework (deprecated)](https://github.com/TestStack/White)
+- [CodedUI (commercial)](https://docs.microsoft.com/en-us/visualstudio/test/use-ui-automation-to-test-your-code?view=vs-2022)
+- [testing suites for net wpf based applications](https://stackoverflow.com/questions/3234980/testing-suites-for-net-wpf-based-applications)
+- [UIAutomationTests.cs](https://github.com/microsoft/TestApi/blob/master/Development/Samples/NUnit/Tests/UIAutomationTests.cs)
+- [simulate mouse input](https://social.msdn.microsoft.com/Forums/vstudio/en-US/0555c1ea-5b0f-4c5e-863c-b54eb510ad40/simulate-mouse-entermoveleave-on-wpf-control-without-real-mouse-usage?forum=wpf)
+- [programatically click a button](https://joshsmithonwpf.wordpress.com/2007/03/09/how-to-programmatically-click-a-button/)
+
+

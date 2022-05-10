@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TestImages
+namespace TestImages.Bitmaps
 {
     /// <summary>
     /// Represents a 32 bit, pixel color in R,G,B,A format
@@ -12,6 +12,11 @@ namespace TestImages
     public readonly partial struct Bgra32 : IEquatable<Bgra32>
     {
         #region lifecycle
+
+        public static implicit operator Bgra32(System.Drawing.Color color)
+        {
+            return new Bgra32(color.R, color.G, color.B, color.A);
+        }
 
         public Bgra32(Byte r, Byte g, Byte b, Byte a) : this()
         {
@@ -67,6 +72,31 @@ namespace TestImages
         {
             return (left.A == 0 && right.A == 0) || left.Packed == right.Packed;
         }
+
+        #endregion
+
+        #region properties
+
+        public float Brightness
+        {
+            get
+            {
+                const uint RLuminanceWeight16 = 19562;
+                const uint GLuminanceWeight16 = 38550;
+                const uint BLuminanceWeight16 = 7424;
+                const float rcp = 1f / (255f * 255f);
+
+                uint accum = 0;
+                accum += RLuminanceWeight16 * (uint)this.R;
+                accum += GLuminanceWeight16 * (uint)this.G;
+                accum += BLuminanceWeight16 * (uint)this.B;
+
+                accum >>= 16;
+                accum *= this.A;
+
+                return (float)accum * rcp;
+            }
+        }        
 
         #endregion
 

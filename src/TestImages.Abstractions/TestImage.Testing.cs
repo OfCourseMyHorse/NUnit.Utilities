@@ -13,7 +13,7 @@ namespace TestImages
 
         public static double GetStandardDeviation(TestImage left, TestImage right)
         {
-            return Bgra32.Bitmap.GetStandardDeviation(left.GetBitmapRgba32(), right.GetBitmapRgba32());
+            return Bitmaps.Bgra32.Bitmap.GetStandardDeviation(left.GetBitmapRgba32(), right.GetBitmapRgba32());
         }
 
         /// <summary>

@@ -18,32 +18,51 @@ namespace TestAttachments
         [Test]
         public void WriteTextAttachment()
         {
-            var finfo = this.Attach("hello.text").WriteText("hello world");
+            var finfo = this
+                .Attach("hello.text")
+                .WriteText("hello world");
+
             Assert.IsTrue(finfo.Exists);
 
             TestContext.WriteLine(finfo);
+        }
+
+        [Test]
+        [AttachmentPathFormat("?")]
+        public void WriteHelloWorldAttachment()
+        {
+            TestContext.CurrentContext.AttachFolderBrowserShortcut();
+
+            var finfo = this
+                .Attach("hello.txt")
+                .WriteText("hello world");
+
+            Assert.IsTrue(finfo.Exists);
         }
 
         [Test]
         [AttachmentPathFormat("{WorkDirectory}/ExplicitMethodResult-{Date}")]
         public void WriteExplicitTextAttachment()
         {
-            var finfo = this.Attach("hello.txt").WriteText("hello world");
+            var finfo = this
+                .Attach("hello.txt")
+                .WriteText("hello world");
 
             Assert.IsTrue(finfo.Exists);
 
             TestContext.WriteLine(finfo);
 
             Assert.IsTrue(finfo.FullName.Contains("\\Explicit"));
-        }
+        }        
 
-        [Test]
-        [AttachmentPathFormat("?")]
-        public void WriteTextAttachment2()
+        [Test]        
+        public void WriteMarkDownAttachment()
         {
             TestContext.CurrentContext.AttachFolderBrowserShortcut();
 
-            var finfo = this.Attach("hello.txt").WriteText("hello world");
+            var finfo = this
+                .Attach("hello.md")
+                .WriteTextLines("### Hello World", "This is a markdown example.");
 
             Assert.IsTrue(finfo.Exists);
         }

@@ -24,6 +24,12 @@ namespace NUnit.Framework
             return new System.IO.FileInfo(relativeFilePath);
         }
 
+        public static Uri GetAttachmentDirUri(this TestContext context)
+        {
+            var dinfo = context.GetAttachmentDirInfo();
+            return new Uri(dinfo.FullName, UriKind.Absolute);
+        }
+
         /// <summary>
         /// Gets the attachments directory for the current test.
         /// </summary>

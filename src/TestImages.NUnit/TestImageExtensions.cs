@@ -15,6 +15,10 @@ namespace NUnit.Framework
         /// <param name="self">The <see cref="TestImages.TestImage"/> image to test.</param>        
         /// <param name="constraint">A Constraint expression to be applied.</param>
         /// <returns>Fluent self.</returns>
+        #if NET6_0_OR_GREATER
+        [System.Diagnostics.StackTraceHidden]
+        #endif
+        [System.Diagnostics.DebuggerStepThrough]
         public static TestImages.TestImage AssertThat(this TestImages.TestImage self, Constraints.IResolveConstraint constraint)
         {
             if (self == null) throw new ArgumentNullException(nameof(self));            
@@ -29,9 +33,16 @@ namespace NUnit.Framework
         /// </summary>
         /// <typeparam name="T">The actual value type to test.</typeparam>
         /// <param name="self">The <see cref="TestImages.TestImage"/> image to test.</param>
-        /// <param name="imageEvaluator">A callback that evaluates the image into a measurable quantity.</param>
+        /// <param name="imageEvaluator">
+        /// <para>A callback that evaluates the image into a measurable quantity.</para>
+        /// <para>Useful evaluators: <see cref="TestImages.Property"/> and <see cref="TestImages.Comparison"/></para>
+        /// </param>
         /// <param name="constraint">A Constraint expression to be applied.</param>
         /// <returns>Fluent self.</returns>
+        #if NET6_0_OR_GREATER
+        [System.Diagnostics.StackTraceHidden]
+        #endif
+        [System.Diagnostics.DebuggerStepThrough]
         public static TestImages.TestImage AssertThat<T>(this TestImages.TestImage self, TestImages.TestImageEvaluator<T> imageEvaluator, Constraints.IResolveConstraint constraint)
         {
             if (self == null) throw new ArgumentNullException(nameof(self));
