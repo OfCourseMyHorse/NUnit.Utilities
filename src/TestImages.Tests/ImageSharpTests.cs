@@ -19,7 +19,10 @@ namespace TestImages
 
             var testImage = image
                 .ToTestImage()
-                .AssertThat(Property.PixelWidth, Is.EqualTo(512));            
+                .AssertThat(ImageSharpProperty.PixelsHashCode, Is.EqualTo(1213663661))
+                .AssertThat(ImageSharpProperty.PixelsType, Is.EqualTo(typeof(SixLabors.ImageSharp.PixelFormats.Rgb24)))
+                .AssertThat(Property.PixelWidth, Is.EqualTo(512))
+                .AssertThat(Property.AverageBrightness, Is.GreaterThan(0.35));                
         }
     }
 }

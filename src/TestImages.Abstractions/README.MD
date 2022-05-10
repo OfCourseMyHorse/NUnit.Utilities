@@ -1,7 +1,11 @@
 ﻿
+#### Overview
 
+This library provides a number of types to help unit testing images.
 
+#### Implementations:
 
-#### Bonus track
+So far there's two implementations:
 
-When debugging images, it's good to use Visual Studio [ImageVisualizer](https://github.com/aberus/ImageVisualizer) extension.
+- TestImages.WPF
+- TestImages.ImageSharp

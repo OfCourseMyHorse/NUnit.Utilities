@@ -9,7 +9,8 @@ namespace NUnit.Framework
     /// Represents an attachement file object.
     /// </summary>
     /// <remarks>
-    /// File is only attached after it's been written.
+    /// <para>File is only attached after it's been written.</para>
+    /// <para>Use <see cref="AttachmentPathFormatAttribute"/> at the top of the test class to define the attachment directory path</para>    
     /// </remarks>
     [System.Diagnostics.DebuggerDisplay("{File.FullName}")]
     public class AttachmentInfo

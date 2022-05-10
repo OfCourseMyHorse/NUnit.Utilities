@@ -5,6 +5,9 @@ using System.Text;
 
 namespace TestImages
 {
+    /// <summary>
+    /// General image properties, and pixel properties in BGRA32 space.
+    /// </summary>
     public static class Property
     {
         public static int PixelWidth(TestImage image) => image.Width;

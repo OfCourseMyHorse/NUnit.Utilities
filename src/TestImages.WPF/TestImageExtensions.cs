@@ -6,8 +6,18 @@ using System.Threading.Tasks;
 
 namespace System.Windows
 {
-    public static class AttachmentExtensions
+    public static class TestImageExtensions
     {
+        public static TestImages.TestImage ToTestImage(this Media.Imaging.BitmapSource bitmap)
+        {            
+            return TestImages.WpfTestImage.FromBitmapSource(bitmap);
+        }
+
+        public static TestImages.TestImage ToTestImage(this Media.Visual visual)
+        {
+            return TestImages.WpfTestImage.FromRender(visual);
+        }
+
         /// <summary>
         /// Saves an image as a test file attachment
         /// </summary>

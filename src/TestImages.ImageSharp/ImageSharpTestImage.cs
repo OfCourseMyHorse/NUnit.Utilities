@@ -3,14 +3,15 @@
 using SixLabors.ImageSharp;
 
 namespace TestImages
-{   
+{
+    [System.Diagnostics.DebuggerDisplay("TestImage<{PixelType.Name,nq}>: {Width}×{Height}")]
     partial class _ImageSharpTestImage : TestImage
     {
         #region factory               
 
         public _ImageSharpTestImage(Image bmp)
         {
-            _Bitmap = bmp;
+            Image = bmp;
         }
 
         #endregion
@@ -18,14 +19,16 @@ namespace TestImages
         #region data
 
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        private readonly Image _Bitmap;
+        public Image Image { get; }
 
         #endregion
 
         #region properties
+
+        public Type PixelType => Image.GetPixelType();
         
-        public override int Width => _Bitmap.Width;
-        public override int Height => _Bitmap.Height;
+        public override int Width => Image.Width;
+        public override int Height => Image.Height;
 
         #endregion
 
@@ -33,19 +36,19 @@ namespace TestImages
 
         protected override Bitmaps.Bgra32.Bitmap CreateBitmapRgba32()
         {
-            if (_Bitmap == null) return null;
+            if (Image == null) return null;
 
-            var buffer = new Byte[_Bitmap.Width * _Bitmap.Height * 4];
+            var buffer = new Byte[Image.Width * Image.Height * 4];
             var slisbf = System.Runtime.InteropServices.MemoryMarshal.Cast<Byte, SixLabors.ImageSharp.PixelFormats.Bgra32>(buffer);
 
-            _Bitmap.CopyPixelsTo(slisbf);
+            Image.CopyPixelsTo(slisbf);
 
-            return new Bitmaps.Bgra32.Bitmap(buffer, _Bitmap.Width, _Bitmap.Height);
+            return new Bitmaps.Bgra32.Bitmap(buffer, Image.Width, Image.Height);
         }
 
         protected override void WriteTo(System.IO.FileInfo finfo)
         {
-            _Bitmap.Save(finfo.FullName);
+            Image.Save(finfo.FullName);
         }
 
         #endregion

@@ -1,5 +1,6 @@
 ﻿
 
+
 ## Overview
 
 When writing tests that depend heavily on file attachments, it is usually convenient
@@ -46,8 +47,16 @@ By using these macros, we can define the attribute like this:
 [AttachmentPathFormat("{WorkDirectory}/{ID}/{Date}")]
 ```
 
-when runnung a test, it will replace the macros with the appropiate
+when running a test, it will replace the macros with the appropiate
 values taken from the current test context.
+
+the default and most common use will be
+
+```c#
+[AttachmentPathFormat("?")]
+```
+
+which creates a directory for every test.
 
 
 ## Example
@@ -56,26 +65,24 @@ values taken from the current test context.
 
 using NUnit.Framework;
 
-[assembly: AttachmentPathFormat("{WorkDirectory}/AssemblyResults/{ID}")]
+[assembly: AttachmentPathFormat("{WorkDirectory}/TestResults/{ID}")]
 
 namespace TestNamespace
 {
     [AttachmentPathFormat("{WorkDirectory}/{ID}")] // Alternatively: [AttachmentPathFormat("?")]
     public class TestClass
     {
-        static AttachmentInfo Attach(string name, string desc = null) => new AttachmentInfo(name,desc);
-
         [Test]
         public void WriteTextAttachment()
         {
-            Attach("hello.txt").WriteText("hello world");            
+            AttachmentInfo.From("hello.txt").WriteText("hello world");            
         }
 
         [Test]
         [AttachmentPathFormat("{WorkDirectory}/ExplicitMethodResult-{Date}-{Time}")]
         public void WriteExplicitTextAttachment()
         {
-            Attach("hello.txt").WriteText("hello world");
+            AttachmentInfo.From("hello.txt").WriteText("hello world");
         }
     }
 }

@@ -7,6 +7,7 @@ using TestImages.Bitmaps;
 
 namespace TestImages
 {
+    [System.Diagnostics.DebuggerDisplay("Cropped:{_Bounds.Left},{_Bounds.Top} TestImage: {Width}×{Height}")]
     internal class CroppedImage : TestImage
     {
         public CroppedImage(TestImage source, System.Drawing.Rectangle rect)

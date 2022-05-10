@@ -29,7 +29,7 @@ namespace TestImages
         /// </summary>
         const int MAX_SIZE = 1024;
 
-        public static RenderTargetBitmap RenderToBitmap(Visual visual, double dpi = 96)
+        public static RenderTargetBitmap RenderToBitmap(Visual visual, Size? renderSize = null, double dpi = 96)
         {
             if (visual == null) throw new ArgumentNullException(nameof(visual));
 
@@ -44,9 +44,11 @@ namespace TestImages
                 visual = wnd.Content as Visual;
                 if (visual == null) return null;
                 // tryShrink = false;
-            }            
-            
-            var s = _PrepareContent(visual, tryShrink);
+            }
+
+            var changes = new _VisualStateRecord(visual);
+
+            var s = _PrepareContent(visual, tryShrink, renderSize);
 
             var fmt = PixelFormats.Pbgra32; // PixelFormats.Default; also works.
 
@@ -55,25 +57,34 @@ namespace TestImages
             rt.Render(visual);
             // rt.Freeze();
 
+            changes.RestoreTo(visual);
+
             return rt;
         }
 
-        private static Size _PrepareContent(Visual visual, bool tryShrink)
+        private static Size _PrepareContent(Visual visual, bool tryShrink, Size? renderSize = null)
         {
             // maximum available size
             var s = new Size(FIT_SIZE, FIT_SIZE);            
 
-            // change the alignments so it shrinks to its minimum size on layout update.
-            if (tryShrink && visual is FrameworkElement fe)
+            if (renderSize.HasValue)
             {
-                fe.HorizontalAlignment = HorizontalAlignment.Left;
-                fe.VerticalAlignment = VerticalAlignment.Top;
+                s = renderSize.Value;
             }
             else
             {
-                // if we can't fit the visual, use a more
-                // reasonable render size
-                s = new Size(MAX_SIZE, MAX_SIZE);
+                // change the alignments so it shrinks to its minimum size on layout update.
+                if (tryShrink && visual is FrameworkElement fe)
+                {
+                    fe.HorizontalAlignment = HorizontalAlignment.Left;
+                    fe.VerticalAlignment = VerticalAlignment.Top;
+                }
+                else
+                {
+                    // if we can't fit the visual, use a more
+                    // reasonable render size
+                    s = new Size(MAX_SIZE, MAX_SIZE);
+                }
             }
 
             if (visual is UIElement uie)
@@ -178,6 +189,34 @@ namespace TestImages
             if (fmt == PixelFormats.Bgra32) return PixelFormats.Bgra32;
 
             return fmt;
+        }
+    }
+
+    // stores visual properties that we need to change so we can restore them.
+    struct _VisualStateRecord
+    {
+        public _VisualStateRecord(Visual visual)
+        {
+            _HAlign = default;
+            _VAlign = default;
+
+            if (visual is FrameworkElement fe)
+            {
+                _HAlign = fe.HorizontalAlignment;
+                _VAlign = fe.VerticalAlignment;
+            }
+        }
+
+        HorizontalAlignment _HAlign;
+        VerticalAlignment _VAlign;
+
+        public void RestoreTo(Visual visual)
+        {
+            if (visual is FrameworkElement fe)
+            {
+                fe.HorizontalAlignment = _HAlign;
+                fe.VerticalAlignment = _VAlign;
+            }
         }
     }
 }

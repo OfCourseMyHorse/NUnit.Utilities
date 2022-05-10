@@ -16,7 +16,7 @@ namespace TestImages
     /// representation or might contain rich metadata, so comparison operations
     /// are performed using an internal bitmap using RGBA32 color space.
     /// </remarks>
-    [System.Diagnostics.DebuggerDisplay("{Width}×{Height}")]
+    [System.Diagnostics.DebuggerDisplay("TestImage: {Width}×{Height}")]
     public abstract partial class TestImage : IEquatable<TestImage>
     {
         #region lifecycle
