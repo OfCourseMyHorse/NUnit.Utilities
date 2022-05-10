@@ -42,7 +42,7 @@ namespace TestImages
         [Test]        
         public void RenderTest()
         {
-            WpfImage
+            var image1 = WpfTestImage
                 .Render(this)
                 .AssertThat(Property.PixelArea, Is.GreaterThan(0))
                 .SaveTo(AttachmentInfo.From("window1.png", "Window1 render") )
@@ -56,7 +56,7 @@ namespace TestImages
             DynamicProperty = "Modified";
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DynamicProperty)));
 
-            WpfImage
+            var image2 = WpfTestImage
                 .Render(this)
                 .AssertThat(Property.PixelArea, Is.GreaterThan(0))
                 .SaveTo(AttachmentInfo.From("window2.png", "Window1 render after changes"))

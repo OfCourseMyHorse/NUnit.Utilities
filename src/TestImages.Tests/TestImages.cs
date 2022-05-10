@@ -16,7 +16,7 @@ namespace TestImages
         {
             TestContext.CurrentContext.AttachFolderBrowserShortcut();
 
-            WpfImage.Load("shannon.png")
+            WpfTestImage.Load("shannon.png")
                 .AssertThat(Property.PixelWidth, Is.EqualTo(512))
                 .AssertThat(Property.PixelHeight, Is.EqualTo(512))
                 .AssertThat(Property.PixelArea, Is.GreaterThan(0))

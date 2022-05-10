@@ -104,6 +104,13 @@ namespace TestImages
 
         public static void SaveTo(BitmapSource bitmap, System.IO.FileInfo finfo)
         {
+            if (finfo == null) throw new ArgumentNullException(nameof(finfo));
+            if (bitmap == null) throw new ArgumentNullException(nameof(bitmap));
+
+            // convert the bitmap if needed
+            var sfmt = GetSerializable(bitmap.Format);
+            if (sfmt != bitmap.Format) bitmap = ConvertBitmap(bitmap, sfmt);
+
             var frame = BitmapFrame.Create(bitmap);
 
             BitmapEncoder encoder = null;
@@ -150,6 +157,27 @@ namespace TestImages
             if (fmt == PixelFormats.Prgba64) return true;
             if (fmt == PixelFormats.Prgba128Float) return true;
             return false;
-        }        
+        }
+
+        public static PixelFormat GetSerializable(this PixelFormat fmt)
+        {
+            if (IsPremultiplied(fmt)) return PixelFormats.Bgra32;
+
+            if (fmt == PixelFormats.Indexed1) return PixelFormats.Gray8;
+            if (fmt == PixelFormats.BlackWhite) return PixelFormats.Gray8;            
+
+            if (fmt == PixelFormats.Indexed2) return PixelFormats.Bgr24;
+            if (fmt == PixelFormats.Indexed4) return PixelFormats.Bgr24;
+            if (fmt == PixelFormats.Indexed8) return PixelFormats.Bgr24;
+            if (fmt == PixelFormats.Bgr101010) return PixelFormats.Bgr24;
+            if (fmt == PixelFormats.Bgr24) return PixelFormats.Bgr24;
+            if (fmt == PixelFormats.Bgr32) return PixelFormats.Bgr24;
+            if (fmt == PixelFormats.Bgr555) return PixelFormats.Bgr24;
+            if (fmt == PixelFormats.Bgr565) return PixelFormats.Bgr24;
+
+            if (fmt == PixelFormats.Bgra32) return PixelFormats.Bgra32;
+
+            return fmt;
+        }
     }
 }

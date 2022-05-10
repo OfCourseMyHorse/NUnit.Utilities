@@ -11,7 +11,8 @@
 
   <PropertyGroup>
     <Description>
-      NUnit utilities that can be used to render a WPF control inside a NUnit test.
+      Image testing framework for WPF.
+      Use along with TestImages.NUnit package.
     </Description>
   </PropertyGroup>
 

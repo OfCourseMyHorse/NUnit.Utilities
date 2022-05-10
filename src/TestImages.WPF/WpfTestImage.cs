@@ -9,11 +9,11 @@ namespace TestImages
     /// <summary>
     /// Represents the rendered bitmap of a WPF <see cref="Visual"/> control.
     /// </summary>    
-    public partial class WpfImage : TestImage
+    public partial class WpfTestImage : TestImage
     {
         #region factory
 
-        public static WpfImage Load(string filePath)
+        public static WpfTestImage Load(string filePath)
         {
             const BitmapCreateOptions createOptions = BitmapCreateOptions.None;
             const BitmapCacheOption cacheOptions = BitmapCacheOption.None; // we're running without an actual WPF context, so we can't cache anything
@@ -21,17 +21,17 @@ namespace TestImages
             if (Uri.TryCreate(filePath,UriKind.RelativeOrAbsolute,out var imageUri))
             {
                 var bmp = BitmapFrame.Create(imageUri, createOptions, cacheOptions);
-                return new WpfImage(bmp);
+                return new WpfTestImage(bmp);
             }
 
             using(var s = System.IO.File.OpenRead(filePath))
             {
                 var bmp = BitmapFrame.Create(s, createOptions, cacheOptions);
-                return new WpfImage(bmp);
+                return new WpfTestImage(bmp);
             }            
         }
 
-        public static WpfImage Render(Visual visual)
+        public static WpfTestImage Render(Visual visual)
         {
             if (Thread.CurrentThread.GetApartmentState() != ApartmentState.STA)
             {
@@ -39,10 +39,10 @@ namespace TestImages
             }
 
             var bmp = WpfRenderFactory.RenderToBitmap(visual);
-            return new WpfImage(bmp);
+            return new WpfTestImage(bmp);
         }        
 
-        private WpfImage(BitmapSource bmp)
+        private WpfTestImage(BitmapSource bmp)
         {
             _Bitmap = WpfRenderFactory.ConvertBitmap(bmp, PixelFormats.Bgra32);
         }

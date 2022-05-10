@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>    
+    <RootNamespace>TestImages</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="..\Version.props" />
+  <Import Project="..\PackageInfo.props" />
+
+  <PropertyGroup>
+    <Description>
+      Image testing framework for SixLabors.ImageSharp.
+      Use along with TestImages.NUnit package.
+    </Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TestImages.Abstractions\TestImages.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SixLabors.ImageSharp" Version="2.1.1" />
+  </ItemGroup>
+
+</Project>

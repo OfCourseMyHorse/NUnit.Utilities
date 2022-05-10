@@ -10,7 +10,8 @@
 
   <PropertyGroup>
     <Description>
-      Defines method extensions for TestImage and NUnit.
+      Image testing framework for NUnit.
+      Use along with TestImages.WPF package.
     </Description>
   </PropertyGroup>
 
