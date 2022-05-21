@@ -35,7 +35,7 @@ namespace NUnit.Framework
 
             // shortcuts
 
-            format = format.Replace("*", "{WorkDirectory}");
+            format = format.Replace("*", "{WorkDirectory}"); // this is the recommended path for tests: https://github.com/nunit/nunit/issues/1768#issuecomment-242454699
             format = format.Replace("?", "{ID}");
 
             // absolute path macross:            

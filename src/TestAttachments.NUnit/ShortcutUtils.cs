@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace NUnit.Framework
 {
+    /// <summary>
+    /// Utility class used to create .url shortcuts
+    /// </summary>
     static class ShortcutUtils
     {
+        // https://stackoverflow.com/questions/18976742/the-url-file-doesnt-load-the-icon
         public static string CreateLink(string localLinkPath, string targetPath)
         {
             if (string.IsNullOrWhiteSpace(localLinkPath)) throw new ArgumentNullException(nameof(localLinkPath));
@@ -44,6 +49,26 @@ namespace NUnit.Framework
             }
 
             return sb.ToString();
+        }
+
+        public static string TryGetSystemPathFromFile(string urlFilePath)
+        {
+            var text = System.IO.File.ReadAllLines(urlFilePath);
+
+            var line = text.FirstOrDefault(item => item.Trim().StartsWith("URL="));
+
+            if (line == null) return null;
+            line = line.Trim();
+            if (line.Length < 5) return null;
+
+            line = line.Substring(4);
+
+            if (Uri.TryCreate(line, UriKind.Absolute, out Uri uri))
+            {
+                return uri.LocalPath;
+            }
+
+            return null;
         }
     }
 }
