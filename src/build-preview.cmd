@@ -7,6 +7,6 @@ set VERSIONSUFFIX=Preview-%TIMEKEY%
 
 echo Building %VERSIONSUFFIX%
 
-dotnet pack -c:Release --version-suffix %VERSIONSUFFIX% /p:Authors=vpenades NUnitUtilities.sln
+dotnet pack -c:Release --version-suffix %VERSIONSUFFIX% /p:Authors=vpenades ..\NUnitUtilities.sln
 
 pause

@@ -3,22 +3,27 @@
 
 ## Overview
 
-When writing tests that depend heavily on file attachments, it is usually convenient
-to organize the files based on the test IDs.
+When writing tests that depend heavily on resources and attachment files, it is usually
+convenient to have an easy way to retrieve the resources, and also to have a way to
+organize the attached files based on the test IDs.
 
-NUnit provides the properties needed to build per test paths, but the rest is up to the
-developer.
+NUnit provides the properties needed to build per test paths in the `TestContext` object,
+but the rest is up to the developer.
 
-This library provides the last mile, so it is much easier to work with file attachments.
+This library provides the last mile, easing the process of working with resources and file attachments.
 
 ## Usage
 
-The library defines the attribute `AttachmentPathFormat(string format)` which can be
-used in assemblies, classes and individual methods.
+The library defines two attributes
 
-the format defines how the test output directory will be created for the given test, by using a number of macros:
+`ResourcePathFormat(string format)`
+`AttachmentPathFormat(string format)`
 
-predefined absolute path macross:
+Which can be used in assemblies, classes and individual methods.
+
+The format defines how the test output directory will be created for the given test, by using a number of macros:
+
+Predefined absolute path macross:
 
 |macro|value|
 |-|-|
@@ -65,6 +70,7 @@ which creates a directory for every test.
 
 using NUnit.Framework;
 
+[assembly: ResourcePathFormat("{TestDirectory}/Resources")]
 [assembly: AttachmentPathFormat("{WorkDirectory}/TestResults/{ID}")]
 
 namespace TestNamespace
@@ -73,16 +79,32 @@ namespace TestNamespace
     public class TestClass
     {
         [Test]
-        public void WriteTextAttachment()
+        public void WriteTextAttachment()        
         {
-            AttachmentInfo.From("hello.txt").WriteText("hello world");            
+            var text = ResourceInfo
+                .From("hello.txt")
+                .ReadAllText();
+
+                text += " - good bye!";
+
+            AttachmentInfo
+                .From("result.txt")
+                .WriteAllText(text);            
         }
 
         [Test]
         [AttachmentPathFormat("{WorkDirectory}/ExplicitMethodResult-{Date}-{Time}")]
         public void WriteExplicitTextAttachment()
         {
-            AttachmentInfo.From("hello.txt").WriteText("hello world");
+            var text = ResourceInfo
+                .From("hello.txt")
+                .ReadAllText();
+
+            text += " - good bye!";
+
+            AttachmentInfo
+                .From("result.txt")
+                .WriteAllText(text);     
         }
     }
 }
