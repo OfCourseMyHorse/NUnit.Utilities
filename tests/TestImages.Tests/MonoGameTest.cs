@@ -13,9 +13,9 @@ using NUnit.Framework;
 
 namespace Monogame
 {    
-    internal sealed class MonoGameTest : GraphicsDeviceTestFixtureBase, IAttachmentWriter
+    internal sealed class MonoGameTest : GraphicsDeviceTestFixtureBase
     {
-        public AttachmentInfo Attach(string fileName, string description = null) => new AttachmentInfo(fileName, description);
+        public AttachmentInfo Attach(string fileName, string description = null) => AttachmentInfo.From(fileName, description);
 
         private SpriteBatch _spriteBatch;
         private Texture2D _texture;        

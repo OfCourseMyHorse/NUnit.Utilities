@@ -6,21 +6,27 @@ using System.Threading.Tasks;
 
 using NUnit.Framework;
 
+[assembly: ResourcePathFormat("{TestDirectory}/Resources")]
 [assembly: AttachmentPathFormat("{WorkDirectory}/AssemblyResults/{ID}")]
+
 
 namespace TestAttachments
 {
     [AttachmentPathFormat("{WorkDirectory}/AttachmentResults/{ID}")]
-    public class Attachments : IAttachmentWriter
+    public class RoundtripTests
     {
-        public AttachmentInfo Attach(string fileName, string desc = null) => new AttachmentInfo(fileName, desc);
-
         [Test]
         public void WriteTextAttachment()
         {
-            var finfo = this
-                .Attach("hello.text")
-                .WriteText("hello world");
+            var text = ResourceInfo
+                .From("text1.txt")
+                .ReadAllText();
+
+            Assert.AreEqual("hello world", text);
+
+            var finfo = AttachmentInfo
+                .From("text1.txt")
+                .WriteAllText(text);
 
             Assert.IsTrue(finfo.Exists);
 
@@ -28,14 +34,21 @@ namespace TestAttachments
         }
 
         [Test]
+        [ResourcePathFormat("{TestDirectory}/Resources/Extended")]
         [AttachmentPathFormat("?")]
         public void WriteHelloWorldAttachment()
         {
             TestContext.CurrentContext.AttachFolderBrowserShortcut();
 
-            var finfo = this
-                .Attach("hello.txt")
-                .WriteText("hello world");
+            var text = ResourceInfo
+                .From("text2.txt")
+                .ReadAllText();
+
+            Assert.AreEqual("extended hello world", text);
+
+            var finfo = AttachmentInfo
+                .From("text2.txt")
+                .WriteAllText(text);
 
             Assert.IsTrue(finfo.Exists);
         }
@@ -44,9 +57,9 @@ namespace TestAttachments
         [AttachmentPathFormat("{WorkDirectory}/ExplicitMethodResult-{Date}")]
         public void WriteExplicitTextAttachment()
         {
-            var finfo = this
-                .Attach("hello.txt")
-                .WriteText("hello world");
+            var finfo = AttachmentInfo
+                .From("hello.txt")
+                .WriteAllText("hello world");
 
             Assert.IsTrue(finfo.Exists);
 
@@ -60,8 +73,8 @@ namespace TestAttachments
         {
             TestContext.CurrentContext.AttachFolderBrowserShortcut();
 
-            var finfo = this
-                .Attach("hello.md")
+            var finfo = AttachmentInfo
+                .From("hello.md")
                 .WriteTextLines("### Hello World", "This is a markdown example.");
 
             Assert.IsTrue(finfo.Exists);

@@ -9,7 +9,7 @@ namespace NUnit.Framework
     /// Represents an attachement file object.
     /// </summary>
     /// <remarks>
-    /// <para>File is only attached after it's been written.</para>
+    /// <para>File is only attached to the test after it's been written.</para>
     /// <para>Use <see cref="AttachmentPathFormatAttribute"/> at the top of the test class to define the attachment directory path</para>    
     /// </remarks>
     [System.Diagnostics.DebuggerDisplay("{File.FullName}")]
@@ -67,16 +67,16 @@ namespace NUnit.Framework
             // we need to create a file so we can attach it.
             // another strategy would be to create a stream derived class that would do the attachment on stream close.            
 
-            return WriteBytes(Array.Empty<Byte>()).Create();
+            return WriteAllBytes(Array.Empty<Byte>()).Create();
         }
 
         public System.IO.FileInfo WriteTextLines(params String[] textLines)
         {
             var text = string.Join("\r\n", textLines.Select(line => line == null ? string.Empty : line) );
-            return WriteText(text);
+            return WriteAllText(text);
         }
 
-        public System.IO.FileInfo WriteText(String textContent)
+        public System.IO.FileInfo WriteAllText(String textContent)
         {
             if (textContent == null) textContent = string.Empty;
 
@@ -88,7 +88,7 @@ namespace NUnit.Framework
             return WriteFile(writeText);
         }
 
-        public System.IO.FileInfo WriteBytes(Byte[] byteContent)
+        public System.IO.FileInfo WriteAllBytes(Byte[] byteContent)
         {
             if (byteContent == null) byteContent = Array.Empty<Byte>();
 
@@ -100,7 +100,7 @@ namespace NUnit.Framework
             return WriteFile(writeBytes);
         }
 
-        public System.IO.FileInfo WriteBytes(ArraySegment<Byte> byteContent)
+        public System.IO.FileInfo WriteAllBytes(ArraySegment<Byte> byteContent)
         {
             if (byteContent.Array == null) byteContent = new ArraySegment<byte>(Array.Empty<Byte>());
 

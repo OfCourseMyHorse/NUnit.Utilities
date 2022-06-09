@@ -10,7 +10,8 @@
   <PropertyGroup>
     <Description>
       Defines extensions and attributes to handle file attachments.
-    </Description>    
+    </Description>
+    <RootNamespace>NUnit.Framework</RootNamespace>    
   </PropertyGroup>
 
   <ItemGroup>

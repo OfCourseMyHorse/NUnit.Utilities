@@ -51,7 +51,17 @@ namespace NUnit.Framework
             return sb.ToString();
         }
 
-        public static string TryGetSystemPathFromFile(string urlFilePath)
+        public static string TryGetSystemPathFromFile(string urlFilePath, bool recursive = false)
+        {
+            while (true)
+            {
+                urlFilePath = _TryGetSystemPathFromFile(urlFilePath);
+                if (!recursive) return urlFilePath;
+                if (!urlFilePath.ToLower().EndsWith(".url")) return urlFilePath;
+            }
+        }
+
+        private static string _TryGetSystemPathFromFile(string urlFilePath)
         {
             var text = System.IO.File.ReadAllLines(urlFilePath);
 
@@ -61,7 +71,9 @@ namespace NUnit.Framework
             line = line.Trim();
             if (line.Length < 5) return null;
 
-            line = line.Substring(4);
+            line = line.Substring(4); // remove "URL="
+
+            line = line.Trim();
 
             if (Uri.TryCreate(line, UriKind.Absolute, out Uri uri))
             {

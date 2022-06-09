@@ -7,16 +7,36 @@ using NUnit.Framework;
 
 namespace NUnit.Framework
 {
-    static class AttachmentPathFormatting
+    static class PathFormatting
     {
-        #region API
+        #region constants
+
+        // these are the recommended path for tests:
+        // https://github.com/nunit/nunit/issues/1768#issuecomment-242454699
+
+        private const string DefaultResourceFormat = "{TestDirectory}";
+        private const string DefaultAttachmentFormat = "{WorkDirectory}";
+
+        #endregion
+
+        #region API        
 
         public static string FindAttachmentPathFormat(this TestContext context)
         {
-            var properties = context._FindAttachmentAttributeProperties();
-            if (properties == null) return "{WorkDirectory}";
+            var properties = PathFormatAttribute._FindProperties<AttachmentPathFormatAttribute>(context, "AttachmentPathFormat");
 
-            return properties.Get("AttachmentPathFormat") as string;
+            return properties == null
+                ? DefaultAttachmentFormat
+                : properties.Get("AttachmentPathFormat") as string;
+        }
+
+        public static string FindResourcesPathFormat(this TestContext context)
+        {
+            var properties = PathFormatAttribute._FindProperties<ResourcePathFormatAttribute>(context, "ResourcePathFormat");
+
+            return properties == null
+                ? DefaultResourceFormat
+                : properties.Get("ResourcePathFormat") as string;
         }
 
         /// <summary>
@@ -25,19 +45,44 @@ namespace NUnit.Framework
         /// <param name="format">The format string taken from <see cref="AttachmentPathFormatAttribute"/></param>
         /// <param name="context">The current test context</param>
         /// <returns></returns>
-        public static string FormatPath(this string format, TestContext context)
+        public static string FormatAttachmentPath(this string format, TestContext context)
         {
             // defaults
 
-            if (string.IsNullOrWhiteSpace(format)) format = "{WorkDirectory}";
+            if (string.IsNullOrWhiteSpace(format)) format = DefaultAttachmentFormat;
 
             if (format == "?") format = "*/?";
 
             // shortcuts
 
-            format = format.Replace("*", "{WorkDirectory}"); // this is the recommended path for tests: https://github.com/nunit/nunit/issues/1768#issuecomment-242454699
+            // this is the recommended path for tests: https://github.com/nunit/nunit/issues/1768#issuecomment-242454699
+            format = format.Replace("*", DefaultAttachmentFormat);
             format = format.Replace("?", "{ID}");
 
+            return _FormatPath(format, context);
+        }
+
+        /// <summary>
+        /// formats the current path with.
+        /// </summary>
+        /// <param name="format">The format string taken from <see cref="ResourcePathFormatAttribute"/></param>
+        /// <param name="context">The current test context</param>
+        /// <returns></returns>
+        public static string FormatResourcePath(this string format, TestContext context)
+        {
+            // defaults
+
+            if (string.IsNullOrWhiteSpace(format)) format = DefaultResourceFormat;
+
+            // shortcuts
+            
+            format = format.Replace("*", DefaultResourceFormat);
+
+            return _FormatPath(format, context);
+        }
+
+        private static string _FormatPath(string format, TestContext context)
+        {
             // absolute path macross:            
 
             format = format.Replace("{WorkDirectory}", context.WorkDirectory);
@@ -58,7 +103,7 @@ namespace NUnit.Framework
             format = format.Replace("{MethodName}", context.Test.MethodName);
 
             format = format.Replace("{CurrentRepeatCount}", context.CurrentRepeatCount.ToString());
-            format = format.Replace("{WorkerId}", context.WorkerId);            
+            format = format.Replace("{WorkerId}", context.WorkerId);
 
             format = format.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
 
@@ -68,45 +113,6 @@ namespace NUnit.Framework
         #endregion
 
         #region internal
-
-        private static Type _GetCurrentClassInstanceType()
-        {
-            // this is a hack, but it's the only way to retrieve class level information from the TestContext.
-            
-            // see https://github.com/nunit/nunit/issues/548
-
-            var testObject = NUnit.Framework.Internal.TestExecutionContext.CurrentContext.TestObject;
-            return testObject.GetType();
-        }
-
-        private static AttachmentPathFormatAttribute _TryGetAttachmentAttribute(this System.Reflection.ICustomAttributeProvider t)
-        {
-            return t.GetCustomAttributes(typeof(AttachmentPathFormatAttribute), true)
-                .OfType<AttachmentPathFormatAttribute>()
-                .FirstOrDefault();
-        }
-
-        private static TestContext.PropertyBagAdapter _FindAttachmentAttributeProperties(this TestContext context)
-        {
-            // look for attribute in current method:
-
-            if (context.Test.Properties.ContainsKey("AttachmentPathFormat")) return context.Test.Properties;
-            
-            // look for attribute in current class:
-
-            var instanceType = _GetCurrentClassInstanceType();            
-
-            var attribute = instanceType._TryGetAttachmentAttribute();
-            if (attribute != null) return new TestContext.PropertyBagAdapter(attribute.Properties);
-
-            // look for attribute in current assembly:
-
-            attribute = instanceType.Assembly._TryGetAttachmentAttribute();
-            if (attribute != null) return new TestContext.PropertyBagAdapter(attribute.Properties);
-
-            return null;
-        }        
-
         private static void _GuardIsValidRelativePath(this string format)
         {
             if (format == null) throw new ArgumentNullException(nameof(format));

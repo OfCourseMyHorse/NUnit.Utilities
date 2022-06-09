@@ -29,11 +29,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TestAttachments.NUnit\TestAttachments.NUnit.csproj" />
-    <ProjectReference Include="..\MonoGame.NUnitRunner\MonoGame.NUnitRunner.csproj" />
-    <ProjectReference Include="..\TestImages.ImageSharp\TestImages.ImageSharp.csproj" />
-    <ProjectReference Include="..\TestImages.NUnit\TestImages.NUnit.csproj" />
-    <ProjectReference Include="..\TestImages.WPF\TestImages.WPF.csproj" />
+    <ProjectReference Include="..\..\src\TestAttachments.NUnit\TestAttachments.NUnit.csproj" />
+    <ProjectReference Include="..\..\src\MonoGame.NUnitRunner\MonoGame.NUnitRunner.csproj" />
+    <ProjectReference Include="..\..\src\TestImages.ImageSharp\TestImages.ImageSharp.csproj" />
+    <ProjectReference Include="..\..\src\TestImages.NUnit\TestImages.NUnit.csproj" />
+    <ProjectReference Include="..\..\src\TestImages.WPF\TestImages.WPF.csproj" />
   </ItemGroup>
 
 </Project>
