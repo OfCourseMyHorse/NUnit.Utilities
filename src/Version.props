@@ -13,6 +13,10 @@
     <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    
+    <!-- remove absolute paths from source code embedded into PDBs -->
+    <EmbedAllSources>true</EmbedAllSources>
+    <PathMap>$(MSBuildProjectDirectory)=X:\sources</PathMap>
   </PropertyGroup>
 
   <!-- strong name signing -->
