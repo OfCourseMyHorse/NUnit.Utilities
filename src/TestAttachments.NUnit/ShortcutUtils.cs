@@ -8,6 +8,12 @@ namespace NUnit.Framework
     /// <summary>
     /// Utility class used to create .url shortcuts
     /// </summary>
+    /// <remarks>
+    /// <see href="https://docs.microsoft.com/en-us/windows/win32/lwef/internet-shortcuts"/>
+    /// <see href="https://github.com/tpn/winsdk-10/blob/9b69fd26ac0c7d0b83d378dba01080e93349c2ed/Include/10.0.10240.0/um/ShlObj.h#L266"/>
+    /// <see href="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-shllink/c3376b21-0931-45e4-b2fc-a48ac0e60d15"/>
+    /// <see href="https://stackoverflow.com/questions/34602411/internet-shortcut-idlist-value-decoding"/>
+    /// </remarks>
     static class ShortcutUtils
     {
         // https://stackoverflow.com/questions/18976742/the-url-file-doesnt-load-the-icon

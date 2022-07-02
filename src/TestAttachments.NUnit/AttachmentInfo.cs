@@ -46,10 +46,16 @@ namespace NUnit.Framework
         /// <param name="ainfo">A <see cref="AttachmentInfo"/> instance.</param>
         public static implicit operator Action<Action<System.IO.FileInfo>>(AttachmentInfo ainfo)
         {
-            return action => ainfo.WriteFile(action);
+            return action => ainfo.WriteObject(action);
         }
 
+        [Obsolete("Use WriteObject", true)]
         public System.IO.FileInfo WriteFile(Action<System.IO.FileInfo> writeAction)
+        {
+            return WriteObject(writeAction);
+        }
+
+        public System.IO.FileInfo WriteObject(Action<System.IO.FileInfo> writeAction)
         {
             if (writeAction == null) throw new ArgumentNullException(nameof(writeAction));
 
@@ -85,7 +91,7 @@ namespace NUnit.Framework
                 System.IO.File.WriteAllText(finfo.FullName, textContent);
             }
 
-            return WriteFile(writeText);
+            return WriteObject(writeText);
         }
 
         public System.IO.FileInfo WriteAllBytes(Byte[] byteContent)
@@ -97,7 +103,7 @@ namespace NUnit.Framework
                 System.IO.File.WriteAllBytes(finfo.FullName, byteContent);
             }
 
-            return WriteFile(writeBytes);
+            return WriteObject(writeBytes);
         }
 
         public System.IO.FileInfo WriteAllBytes(ArraySegment<Byte> byteContent)
@@ -112,7 +118,7 @@ namespace NUnit.Framework
                 }                
             }
 
-            return WriteFile(writeBytes);
+            return WriteObject(writeBytes);
         }
 
         #endregion
