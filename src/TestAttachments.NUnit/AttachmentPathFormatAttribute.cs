@@ -19,6 +19,19 @@ namespace NUnit.Framework
         /// <param name="format">Recommended patterns are: "?" , "*/?" or "*/yourClassName/?" </param>
         public AttachmentPathFormatAttribute(string format) : base(format) { }
 
+        /// <summary>
+        /// Declares a directory formatter to write test attachments.
+        /// </summary>
+        /// <param name="format">Recommended patterns are: "?" , "*/?" or "*/yourClassName/?" </param>
+        /// <param name="attachShowDirectoryLink">true to automatically add a "show directory" attachment for every test.</param>
+        public AttachmentPathFormatAttribute(string format, bool attachShowDirectoryLink) : base(format)
+        {
+            if (attachShowDirectoryLink)
+            {
+                this.Properties.Add("AttachShowDirectoryLink", true);
+            }
+        }
+
         #endregion
     }
 }

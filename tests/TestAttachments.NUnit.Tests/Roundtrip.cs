@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 
 [assembly: ResourcePathFormat("{TestDirectory}/Resources")]
-[assembly: AttachmentPathFormat("{WorkDirectory}/AssemblyResults/{ID}")]
+[assembly: AttachmentPathFormat("{WorkDirectory}/AssemblyResults/{ID}", true)]
 
 
 namespace TestAttachments
 {
-    [AttachmentPathFormat("{WorkDirectory}/AttachmentResults/{ID}")]
+    [AttachmentPathFormat("{WorkDirectory}/AttachmentResults/{ID}", true)]
     public class RoundtripTests
     {
         [Test]
@@ -35,11 +35,9 @@ namespace TestAttachments
 
         [Test]
         [ResourcePathFormat("{TestDirectory}/Resources/Extended")]
-        [AttachmentPathFormat("?")]
+        [AttachmentPathFormat("?", true)]
         public void WriteHelloWorldAttachment()
         {
-            TestContext.CurrentContext.AttachFolderBrowserShortcut();
-
             var text = ResourceInfo
                 .From("text2.txt")
                 .ReadAllText();
@@ -54,7 +52,7 @@ namespace TestAttachments
         }
 
         [Test]
-        [AttachmentPathFormat("{WorkDirectory}/ExplicitMethodResult-{Date}")]
+        [AttachmentPathFormat("{WorkDirectory}/ExplicitMethodResult-{Date}", true)]
         public void WriteExplicitTextAttachment()
         {
             var finfo = AttachmentInfo
@@ -71,8 +69,6 @@ namespace TestAttachments
         [Test]        
         public void WriteMarkDownAttachment()
         {
-            TestContext.CurrentContext.AttachFolderBrowserShortcut();
-
             var finfo = AttachmentInfo
                 .From("hello.md")
                 .WriteTextLines("### Hello World", "This is a markdown example.");

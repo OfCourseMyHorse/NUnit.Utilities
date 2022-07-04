@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
   </ItemGroup>
 
 </Project>

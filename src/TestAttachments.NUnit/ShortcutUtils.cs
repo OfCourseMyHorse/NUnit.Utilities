@@ -13,6 +13,8 @@ namespace NUnit.Framework
     /// <see href="https://github.com/tpn/winsdk-10/blob/9b69fd26ac0c7d0b83d378dba01080e93349c2ed/Include/10.0.10240.0/um/ShlObj.h#L266"/>
     /// <see href="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-shllink/c3376b21-0931-45e4-b2fc-a48ac0e60d15"/>
     /// <see href="https://stackoverflow.com/questions/34602411/internet-shortcut-idlist-value-decoding"/>
+    /// 
+    /// <see href="https://github.com/securifybv/ShellLink"/> is able to create shell links, but it really doesn't work.
     /// </remarks>
     static class ShortcutUtils
     {
@@ -22,14 +24,44 @@ namespace NUnit.Framework
             if (string.IsNullOrWhiteSpace(localLinkPath)) throw new ArgumentNullException(nameof(localLinkPath));
             if (string.IsNullOrWhiteSpace(targetPath)) throw new ArgumentNullException(nameof(targetPath));
 
-            var content = CreateLinkContent(targetPath);
+            if (localLinkPath.EndsWith(".url", StringComparison.OrdinalIgnoreCase))
+            {
+                var content = CreateLinkContent(targetPath);
 
-            localLinkPath = System.IO.Path.ChangeExtension(localLinkPath, ".url");
+                System.IO.File.WriteAllText(localLinkPath, content);
 
-            System.IO.File.WriteAllText(localLinkPath, content);
+                return localLinkPath;
+            }
 
-            return localLinkPath;
-        }
+            if (localLinkPath.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase))
+            {
+                byte[] content = null;
+
+                if (System.IO.Directory.Exists(targetPath))
+                {
+                    content = new ShellLink.Shortcut()
+                    {
+                        LinkTargetIDList = new ShellLink.Structures.LinkTargetIDList()
+                        {
+                            Path = targetPath
+                        }
+                    }.GetBytes();
+                }
+
+                if (System.IO.File.Exists(targetPath))
+                {
+                    content = ShellLink.Shortcut.CreateShortcut(targetPath).GetBytes();
+                }
+
+                if (content == null) throw new ArgumentException("target path must be an existing file or directory", nameof(targetPath));
+
+                System.IO.File.WriteAllBytes(localLinkPath, content);
+
+                return localLinkPath;
+            }
+
+            throw new ArgumentException("extension must be .url or .lnk", nameof(localLinkPath));
+        }        
 
         public static string CreateLinkContent(string targetPath)
         {

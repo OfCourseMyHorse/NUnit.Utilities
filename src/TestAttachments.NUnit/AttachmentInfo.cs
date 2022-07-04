@@ -23,7 +23,9 @@ namespace NUnit.Framework
             : this(TestContext.CurrentContext, fileName, description) { }
 
         public AttachmentInfo(TestContext context, string fileName, string description = null)
-        {            
+        {
+            _WriteShowDirectoryLink = context.FindAttachmentShowDirectoryLinkEnabled();
+
             File = context.GetAttachmentFileInfo(fileName);
             Description = description;
         }
@@ -32,8 +34,10 @@ namespace NUnit.Framework
 
         #region data
 
+        private bool _WriteShowDirectoryLink;
+
         public System.IO.FileInfo File { get; }
-        public string Description { get; set; }
+        public string Description { get; set; }        
 
         #endregion
 
@@ -59,11 +63,18 @@ namespace NUnit.Framework
         {
             if (writeAction == null) throw new ArgumentNullException(nameof(writeAction));
 
+            if (_WriteShowDirectoryLink)
+            {
+                var ainfo = From("📂 Show Directory.lnk");
+                ainfo._WriteShowDirectoryLink = false; // prevent reentrancy
+                ainfo.WriteLink(File.Directory.FullName);
+            }
+
             File.Directory.Create();
 
             writeAction(File);
 
-            if (File.Exists) TestContext.AddTestAttachment(File.FullName, Description);
+            if (File.Exists) TestContext.AddTestAttachment(File.FullName, Description);            
 
             return File;
         }
@@ -119,6 +130,11 @@ namespace NUnit.Framework
             }
 
             return WriteObject(writeBytes);
+        }
+
+        public System.IO.FileInfo WriteLink(string fileOrDirectoryPath)
+        {
+            return this.WriteObject(f => ShortcutUtils.CreateLink(f.FullName, fileOrDirectoryPath));
         }
 
         #endregion

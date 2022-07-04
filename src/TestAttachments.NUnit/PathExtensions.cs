@@ -96,15 +96,15 @@ namespace NUnit.Framework
         #region API - Shortcuts
 
         /// <summary>
-        /// Attaches a shortcut .url link pointing to the current test directory.
+        /// Attaches a shortcut link pointing to the current test directory.
         /// </summary>        
         public static void AttachFolderBrowserShortcut(this TestContext context)
         {
             var tdir = context.GetAttachmentDirectoryInfo();
 
-            var urlContent = ShortcutUtils.CreateLinkContent(tdir.FullName);
+            var t = new AttachmentInfo(context, "📂 Show Directory.lnk");
 
-            new AttachmentInfo(context, "📂 Show Directory.url").WriteAllText(urlContent);
+            t.WriteObject(f=> ShortcutUtils.CreateLink(f.FullName, tdir.FullName) );
         }
 
         #endregion

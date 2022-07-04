@@ -19,7 +19,14 @@ namespace NUnit.Framework
 
         #endregion
 
-        #region API        
+        #region API
+
+        public static bool FindAttachmentShowDirectoryLinkEnabled(this TestContext context)
+        {
+            var properties = PathFormatAttribute._FindProperties<AttachmentPathFormatAttribute>(context, "AttachShowDirectoryLink");
+
+            return properties != null && properties.Get("AttachShowDirectoryLink") is bool value && value;
+        }
 
         public static string FindAttachmentPathFormat(this TestContext context)
         {
