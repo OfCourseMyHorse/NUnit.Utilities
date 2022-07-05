@@ -112,6 +112,8 @@ namespace NUnit.Framework
             format = format.Replace("{CurrentRepeatCount}", context.CurrentRepeatCount.ToString());
             format = format.Replace("{WorkerId}", context.WorkerId);
 
+            format = format.Replace("{Category}", context.GetCurrentCategory());
+
             format = format.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
 
             return format;
@@ -120,6 +122,14 @@ namespace NUnit.Framework
         #endregion
 
         #region internal
+
+        private static string GetCurrentCategory(this TestContext context)
+        {
+            return context.Test.Properties.ContainsKey("Category")
+                ? (string)context.Test.Properties.Get("Category")
+                : "Default";
+        }
+
         private static void _GuardIsValidRelativePath(this string format)
         {
             if (format == null) throw new ArgumentNullException(nameof(format));

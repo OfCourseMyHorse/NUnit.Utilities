@@ -50,7 +50,7 @@ namespace NUnit.Framework
         /// <param name="format">Recommended patterns are: "?" , "*/?" or "*/yourClassName/?" </param>
         public PathFormatAttribute(string format) : base(format) { }
 
-        #endregion
+        #endregion        
 
         #region API
 
@@ -77,7 +77,7 @@ namespace NUnit.Framework
         }
 
         private static T _TryGetFrom<T>(System.Reflection.ICustomAttributeProvider t)
-            where T : PathFormatAttribute
+            where T : Attribute
         {
             return t.GetCustomAttributes(typeof(T), true)
                 .OfType<T>()
