@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace TestAttachments
 {
-    [ResourcePathFormat("*/Resources")]
+    [ResourcePathFormat("Resources")]
     internal class ShortcutTests
     {
         [Test]

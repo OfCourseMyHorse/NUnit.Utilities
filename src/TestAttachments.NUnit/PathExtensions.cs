@@ -104,7 +104,7 @@ namespace NUnit.Framework
 
             var t = new AttachmentInfo(context, "📂 Show Directory.lnk");
 
-            t.WriteObject(f=> ShortcutUtils.CreateLink(f.FullName, tdir.FullName) );
+            t.WriteObjectEx(f=> ShortcutUtils.CreateLink(f.FullName, tdir.FullName) );
         }
 
         #endregion

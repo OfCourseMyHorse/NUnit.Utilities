@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -37,7 +38,30 @@ namespace NUnit.Framework
         private bool _WriteShowDirectoryLink;
 
         public System.IO.FileInfo File { get; }
-        public string Description { get; set; }        
+        public string Description { get; set; }
+
+        #endregion
+
+        #region core
+
+        private void _BeginWriteAttachment()
+        {
+            if (_WriteShowDirectoryLink)
+            {
+                var ainfo = From("📂 Show Directory.lnk");
+                ainfo._WriteShowDirectoryLink = false; // prevent reentrancy
+                ainfo.WriteLink(File.Directory.FullName);
+            }
+
+            File.Directory.Create();
+        }
+
+        private System.IO.FileInfo _EndWriteAttachment()
+        {
+            if (File.Exists) TestContext.AddTestAttachment(File.FullName, Description);
+
+            return File;
+        }
 
         #endregion
 
@@ -50,33 +74,43 @@ namespace NUnit.Framework
         /// <param name="ainfo">A <see cref="AttachmentInfo"/> instance.</param>
         public static implicit operator Action<Action<System.IO.FileInfo>>(AttachmentInfo ainfo)
         {
-            return action => ainfo.WriteObject(action);
+            return action => ainfo.WriteObjectEx(action);
         }
 
-        [Obsolete("Use WriteObject", true)]
+        [Obsolete("Use WriteObject or WriteObjectEx", true)]
         public System.IO.FileInfo WriteFile(Action<System.IO.FileInfo> writeAction)
         {
-            return WriteObject(writeAction);
+            return WriteObjectEx(writeAction);
         }
 
-        public System.IO.FileInfo WriteObject(Action<System.IO.FileInfo> writeAction)
+        public System.IO.FileInfo WriteObject(Action<string> writeAction)
+        {
+            return WriteObjectEx(f => writeAction(f.FullName));
+        }
+
+        public System.IO.FileInfo WriteObjectEx(Action<System.IO.FileInfo> writeAction)
         {
             if (writeAction == null) throw new ArgumentNullException(nameof(writeAction));
 
-            if (_WriteShowDirectoryLink)
+            _BeginWriteAttachment();
+            writeAction(File);
+            return _EndWriteAttachment();
+        }
+
+        public System.IO.FileInfo WriteAllBytes(ReadOnlySpan<Byte> byteContent)
+        {
+            _BeginWriteAttachment();
+
+            using (var stream = File.Create())
             {
-                var ainfo = From("📂 Show Directory.lnk");
-                ainfo._WriteShowDirectoryLink = false; // prevent reentrancy
-                ainfo.WriteLink(File.Directory.FullName);
+                #if NETSTANDARD2_0
+                foreach (var b in byteContent) stream.WriteByte(b);
+                #else
+                stream.Write(byteContent);
+                #endif
             }
 
-            File.Directory.Create();
-
-            writeAction(File);
-
-            if (File.Exists) TestContext.AddTestAttachment(File.FullName, Description);            
-
-            return File;
+            return _EndWriteAttachment();
         }
 
         public System.IO.Stream CreateStream()
@@ -102,39 +136,12 @@ namespace NUnit.Framework
                 System.IO.File.WriteAllText(finfo.FullName, textContent);
             }
 
-            return WriteObject(writeText);
-        }
-
-        public System.IO.FileInfo WriteAllBytes(Byte[] byteContent)
-        {
-            if (byteContent == null) byteContent = Array.Empty<Byte>();
-
-            void writeBytes(System.IO.FileInfo finfo)
-            {
-                System.IO.File.WriteAllBytes(finfo.FullName, byteContent);
-            }
-
-            return WriteObject(writeBytes);
-        }
-
-        public System.IO.FileInfo WriteAllBytes(ArraySegment<Byte> byteContent)
-        {
-            if (byteContent.Array == null) byteContent = new ArraySegment<byte>(Array.Empty<Byte>());
-
-            void writeBytes(System.IO.FileInfo finfo)
-            {
-                using(var stream = finfo.Create())
-                {
-                    stream.Write(byteContent.Array,byteContent.Offset,byteContent.Count);
-                }                
-            }
-
-            return WriteObject(writeBytes);
-        }
+            return WriteObjectEx(writeText);
+        }        
 
         public System.IO.FileInfo WriteLink(string fileOrDirectoryPath)
         {
-            return this.WriteObject(f => ShortcutUtils.CreateLink(f.FullName, fileOrDirectoryPath));
+            return this.WriteObjectEx(f => ShortcutUtils.CreateLink(f.FullName, fileOrDirectoryPath));
         }
 
         #endregion

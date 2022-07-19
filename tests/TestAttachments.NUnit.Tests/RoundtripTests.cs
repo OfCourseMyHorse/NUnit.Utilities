@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using NUnit.Framework;
 
-[assembly: ResourcePathFormat("{TestDirectory}/Resources")]
+[assembly: ResourcePathFormat("Resources")]
 [assembly: AttachmentPathFormat("{WorkDirectory}/AssemblyResults/{ID}", true)]
 
 

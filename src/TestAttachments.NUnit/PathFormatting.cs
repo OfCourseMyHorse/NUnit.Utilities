@@ -66,7 +66,7 @@ namespace NUnit.Framework
             format = format.Replace("*", DefaultAttachmentFormat);
             format = format.Replace("?", "{ID}");
 
-            return _FormatPath(format, context);
+            return _FormatPath(format, context, context.WorkDirectory);
         }
 
         /// <summary>
@@ -85,19 +85,38 @@ namespace NUnit.Framework
             
             format = format.Replace("*", DefaultResourceFormat);
 
-            return _FormatPath(format, context);
+            return _FormatPath(format, context, context.TestDirectory);
         }
 
-        private static string _FormatPath(string format, TestContext context)
+        private static string _FormatPath(string format, TestContext context, string defaultBasePath)
         {
-            // absolute path macross:            
+            // // TODO: support {<<<} and {>>>} as macro for paths search
 
-            format = format.Replace("{WorkDirectory}", context.WorkDirectory);
-            format = format.Replace("{TestDirectory}", context.TestDirectory);
-            format = format.Replace("{TempDirectory}", System.IO.Path.GetTempPath());
+            //--------------------------------------------------------- absolute path macros (format can only have one of those):
+
+            var slnDir = _GetFirstDirectoryWith(context.TestDirectory, finfo => finfo.Extension.ToLower().EndsWith("sln"));
+            if (slnDir != null)
+            {
+                const string SLNDIRMACRO = "{SolutionDirectory}";
+
+                var idx = format.IndexOf(SLNDIRMACRO);
+                if (idx > 0) format = format.Substring(idx + SLNDIRMACRO.Length);
+
+                format = slnDir + format;
+            }
+            
             format = format.Replace("{CurrentDirectory}", Environment.CurrentDirectory);
 
-            // relative path macross:
+            // input paths
+            format = format.Replace("{TestDirectory}", context.TestDirectory);
+            format = format.Replace("{AssemblyDirectory}", System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+
+            // output paths
+            format = format.Replace("{WorkDirectory}", context.WorkDirectory);
+            format = format.Replace("{TempDirectory}", System.IO.Path.GetTempPath());
+
+
+            //--------------------------------------------------------- relative path macros:
 
             format = format.Replace("{Date}", DateTime.Now.ToString("yyyyMMdd"));
             format = format.Replace("{Time}", DateTime.Now.ToString("hhmmss"));
@@ -114,7 +133,15 @@ namespace NUnit.Framework
 
             format = format.Replace("{Category}", context.GetCurrentCategory());
 
+
+            //--------------------------------------------------------- path sanitization:
+
             format = format.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
+
+            if (defaultBasePath != null && !System.IO.Path.IsPathRooted(format))
+            {
+                format = System.IO.Path.Combine(defaultBasePath, format);
+            }            
 
             return format;
         }
@@ -128,6 +155,21 @@ namespace NUnit.Framework
             return context.Test.Properties.ContainsKey("Category")
                 ? (string)context.Test.Properties.Get("Category")
                 : "Default";
+        }
+
+        private static string _GetFirstDirectoryWith(string fromDirectoryPath, Predicate<System.IO.FileInfo> predicate)
+        {
+            var dir = new System.IO.DirectoryInfo(fromDirectoryPath);
+            if (!dir.Exists) return null;
+
+            while(dir != null)
+            {
+                if (dir.EnumerateFiles().Any(f=> predicate(f))) return dir.FullName;
+
+                dir = dir.Parent;
+            }
+
+            return null;
         }
 
         private static void _GuardIsValidRelativePath(this string format)
