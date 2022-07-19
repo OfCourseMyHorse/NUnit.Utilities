@@ -3,10 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
     <RootNamespace>NUnit.Framework</RootNamespace>
-  </PropertyGroup>
-
-  <Import Project="..\Version.props" />
-  <Import Project="..\PackageInfo.props" />
+  </PropertyGroup>  
 
   <PropertyGroup>
     <Description>

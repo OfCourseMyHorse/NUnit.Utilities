@@ -6,13 +6,12 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <Import Project="..\Version.props" />
-  <Import Project="..\PackageInfo.props" />
   <ItemGroup>    
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
     <PackageReference Include="StbImageSharp" Version="2.27.11" />
     <PackageReference Include="StbImageWriteSharp" Version="1.16.7" />
   </ItemGroup>
+  
   <ItemGroup>    
     <ProjectReference Include="..\TestImages.Abstractions\TestImages.Abstractions.csproj" />    
     <ProjectReference Include="..\TestAttachments.NUnit\TestAttachments.NUnit.csproj" />

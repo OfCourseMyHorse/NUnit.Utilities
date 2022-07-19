@@ -100,9 +100,11 @@ namespace NUnit.Framework
                 const string SLNDIRMACRO = "{SolutionDirectory}";
 
                 var idx = format.IndexOf(SLNDIRMACRO);
-                if (idx > 0) format = format.Substring(idx + SLNDIRMACRO.Length);
-
-                format = slnDir + format;
+                if (idx >= 0)
+                {
+                    format = format.Substring(idx + SLNDIRMACRO.Length);
+                    format = slnDir + format;
+                }
             }
             
             format = format.Replace("{CurrentDirectory}", Environment.CurrentDirectory);

@@ -9,4 +9,8 @@ echo Building %VERSIONSUFFIX%
 
 dotnet pack -c:Release --version-suffix %VERSIONSUFFIX% /p:Authors=vpenades ..\NUnitUtilities.sln
 
+md bin
+
+for /r %%i in (*.*nupkg) do move %%i bin
+
 pause

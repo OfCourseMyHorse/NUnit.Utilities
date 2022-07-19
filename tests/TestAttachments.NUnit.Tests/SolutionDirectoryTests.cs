@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using NUnit.Framework;
 
-namespace TestAttachments.NUnit.Tests
+namespace TestAttachments
 {
     [ResourcePathFormat("{SolutionDirectory}/Tests/ExtraResources")]
     [AttachmentPathFormat("{SolutionDirectory}/Tests/TestResults/{ID}", true)]

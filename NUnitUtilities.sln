@@ -3,6 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.32002.185
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{91DBCC8D-A083-4D22-AEE5-345B09553EED}"
+	ProjectSection(SolutionItems) = preProject
+		src\Directory.Build.props = src\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestImages.Abstractions", "src\TestImages.Abstractions\TestImages.Abstractions.csproj", "{90196296-025E-4689-BDC0-BE83AE8D4676}"
 EndProject
@@ -18,8 +21,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		src\.editorconfig = src\.editorconfig
 		src\build-preview.cmd = src\build-preview.cmd
-		src\PackageInfo.props = src\PackageInfo.props
-		src\Version.props = src\Version.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAttachments.NUnit.Tests", "tests\TestAttachments.NUnit.Tests\TestAttachments.NUnit.Tests.csproj", "{ADE5A026-47E4-48C5-A1A9-E17DA7C7E2D3}"

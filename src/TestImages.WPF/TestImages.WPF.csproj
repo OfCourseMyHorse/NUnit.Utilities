@@ -4,10 +4,7 @@
     <TargetFrameworks>net461;netcoreapp3.1;net5.0-windows;net6.0-windows</TargetFrameworks>
     <UseWPF>true</UseWPF>        
     <RootNamespace>TestImages</RootNamespace>
-  </PropertyGroup>
-
-  <Import Project="..\Version.props" />
-  <Import Project="..\PackageInfo.props" />
+  </PropertyGroup>  
 
   <PropertyGroup>
     <Description>
