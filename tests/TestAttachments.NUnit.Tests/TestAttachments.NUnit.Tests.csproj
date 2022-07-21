@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net471;net6.0</TargetFrameworks>
@@ -25,8 +25,19 @@
     </PackageReference>    
   </ItemGroup>
 
-  <ItemGroup>
+  <!--
+  <PropertyGroup>
+    <TestNugetPackageVersion>3.0.0-Preview-20220721-1621</TestNugetPackageVersion>
+  </PropertyGroup>
+  -->
+  
+  <ItemGroup Condition=" '$(TestNugetPackageVersion)' == '' ">
     <ProjectReference Include="..\..\src\TestAttachments.NUnit\TestAttachments.NUnit.csproj" />
+  </ItemGroup>
+  
+
+  <ItemGroup Condition=" '$(TestNugetPackageVersion)' != '' ">
+    <PackageReference Include="TestAttachments.NUnit" Version="$(TestNugetPackageVersion)" />
   </ItemGroup>
 
 </Project>
