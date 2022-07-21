@@ -156,10 +156,9 @@ namespace NUnit.Framework
         {
             // in Net471 unit testing, GetEntryAssembly returns null.
 
-            var assembly = System.Reflection.Assembly.GetEntryAssembly();
-            if (assembly == null) assembly = System.Reflection.Assembly.GetExecutingAssembly();
-
-            var location = assembly.Location;
+            var assembly = System.Reflection.Assembly.GetEntryAssembly() ?? System.Reflection.Assembly.GetExecutingAssembly();
+            
+            var location = assembly?.Location;
             if (location == null) return null;
 
             return System.IO.Path.GetDirectoryName(location);
