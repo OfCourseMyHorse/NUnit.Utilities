@@ -111,7 +111,7 @@ namespace NUnit.Framework
 
             // input paths
             format = format.Replace("{TestDirectory}", context.TestDirectory);
-            format = format.Replace("{AssemblyDirectory}", System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+            format = format.Replace("{AssemblyDirectory}", _GetAssemblyDirectory());
 
             // output paths
             format = format.Replace("{WorkDirectory}", context.WorkDirectory);
@@ -151,6 +151,19 @@ namespace NUnit.Framework
         #endregion
 
         #region internal
+
+        private static string _GetAssemblyDirectory()
+        {
+            // in Net471 unit testing, GetEntryAssembly returns null.
+
+            var assembly = System.Reflection.Assembly.GetEntryAssembly();
+            if (assembly == null) assembly = System.Reflection.Assembly.GetExecutingAssembly();
+
+            var location = assembly.Location;
+            if (location == null) return null;
+
+            return System.IO.Path.GetDirectoryName(location);
+        }
 
         private static string GetCurrentCategory(this TestContext context)
         {
