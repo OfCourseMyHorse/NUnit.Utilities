@@ -94,7 +94,7 @@ namespace NUnit.Framework
 
             //--------------------------------------------------------- absolute path macros (format can only have one of those):
 
-            var slnDir = _GetFirstDirectoryWith(context.TestDirectory, finfo => finfo.Extension.ToLower().EndsWith("sln"));
+            var slnDir = _FindUpperDirectoryWithFile(context.TestDirectory, finfo => finfo.Extension.ToLower().EndsWith("sln"));
             if (slnDir != null)
             {
                 const string SLNDIRMACRO = "{SolutionDirectory}";
@@ -106,7 +106,20 @@ namespace NUnit.Framework
                     format = slnDir + format;
                 }
             }
-            
+
+            var prjDir = _FindUpperDirectoryWithFile(context.TestDirectory, finfo => finfo.Extension.ToLower().EndsWith("csproj"));
+            if (slnDir != null)
+            {
+                const string PRJDIRMACRO = "{ProjectDirectory}";
+
+                var idx = format.IndexOf(PRJDIRMACRO);
+                if (idx >= 0)
+                {
+                    format = format.Substring(idx + PRJDIRMACRO.Length);
+                    format = slnDir + format;
+                }
+            }
+
             format = format.Replace("{CurrentDirectory}", Environment.CurrentDirectory);
 
             // input paths
@@ -171,7 +184,7 @@ namespace NUnit.Framework
                 : "Default";
         }
 
-        private static string _GetFirstDirectoryWith(string fromDirectoryPath, Predicate<System.IO.FileInfo> predicate)
+        private static string _FindUpperDirectoryWithFile(string fromDirectoryPath, Predicate<System.IO.FileInfo> predicate)
         {
             var dir = new System.IO.DirectoryInfo(fromDirectoryPath);
             if (!dir.Exists) return null;
