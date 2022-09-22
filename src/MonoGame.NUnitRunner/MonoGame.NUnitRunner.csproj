@@ -1,15 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net461;netcoreapp3.1;net5.0-windows;net6.0-windows</TargetFrameworks>
+    <TargetFrameworks>net461;net6.0</TargetFrameworks>
     <RootNamespace>NUnitForImages</RootNamespace>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>    
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
-    <PackageReference Include="StbImageSharp" Version="2.27.11" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" PrivateAssets="all" />
+    <PackageReference Include="StbImageSharp" Version="2.27.12" />
     <PackageReference Include="StbImageWriteSharp" Version="1.16.7" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <PackageReference Update="MonoGame.Framework.DesktopGL" Version="3.8.1.303" PrivateAssets="all" />
   </ItemGroup>
   
   <ItemGroup>    

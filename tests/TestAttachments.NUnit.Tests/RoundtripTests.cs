@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 
 using NUnit.Framework;
 
-[assembly: ResourcePathFormat("Resources")]
-[assembly: AttachmentPathFormat("{WorkDirectory}/AssemblyResults/{ID}", true)]
-
 
 namespace TestAttachments
 {
