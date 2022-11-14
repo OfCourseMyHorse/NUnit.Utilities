@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace NUnit.Framework
@@ -21,6 +23,24 @@ namespace NUnit.Framework
 
         public static ResourceInfo From(string fileName) { return new ResourceInfo(fileName); }        
 
+        public static IEnumerable<ResourceInfo> From(string mask, SearchOption options)
+        {
+            return TestContext.CurrentContext
+                .GetAttachmentDirectoryInfo()
+                .EnumerateFiles(mask, options)
+                .Select(item => new ResourceInfo(item));
+        }
+
+        #if NETSTANDARD2_1_OR_GREATER
+        public static IEnumerable<ResourceInfo> From(string mask, EnumerationOptions options)
+        {
+            return TestContext.CurrentContext
+                .GetAttachmentDirectoryInfo()
+                .EnumerateFiles(mask, options)
+                .Select(item => new ResourceInfo(item));
+        }
+        #endif
+
         public ResourceInfo(string fileName)
             : this(TestContext.CurrentContext, fileName) { }
 
@@ -29,11 +49,20 @@ namespace NUnit.Framework
             File = context.GetResourceFileInfo(fileName);            
         }
 
+        private ResourceInfo(System.IO.FileInfo finfo)
+        {
+            File = finfo;
+        }
+
         #endregion
 
         #region data
 
         public System.IO.FileInfo File { get; }
+
+        public string Name => File.Name;
+
+        public string FilePath => File.FullName;
 
         #endregion
 
