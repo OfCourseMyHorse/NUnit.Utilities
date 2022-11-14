@@ -17,6 +17,8 @@ namespace NUnit.Framework
     /// - {TestDirectory} = context.TestDirectory<br/>
     /// - {TempDirectory} = System.IO.Path.GetTempPath()<br/>
     /// - {CurrentDirectory} = Environment.CurrentDirectory<br/>
+    /// - {ProjectDirectory} = directory of the first .csproj found up the directory tree.
+    /// - {SolutionDirectory} = directory of the first .sln found up the directory tree.
     /// </para>    
     /// <para>
     /// <br/>

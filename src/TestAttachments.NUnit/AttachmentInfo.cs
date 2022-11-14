@@ -87,7 +87,7 @@ namespace NUnit.Framework
         {
             return WriteObjectEx(f => writeAction(f.FullName));
         }
-
+        
         public System.IO.FileInfo WriteObjectEx(Action<System.IO.FileInfo> writeAction)
         {
             if (writeAction == null) throw new ArgumentNullException(nameof(writeAction));
@@ -95,6 +95,26 @@ namespace NUnit.Framework
             _BeginWriteAttachment();
             writeAction(File);
             return _EndWriteAttachment();
+        }
+
+        public System.IO.FileInfo WriteToStream(Action<System.IO.Stream> writeAction)
+        {
+            _BeginWriteAttachment();
+
+            using (var stream = File.Create())
+            {
+                writeAction(stream);
+            }
+
+            return _EndWriteAttachment();
+        }
+
+        public System.IO.Stream CreateStream()
+        {
+            // we need to create a file so we can attach it.
+            // another strategy would be to create a stream derived class that would do the attachment on stream close.            
+
+            return WriteAllBytes(Array.Empty<Byte>()).Create();
         }
 
         public System.IO.FileInfo WriteAllBytes(ReadOnlySpan<Byte> byteContent)
@@ -111,15 +131,7 @@ namespace NUnit.Framework
             }
 
             return _EndWriteAttachment();
-        }
-
-        public System.IO.Stream CreateStream()
-        {
-            // we need to create a file so we can attach it.
-            // another strategy would be to create a stream derived class that would do the attachment on stream close.            
-
-            return WriteAllBytes(Array.Empty<Byte>()).Create();
-        }
+        }        
 
         public System.IO.FileInfo WriteTextLines(params String[] textLines)
         {
