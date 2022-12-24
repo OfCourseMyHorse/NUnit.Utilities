@@ -91,16 +91,19 @@ namespace NUnit.Framework
 
         public static string TryGetSystemPathFromFile(string urlFilePath, bool recursive = false)
         {
-            while (true)
+            while (urlFilePath != null && urlFilePath.ToLower().EndsWith(".url"))
             {
                 urlFilePath = _TryGetSystemPathFromFile(urlFilePath);
-                if (!recursive) return urlFilePath;
-                if (!urlFilePath.ToLower().EndsWith(".url")) return urlFilePath;
+                if (!recursive) break;
             }
+
+            return urlFilePath;
         }
 
         private static string _TryGetSystemPathFromFile(string urlFilePath)
         {
+            if (!System.IO.File.Exists(urlFilePath)) return null;
+
             var text = System.IO.File.ReadAllLines(urlFilePath);
 
             var line = text.FirstOrDefault(item => item.Trim().StartsWith("URL="));

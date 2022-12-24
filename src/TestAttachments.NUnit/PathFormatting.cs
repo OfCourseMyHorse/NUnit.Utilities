@@ -30,6 +30,8 @@ namespace NUnit.Framework
 
         public static string FindAttachmentPathFormat(this TestContext context)
         {
+            if (context == null) throw new ArgumentNullException(nameof(context));
+
             var properties = PathFormatAttribute._FindProperties<AttachmentPathFormatAttribute>(context, "AttachmentPathFormat");
 
             return properties == null
@@ -39,7 +41,20 @@ namespace NUnit.Framework
 
         public static string FindResourcesPathFormat(this TestContext context)
         {
+            if (context == null) throw new ArgumentNullException(nameof(context));
+
             var properties = PathFormatAttribute._FindProperties<ResourcePathFormatAttribute>(context, "ResourcePathFormat");
+
+            return properties == null
+                ? DefaultResourceFormat
+                : properties.Get("ResourcePathFormat") as string;
+        }
+
+        public static string FindResourcesPathFormat(this Type context)
+        {
+            if (context == null) throw new ArgumentNullException(nameof(context));
+
+            var properties = PathFormatAttribute._FindProperties<ResourcePathFormatAttribute>(context);
 
             return properties == null
                 ? DefaultResourceFormat
@@ -89,8 +104,10 @@ namespace NUnit.Framework
         }
 
         private static string _FormatPath(string format, TestContext context, string defaultBasePath)
-        {
-            // // TODO: support {<<<} and {>>>} as macro for paths search
+        {            
+            // TODO:
+            // - support {<<<} and {>>>} as macro for paths search
+            // - support "./xyz" to concatenate with upper level formatting
 
             //--------------------------------------------------------- absolute path macros (format can only have one of those):
 

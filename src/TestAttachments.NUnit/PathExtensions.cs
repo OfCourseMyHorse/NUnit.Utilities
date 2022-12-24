@@ -19,34 +19,45 @@ namespace NUnit.Framework
         /// <returns>A <see cref="System.IO.FileInfo"/> object.</returns>
         public static System.IO.FileInfo GetResourceFileInfo(this TestContext context, string relativeFilePath)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-            if (string.IsNullOrWhiteSpace(relativeFilePath)) throw new ArgumentNullException(nameof(relativeFilePath));
-
-            if (System.IO.Path.IsPathRooted(relativeFilePath)) return new System.IO.FileInfo(relativeFilePath);
-
-            var dir = context.GetResourceDirectoryInfo();
-            relativeFilePath = System.IO.Path.Combine(dir.FullName, relativeFilePath);
-
-            return new System.IO.FileInfo(relativeFilePath);
+            return context
+                .GetResourceDirectoryInfo()
+                .CombineWith(relativeFilePath);
         }
 
         public static Uri GetResourceDirectoryUri(this TestContext context)
         {
-            var dinfo = context.GetResourceDirectoryInfo();
-            return new Uri(dinfo.FullName, UriKind.Absolute);
+            return context
+                .GetResourceDirectoryInfo()
+                .ToUri();
         }
 
         /// <summary>
-        /// Gets the attachments directory for the current test.
+        /// Gets the resource directory for the current test.
         /// </summary>
         /// <param name="context">The current test context.</param>
         /// <returns>A <see cref="System.IO.DirectoryInfo"/> object.</returns>
         public static System.IO.DirectoryInfo GetResourceDirectoryInfo(this TestContext context)
         {
-            var format = context.FindResourcesPathFormat();
-            var path = format.FormatAttachmentPath(context);
+            return context
+                .FindResourcesPathFormat()
+                .FormatResourcePath(context)
+                .ToDirectoryInfo();
+        }
 
-            return new System.IO.DirectoryInfo(path);
+        /// <summary>
+        /// Gets the resource directory for the current test.
+        /// </summary>
+        /// <param name="context">The current type context.</param>
+        /// <returns>A <see cref="System.IO.DirectoryInfo"/> object.</returns>
+        public static System.IO.DirectoryInfo GetResourceDirectoryInfo(this Type context)
+        {
+            throw new NotImplementedException();
+
+            /*
+            return context
+                .FindResourcesPathFormat()
+                .FormatResourcePath(context)
+                .ToDirectoryInfo();*/
         }
 
         #endregion
@@ -61,21 +72,16 @@ namespace NUnit.Framework
         /// <returns>A <see cref="System.IO.FileInfo"/> object.</returns>
         public static System.IO.FileInfo GetAttachmentFileInfo(this TestContext context, string relativeFilePath)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-            if (string.IsNullOrWhiteSpace(relativeFilePath)) throw new ArgumentNullException(nameof(relativeFilePath));
-
-            if (System.IO.Path.IsPathRooted(relativeFilePath)) return new System.IO.FileInfo(relativeFilePath);
-
-            var dir = context.GetAttachmentDirectoryInfo();            
-            relativeFilePath = System.IO.Path.Combine(dir.FullName, relativeFilePath);
-
-            return new System.IO.FileInfo(relativeFilePath);
+            return context
+                .GetAttachmentDirectoryInfo()
+                .CombineWith(relativeFilePath);
         }
 
         public static Uri GetAttachmentDirectoryUri(this TestContext context)
         {
-            var dinfo = context.GetAttachmentDirectoryInfo();
-            return new Uri(dinfo.FullName, UriKind.Absolute);
+            return context
+                .GetAttachmentDirectoryInfo()
+                .ToUri();
         }
 
         /// <summary>
@@ -85,10 +91,10 @@ namespace NUnit.Framework
         /// <returns>A <see cref="System.IO.DirectoryInfo"/> object.</returns>
         public static System.IO.DirectoryInfo GetAttachmentDirectoryInfo(this TestContext context)
         {
-            var format = context.FindAttachmentPathFormat();
-            var path = format.FormatAttachmentPath(context);
-
-            return new System.IO.DirectoryInfo(path);
+            return context
+                .FindAttachmentPathFormat()
+                .FormatAttachmentPath(context)
+                .ToDirectoryInfo();
         }
 
         #endregion

@@ -65,14 +65,20 @@ namespace NUnit.Framework
 
             // look for attribute in current class:
 
-            var instanceType = _GetCurrentClassInstanceType();
+            var classType = _GetCurrentClassInstanceType();
 
-            var attribute = _TryGetFrom<T>(instanceType);
+            return _FindProperties<T>(classType);
+        }
+
+        internal static TestContext.PropertyBagAdapter _FindProperties<T>(Type classType)
+            where T : PathFormatAttribute
+        {
+            var attribute = _TryGetFrom<T>(classType);
             if (attribute != null) return new TestContext.PropertyBagAdapter(attribute.Properties);
 
             // look for attribute in current assembly:
 
-            attribute = _TryGetFrom<T>(instanceType.Assembly);
+            attribute = _TryGetFrom<T>(classType.Assembly);
             if (attribute != null) return new TestContext.PropertyBagAdapter(attribute.Properties);
 
             return null;
@@ -81,6 +87,8 @@ namespace NUnit.Framework
         private static T _TryGetFrom<T>(System.Reflection.ICustomAttributeProvider t)
             where T : Attribute
         {
+            if (t == null) return null;
+
             return t.GetCustomAttributes(typeof(T), true)
                 .OfType<T>()
                 .FirstOrDefault();

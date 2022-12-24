@@ -12,9 +12,27 @@ namespace NUnit.Framework
     /// <remarks>    
     /// <para>Use <see cref="ResourcePathFormatAttribute"/> at the top of the test class to define the resource directory path</para>    
     /// </remarks>
-    [System.Diagnostics.DebuggerDisplay("{File.FullName}")]
+    [System.Diagnostics.DebuggerDisplay("{ToDebuggerDisplay(),nq}")]
     public class ResourceInfo
     {
+        #region debug
+
+        internal string ToDebuggerDisplay()
+        {
+            if (File != null)
+            {
+                var text = File.Exists ? string.Empty : "⚠ NOT FOUND : ";
+
+                return text += File.FullName;
+            }
+
+            if (string.IsNullOrWhiteSpace(Name)) return "⚠ NULL";
+
+            return Name;
+        }
+
+        #endregion
+
         #region lifecycle
 
         public static implicit operator System.IO.FileInfo(ResourceInfo rinfo) { return rinfo.File; }
@@ -23,19 +41,19 @@ namespace NUnit.Framework
 
         public static ResourceInfo From(string fileName) { return new ResourceInfo(fileName); }        
 
-        public static IEnumerable<ResourceInfo> From(string mask, SearchOption options)
+        public static IEnumerable<ResourceInfo> FromDirectory(string mask, SearchOption options)
         {
             return TestContext.CurrentContext
-                .GetAttachmentDirectoryInfo()
+                .GetResourceDirectoryInfo()
                 .EnumerateFiles(mask, options)
                 .Select(item => new ResourceInfo(item));
         }
 
-        #if NETSTANDARD2_1_OR_GREATER
-        public static IEnumerable<ResourceInfo> From(string mask, EnumerationOptions options)
+        #if !NETSTANDARD2_0
+        public static IEnumerable<ResourceInfo> FromDirectory(string mask, EnumerationOptions options)
         {
             return TestContext.CurrentContext
-                .GetAttachmentDirectoryInfo()
+                .GetResourceDirectoryInfo()
                 .EnumerateFiles(mask, options)
                 .Select(item => new ResourceInfo(item));
         }
@@ -46,21 +64,48 @@ namespace NUnit.Framework
 
         public ResourceInfo(TestContext context, string fileName)
         {
-            File = context.GetResourceFileInfo(fileName);            
+            var file = context.GetResourceFileInfo(fileName);
+            _File = _ResolveFileLink(file);
+        }
+
+        // this would be useful to initialize static class fields
+        private ResourceInfo(Type context, string fileName)
+        {
+            throw new NotImplementedException("we need a way to get information equivalent to a TestContext");            
         }
 
         private ResourceInfo(System.IO.FileInfo finfo)
         {
-            File = finfo;
+            _File = _ResolveFileLink(finfo);
+        }
+
+        private static Lazy<System.IO.FileInfo> _ResolveFileLink(System.IO.FileInfo finfo)
+        {
+            System.IO.FileInfo action()
+            {
+                if (finfo == null) return null;
+
+                var final = ShortcutUtils.TryGetSystemPathFromFile(finfo.FullName, true);
+
+                // TODO: if final is a network address, download it to a cache
+
+                return final != null
+                    ? new System.IO.FileInfo(final)
+                    : finfo;
+            }
+
+            return new Lazy<FileInfo>(action);
         }
 
         #endregion
 
         #region data
 
-        public System.IO.FileInfo File { get; }
+        private readonly Lazy<System.IO.FileInfo> _File;
 
-        public string Name => File.Name;
+        public System.IO.FileInfo File => _File.Value;
+
+        public string Name => File?.Name ?? string.Empty;
 
         public string FilePath => File.FullName;
 
