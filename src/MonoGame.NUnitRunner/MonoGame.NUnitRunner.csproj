@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>    
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" PrivateAssets="all" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="[3.8.0.1641]" PrivateAssets="all" />
     <PackageReference Include="StbImageSharp" Version="2.27.13" />
     <PackageReference Include="StbImageWriteSharp" Version="1.16.7" />
   </ItemGroup>
@@ -19,6 +19,13 @@
   <ItemGroup>    
     <ProjectReference Include="..\TestImages.Abstractions\TestImages.Abstractions.csproj" />    
     <ProjectReference Include="..\TestAttachments.NUnit\TestAttachments.NUnit.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
