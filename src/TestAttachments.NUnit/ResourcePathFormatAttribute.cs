@@ -15,7 +15,7 @@ namespace NUnit.Framework
         /// <summary>
         /// Declares a directory formatter to read resource files.
         /// </summary>
-        /// <param name="format">Recommended patterns is: "*/Resources"  </param>
+        /// <param name="format">Recommended patterns is: "*/Resources"</param>
         public ResourcePathFormatAttribute(string format) : base(format) { }
 
         #endregion        

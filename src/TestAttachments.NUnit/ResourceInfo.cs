@@ -33,15 +33,11 @@ namespace NUnit.Framework
 
         #endregion
 
-        #region lifecycle
-
-        public static implicit operator System.IO.FileInfo(ResourceInfo rinfo) { return rinfo.File; }
-
-        public static implicit operator string(ResourceInfo rinfo) { return rinfo.File.FullName; }
+        #region lifecycle        
 
         public static ResourceInfo From(string fileName) { return new ResourceInfo(fileName); }        
 
-        public static IEnumerable<ResourceInfo> FromDirectory(string mask, SearchOption options)
+        public static IEnumerable<ResourceInfo> EnumerateFromDirectory(string mask, SearchOption options)
         {
             return TestContext.CurrentContext
                 .GetResourceDirectoryInfo()
@@ -50,7 +46,7 @@ namespace NUnit.Framework
         }
 
         #if !NETSTANDARD2_0
-        public static IEnumerable<ResourceInfo> FromDirectory(string mask, EnumerationOptions options)
+        public static IEnumerable<ResourceInfo> EnumerateFromDirectory(string mask, EnumerationOptions options)
         {
             return TestContext.CurrentContext
                 .GetResourceDirectoryInfo()
@@ -61,12 +57,7 @@ namespace NUnit.Framework
 
         public ResourceInfo(string fileName)
             : this(TestContext.CurrentContext, fileName) { }
-
-        public ResourceInfo(TestContext context, string fileName)
-        {
-            var file = context.GetResourceFileInfo(fileName);
-            _File = _ResolveFileLink(file);
-        }
+        
 
         // this would be useful to initialize static class fields
         private ResourceInfo(Type context, string fileName)
@@ -74,34 +65,39 @@ namespace NUnit.Framework
             throw new NotImplementedException("we need a way to get information equivalent to a TestContext");            
         }
 
-        private ResourceInfo(System.IO.FileInfo finfo)
+        public ResourceInfo(TestContext context, string fileName)
         {
-            _File = _ResolveFileLink(finfo);
+            var finfo = context.GetResourceFileInfo(fileName);
+            _File = new Lazy<FileInfo>(() => _ResolveFileLink(finfo));
         }
 
-        private static Lazy<System.IO.FileInfo> _ResolveFileLink(System.IO.FileInfo finfo)
+        private ResourceInfo(System.IO.FileInfo finfo)
         {
-            System.IO.FileInfo action()
-            {
-                if (finfo == null) return null;
+            _File = new Lazy<FileInfo>(()=>_ResolveFileLink(finfo));
+        }
 
-                var final = ShortcutUtils.TryGetSystemPathFromFile(finfo.FullName, true);
+        private static System.IO.FileInfo _ResolveFileLink(System.IO.FileInfo finfo)
+        {
+            if (finfo == null) return null;
 
-                // TODO: if final is a network address, download it to a cache
+            var final = ShortcutUtils.TryGetSystemPathFromFile(finfo.FullName, true);
 
-                return final != null
-                    ? new System.IO.FileInfo(final)
-                    : finfo;
-            }
+            // TODO: if final is a network address, download it to a cache
 
-            return new Lazy<FileInfo>(action);
+            return final != null
+                ? new System.IO.FileInfo(final)
+                : finfo;
         }
 
         #endregion
 
         #region data
 
-        private readonly Lazy<System.IO.FileInfo> _File;
+        private readonly Lazy<System.IO.FileInfo> _File;        
+
+        #endregion
+
+        #region properties
 
         public System.IO.FileInfo File => _File.Value;
 
@@ -111,9 +107,25 @@ namespace NUnit.Framework
 
         #endregion
 
+        #region operators
+
+        public static implicit operator System.IO.FileInfo(ResourceInfo rinfo) { return rinfo.File; }
+
+        public static implicit operator string(ResourceInfo rinfo) { return rinfo.File.FullName; }
+
+        #endregion
+
         #region API
 
         public System.IO.Stream OpenRead() => File.OpenRead();
+
+        public T OpenRead<T>(Func<System.IO.Stream,T> readFunc)
+        {
+            using(var s = OpenRead())
+            {
+                return readFunc(s);
+            }
+        }
 
         public string ReadAllText()
         {
@@ -139,7 +151,7 @@ namespace NUnit.Framework
                     ? segment
                     : new ArraySegment<byte>(m.ToArray());
             }            
-        }
+        }        
 
         #endregion
     }

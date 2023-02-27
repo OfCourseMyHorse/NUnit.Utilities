@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using NUnit.Framework;
-
 namespace NUnit.Framework
 {
     static class PathFormatting
@@ -104,49 +102,28 @@ namespace NUnit.Framework
         }
 
         private static string _FormatPath(string format, TestContext context, string defaultBasePath)
-        {            
+        {
             // TODO:
             // - support {<<<} and {>>>} as macro for paths search
             // - support "./xyz" to concatenate with upper level formatting
 
-            //--------------------------------------------------------- absolute path macros (format can only have one of those):
+            //--------------------------------------------------------- absolute path macros (format can only have one of those):            
 
-            var slnDir = _FindUpperDirectoryWithFile(context.TestDirectory, finfo => finfo.Extension.ToLower().EndsWith("sln"));
-            if (slnDir != null)
-            {
-                const string SLNDIRMACRO = "{SolutionDirectory}";
+            _FindUpperFile(context, ref format, "{SolutionDirectory}", finfo => finfo.Extension.ToLower().EndsWith("sln"));
+            _FindUpperFile(context, ref format, "{ProjectDirectory}", finfo => finfo.Extension.ToLower().EndsWith("csproj"));
+            _FindUpperFile(context, ref format, "{Directory.Build.Props}", finfo => finfo.Name.ToLower() == "directory.build.props");
+            _FindUpperFile(context, ref format, "{Directory.Packages.Props}", finfo => finfo.Name.ToLower() == "directory.packages.props");
 
-                var idx = format.IndexOf(SLNDIRMACRO);
-                if (idx >= 0)
-                {
-                    format = format.Substring(idx + SLNDIRMACRO.Length);
-                    format = slnDir + format;
-                }
-            }
-
-            var prjDir = _FindUpperDirectoryWithFile(context.TestDirectory, finfo => finfo.Extension.ToLower().EndsWith("csproj"));
-            if (slnDir != null)
-            {
-                const string PRJDIRMACRO = "{ProjectDirectory}";
-
-                var idx = format.IndexOf(PRJDIRMACRO);
-                if (idx >= 0)
-                {
-                    format = format.Substring(idx + PRJDIRMACRO.Length);
-                    format = slnDir + format;
-                }
-            }
-
-            format = format.Replace("{CurrentDirectory}", Environment.CurrentDirectory);
+            _ReplacePrefix(ref format, "{CurrentDirectory}", Environment.CurrentDirectory);
 
             // input paths
-            format = format.Replace("{TestDirectory}", context.TestDirectory);
-            format = format.Replace("{AssemblyDirectory}", _GetAssemblyDirectory());
+            _ReplacePrefix(ref format, "{TestDirectory}", context.TestDirectory);
+            _ReplacePrefix(ref format, "{AssemblyDirectory}", _GetAssemblyDirectory());
+            _ReplacePrefix(ref format, "{ProcessDirectory}", _GetProcessDirectory());
 
             // output paths
-            format = format.Replace("{WorkDirectory}", context.WorkDirectory);
-            format = format.Replace("{TempDirectory}", System.IO.Path.GetTempPath());
-
+            _ReplacePrefix(ref format, "{WorkDirectory}", context.WorkDirectory);
+            _ReplacePrefix(ref format, "{TempDirectory}", System.IO.Path.GetTempPath());
 
             //--------------------------------------------------------- relative path macros:
 
@@ -165,7 +142,6 @@ namespace NUnit.Framework
 
             format = format.Replace("{Category}", context.GetCurrentCategory());
 
-
             //--------------------------------------------------------- path sanitization:
 
             format = format.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
@@ -173,14 +149,36 @@ namespace NUnit.Framework
             if (defaultBasePath != null && !System.IO.Path.IsPathRooted(format))
             {
                 format = System.IO.Path.Combine(defaultBasePath, format);
-            }            
+            }
 
             return format;
         }
 
         #endregion
 
-        #region internal
+        #region internal        
+
+        private static void _FindUpperFile(TestContext context, ref string format, string macro, Predicate<System.IO.FileInfo> predicate)
+        {
+            var dir = _FindUpperDirectoryWithFile(context.TestDirectory, predicate);
+            if (dir == null) return;
+            
+            _ReplacePrefix(ref format, macro, dir);
+        }
+
+        private static void _ReplacePrefix(ref string format, string macro, string value)
+        {
+            var idx = format.IndexOf(macro);
+            if (idx < 0) return;
+
+            if (idx > 0) throw new ArgumentException($"{macro} must appear at the beginning of {format}", nameof(format));
+
+            value = value.TrimEnd('\\');
+            value = value.TrimEnd('/');
+
+            format = format.Substring(macro.Length);
+            format = value + format;
+        }
 
         private static string _GetAssemblyDirectory()
         {
@@ -192,6 +190,12 @@ namespace NUnit.Framework
             if (location == null) return null;
 
             return System.IO.Path.GetDirectoryName(location);
+        }
+
+        private static string _GetProcessDirectory()
+        {
+            var path = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+            return System.IO.Path.GetDirectoryName(path);
         }
 
         private static string GetCurrentCategory(this TestContext context)
