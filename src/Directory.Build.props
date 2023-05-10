@@ -7,8 +7,8 @@
 
   <PropertyGroup>
     <Authors>Vicente Penades</Authors>    
-    <Copyright>Copyright (c) 2022 Of Course my Horse</Copyright>
-    <Description>Unit Testing utilities</Description>
+    <Copyright>Copyright (c) $([System.DateTime]::Now.ToString(`yyyy`)) Of Course my Horse</Copyright>
+    <Description>Unit Testing utilities</Description>    
   </PropertyGroup>
 
   <!-- Configuration =================================================================================== -->
@@ -37,7 +37,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0" >
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.1" >
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -51,7 +51,7 @@
     <RepositoryUrl>https://github.com/OfCourseMyHorse/NUnit.Utilities</RepositoryUrl>
     <PackageProjectUrl>https://github.com/OfCourseMyHorse/NUnit.Utilities</PackageProjectUrl>
 
-    <PackageTags>C# NUnit Image Bitmap WPF</PackageTags>
+    <PackageTags>test testing unittest unit-test nunit</PackageTags>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     
   </PropertyGroup>  
@@ -72,6 +72,10 @@
     
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageTags>nunit nunit3 test testing</PackageTags>
   </PropertyGroup>
 
   <!-- Source Control =================================================================================== -->
