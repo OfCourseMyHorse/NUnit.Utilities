@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using NUnit.Framework.Internal;
+
 namespace NUnit.Framework
 {
     /// <summary>
@@ -17,6 +19,26 @@ namespace NUnit.Framework
     public class AttachmentInfo
     {
         #region lifecycle
+
+        public static IEnumerable<System.IO.FileInfo> AttachDirectoryFiles(string directory, string mask="*", SearchOption soption = SearchOption.AllDirectories)
+        {
+            var dinfo = TestContext.CurrentContext.GetAttachmentDirectoryInfo();
+
+            if (!string.IsNullOrWhiteSpace(directory))
+            {
+                directory = System.IO.Path.IsPathRooted(directory)
+                    ? directory
+                    : System.IO.Path.Combine(dinfo.FullName, directory);
+
+                dinfo = new System.IO.DirectoryInfo(directory);
+            }
+
+            foreach (var f in dinfo.EnumerateFiles(mask, soption))
+            {                
+                yield return f;
+                TestContext.AddTestAttachment(f.FullName);
+            }
+        }
 
         public static AttachmentInfo From(string fileName, string description = null) { return new AttachmentInfo(fileName, description); }
 
@@ -48,7 +70,7 @@ namespace NUnit.Framework
         {
             if (_WriteShowDirectoryLink)
             {
-                var ainfo = From("📂 Show Directory.lnk");
+                var ainfo = From("📂 Show Directory.url");
                 ainfo._WriteShowDirectoryLink = false; // prevent reentrancy
                 ainfo.WriteLink(File.Directory.FullName);
             }
@@ -154,6 +176,66 @@ namespace NUnit.Framework
         public System.IO.FileInfo WriteLink(string fileOrDirectoryPath)
         {
             return this.WriteObjectEx(f => ShortcutUtils.CreateLink(f.FullName, fileOrDirectoryPath));
+        }
+
+        #endregion
+
+        #region API
+
+        public static void AttachTOC()
+        {
+            _AttachTocHtml();
+        }
+
+        private static void _AttachTocMarkdown()
+        {
+            var toc = From("📂 Table of Contents.md");
+            var buri = new Uri(toc.File.Directory.FullName + "\\", UriKind.Absolute);
+
+            var attachments = TestExecutionContext.CurrentContext.CurrentResult.TestAttachments;
+
+            var md = new StringBuilder();
+            foreach (var attachment in attachments)
+            {
+                var key = System.IO.Path.GetFileName(attachment.FilePath);
+                var val = new Uri(attachment.FilePath, UriKind.Absolute);
+
+                val = buri.MakeRelativeUri(val);
+
+                md.AppendLine($"- [{key}]({val})");
+            }
+
+            toc.WriteAllText(md.ToString());
+        }
+
+        private static void _AttachTocHtml()
+        {
+            var toc = From("📂 Table of Contents.html");
+            var buri = new Uri(toc.File.Directory.FullName + "\\", UriKind.Absolute);
+
+            var attachments = TestExecutionContext.CurrentContext.CurrentResult.TestAttachments;
+
+            var html = new StringBuilder();
+
+            html.AppendLine("<html>");
+            html.AppendLine("<body>");
+            html.AppendLine("<ul>");
+
+            foreach (var attachment in attachments)
+            {
+                var key = System.IO.Path.GetFileName(attachment.FilePath);
+                var val = new Uri(attachment.FilePath, UriKind.Absolute);
+
+                val = buri.MakeRelativeUri(val);
+
+                html.AppendLine($"<li><a href=\"{val}\">{key}</a></li>");
+            }
+
+            html.AppendLine("</ul>");
+            html.AppendLine("</body>");
+            html.AppendLine("</html>");
+
+            toc.WriteAllText(html.ToString());
         }
 
         #endregion

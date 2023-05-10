@@ -28,6 +28,8 @@ namespace TestAttachments
             Assert.IsTrue(finfo.Exists);
 
             TestContext.WriteLine(finfo);
+
+            AttachmentInfo.AttachTOC();
         }
 
         [Test]
@@ -68,9 +70,22 @@ namespace TestAttachments
         {
             var finfo = AttachmentInfo
                 .From("hello.md")
-                .WriteTextLines("### Hello World", "This is a markdown example.");
+                .WriteTextLines("### Hello World", "This is a markdown example.", "[dir](D:/Github/(_Owned_)/(_LIBS_)/_GIT/NUnit.Utilities/tests/TestAttachments.NUnit.Tests/bin/Debug/net6.0/AttachmentResults/0-1007)");
 
             Assert.IsTrue(finfo.Exists);
+        }
+
+        [Test]
+        public void WriteDirectoryContext()
+        {
+            using(var dirctx = new AttachmentDirectory())
+            {
+                System.IO.File.WriteAllText(dirctx.GetFileInfo("hello.txt").FullName, "hello world");
+                System.IO.File.WriteAllText(dirctx.GetFileInfo("hello2.txt").FullName, "hello world 2");
+                System.IO.File.WriteAllText(dirctx.GetFileInfo("hello2.html").FullName, "<html> <body>hello world</body> </hrml>");
+            }
+
+            AttachmentInfo.AttachTOC();
         }
     }
 }
