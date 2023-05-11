@@ -31,5 +31,14 @@ namespace TestAttachments
 
             Assert.AreEqual("hello world!", r.ReadAllText());
         }
+
+        [Test]
+        [ResourcePathFormat("{SolutionDirectory}\\testdata")]
+        public void TestWithTemplate()
+        {
+            var bytes = ResourceInfo.From("box.glb").ReadAllBytes();
+
+            AttachmentInfo.From("cube.glb").WriteAllBytes(bytes);
+        }
     }
 }

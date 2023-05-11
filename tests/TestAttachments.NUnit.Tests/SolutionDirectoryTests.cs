@@ -29,5 +29,24 @@ namespace TestAttachments
 
             TestContext.WriteLine(finfo);
         }
+
+        [Test]
+        [ResourcePathFormat("{\".gitignore\"}/Tests/ExtraResources")]        
+        public void WriteTextAttachmentFromGitIgnore()
+        {
+            var text = ResourceInfo
+                .From("text1.txt")
+                .ReadAllText();
+
+            Assert.AreEqual("Extra Resources", text);
+
+            var finfo = AttachmentInfo
+                .From("text1.txt")
+                .WriteAllText(text);
+
+            Assert.IsTrue(finfo.Exists);
+
+            TestContext.WriteLine(finfo);
+        }
     }
 }

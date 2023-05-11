@@ -16,11 +16,11 @@ namespace TestAttachments
         {
             var txtdoc = AttachmentInfo.From("hello.txt").WriteAllText("hello world");
 
-            AttachmentInfo.From("hello.url").WriteLink(txtdoc.FullName);
-            AttachmentInfo.From("hello.lnk").WriteLink(txtdoc.FullName);
+            AttachmentInfo.From("hello.url").WriteShortcut(txtdoc.FullName);
+            AttachmentInfo.From("hello.lnk").WriteShortcut(txtdoc.FullName);
 
-            AttachmentInfo.From("open dir.url").WriteLink(txtdoc.Directory.FullName);
-            AttachmentInfo.From("open dir.lnk").WriteLink(txtdoc.Directory.FullName);
+            AttachmentInfo.From("open dir.url").WriteShortcut(txtdoc.Directory.FullName);
+            AttachmentInfo.From("open dir.lnk").WriteShortcut(txtdoc.Directory.FullName);
         }        
     }
 }
