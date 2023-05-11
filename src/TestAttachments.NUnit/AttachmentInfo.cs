@@ -6,6 +6,8 @@ using System.Text;
 
 using NUnit.Framework.Internal;
 
+using FILEINFO = System.IO.FileInfo;
+
 namespace NUnit.Framework
 {
     /// <summary>
@@ -20,7 +22,7 @@ namespace NUnit.Framework
     {
         #region lifecycle
 
-        public static IEnumerable<System.IO.FileInfo> AttachDirectoryFiles(string directory, string mask="*", SearchOption soption = SearchOption.AllDirectories)
+        public static IEnumerable<FILEINFO> AttachDirectoryFiles(string directory, string mask="*", SearchOption soption = SearchOption.AllDirectories)
         {
             var dinfo = TestContext.CurrentContext.GetAttachmentDirectoryInfo();
 
@@ -47,7 +49,7 @@ namespace NUnit.Framework
 
         public AttachmentInfo(TestContext context, string fileName, string description = null)
         {
-            _WriteShowDirectoryLink = context.FindAttachmentShowDirectoryLinkEnabled();
+            _WriteShowDirectorShortcut = context.FindAttachmentShowDirectoryLinkEnabled();
 
             File = context.GetAttachmentFileInfo(fileName);
             Description = description;
@@ -57,9 +59,9 @@ namespace NUnit.Framework
 
         #region data
 
-        private bool _WriteShowDirectoryLink;
+        private bool _WriteShowDirectorShortcut;
 
-        public System.IO.FileInfo File { get; }
+        public FILEINFO File { get; }
         public string Description { get; set; }
 
         #endregion
@@ -68,19 +70,30 @@ namespace NUnit.Framework
 
         private void _BeginWriteAttachment()
         {
-            if (_WriteShowDirectoryLink)
+            if (_WriteShowDirectorShortcut)
             {
                 var ainfo = From("📂 Show Directory.url");
-                ainfo._WriteShowDirectoryLink = false; // prevent reentrancy
-                ainfo.WriteLink(File.Directory.FullName);
+                ainfo._WriteShowDirectorShortcut = false; // prevent reentrancy
+
+                if (!ainfo.File.Exists)
+                {
+                    ainfo.WriteShortcut(File.Directory.FullName);
+                }
             }
 
             File.Directory.Create();
         }
 
-        private System.IO.FileInfo _EndWriteAttachment()
+        private FILEINFO _EndWriteAttachment()
         {
-            if (File.Exists) TestContext.AddTestAttachment(File.FullName, Description);
+            if (!File.Exists) return File;
+
+            // TODO:
+            // in here we have the opportunity to modify the file, or
+            // create a template wrapper, and attach the template instead
+            // of the original file.
+
+            TestContext.AddTestAttachment(File.FullName, Description);
 
             return File;
         }
@@ -94,41 +107,9 @@ namespace NUnit.Framework
         /// without importing this library dependency.
         /// </summary>
         /// <param name="ainfo">A <see cref="AttachmentInfo"/> instance.</param>
-        public static implicit operator Action<Action<System.IO.FileInfo>>(AttachmentInfo ainfo)
+        public static implicit operator Action<Action<FILEINFO>>(AttachmentInfo ainfo)
         {
             return action => ainfo.WriteObjectEx(action);
-        }
-
-        [Obsolete("Use WriteObject or WriteObjectEx", true)]
-        public System.IO.FileInfo WriteFile(Action<System.IO.FileInfo> writeAction)
-        {
-            return WriteObjectEx(writeAction);
-        }
-
-        public System.IO.FileInfo WriteObject(Action<string> writeAction)
-        {
-            return WriteObjectEx(f => writeAction(f.FullName));
-        }
-        
-        public System.IO.FileInfo WriteObjectEx(Action<System.IO.FileInfo> writeAction)
-        {
-            if (writeAction == null) throw new ArgumentNullException(nameof(writeAction));
-
-            _BeginWriteAttachment();
-            writeAction(File);
-            return _EndWriteAttachment();
-        }
-
-        public System.IO.FileInfo WriteToStream(Action<System.IO.Stream> writeAction)
-        {
-            _BeginWriteAttachment();
-
-            using (var stream = File.Create())
-            {
-                writeAction(stream);
-            }
-
-            return _EndWriteAttachment();
         }
 
         public System.IO.Stream CreateStream()
@@ -139,7 +120,47 @@ namespace NUnit.Framework
             return WriteAllBytes(Array.Empty<Byte>()).Create();
         }
 
-        public System.IO.FileInfo WriteAllBytes(ReadOnlySpan<Byte> byteContent)
+        public FILEINFO WriteObject(Action<string> writeAction)
+        {
+            return WriteObjectEx(f => writeAction(f.FullName));
+        }
+        
+        public FILEINFO WriteObjectEx(Action<FILEINFO> writeAction)
+        {
+            if (writeAction == null) throw new ArgumentNullException(nameof(writeAction));
+
+            _BeginWriteAttachment();
+            writeAction(File);
+            return _EndWriteAttachment();
+        }
+
+        public FILEINFO WriteToStream(Action<System.IO.Stream> writeAction)
+        {
+            _BeginWriteAttachment();
+
+            using (var stream = File.Create())
+            {
+                writeAction(stream);
+            }
+
+            return _EndWriteAttachment();
+        }        
+
+        public FILEINFO WriteAllBytes<T>(List<T> collection)
+            where T:unmanaged
+        {
+            #if NETSTANDARD
+            var span = collection.ToArray();
+            #else
+            var span = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(collection);
+            #endif
+
+            var bytes = System.Runtime.InteropServices.MemoryMarshal.Cast<T,Byte>(span);
+
+            return WriteAllBytes(bytes);
+        }
+
+        public FILEINFO WriteAllBytes(ReadOnlySpan<Byte> byteContent)
         {
             _BeginWriteAttachment();
 
@@ -155,17 +176,17 @@ namespace NUnit.Framework
             return _EndWriteAttachment();
         }        
 
-        public System.IO.FileInfo WriteTextLines(params String[] textLines)
+        public FILEINFO WriteTextLines(params String[] textLines)
         {
             var text = string.Join("\r\n", textLines.Select(line => line == null ? string.Empty : line) );
             return WriteAllText(text);
         }
 
-        public System.IO.FileInfo WriteAllText(String textContent)
+        public FILEINFO WriteAllText(String textContent)
         {
             if (textContent == null) textContent = string.Empty;
 
-            void writeText(System.IO.FileInfo finfo)
+            void writeText(FILEINFO finfo)
             {
                 System.IO.File.WriteAllText(finfo.FullName, textContent);
             }
@@ -173,21 +194,36 @@ namespace NUnit.Framework
             return WriteObjectEx(writeText);
         }        
 
-        public System.IO.FileInfo WriteLink(string fileOrDirectoryPath)
+        public FILEINFO WriteJson<T>(T value, System.Text.Json.JsonSerializerOptions options = null)
+        {
+            _BeginWriteAttachment();
+
+            using (var stream = File.Create())
+            {
+                System.Text.Json.JsonSerializer.Serialize(stream, value, options);
+            }            
+
+            return _EndWriteAttachment();
+        }
+
+        public FILEINFO WriteShortcut(string fileOrDirectoryPath)
         {
             return this.WriteObjectEx(f => ShortcutUtils.CreateLink(f.FullName, fileOrDirectoryPath));
         }
 
         #endregion
 
-        #region API
+        #region API - TOC
 
+        /// <summary>
+        /// Attaches a table of contents file with all the attached files to date.
+        /// </summary>
         public static void AttachTOC()
         {
-            _AttachTocHtml();
+            _AttachHtmlTOC();
         }
 
-        private static void _AttachTocMarkdown()
+        private static void _AttachMarkdownTOC()
         {
             var toc = From("📂 Table of Contents.md");
             var buri = new Uri(toc.File.Directory.FullName + "\\", UriKind.Absolute);
@@ -208,7 +244,7 @@ namespace NUnit.Framework
             toc.WriteAllText(md.ToString());
         }
 
-        private static void _AttachTocHtml()
+        private static void _AttachHtmlTOC()
         {
             var toc = From("📂 Table of Contents.html");
             var buri = new Uri(toc.File.Directory.FullName + "\\", UriKind.Absolute);
@@ -217,7 +253,8 @@ namespace NUnit.Framework
 
             var html = new StringBuilder();
 
-            html.AppendLine("<html>");
+            html.AppendLine("<!DOCTYPE html>");
+            html.AppendLine("<html lang=\"en\">");
             html.AppendLine("<body>");
             html.AppendLine("<ul>");
 

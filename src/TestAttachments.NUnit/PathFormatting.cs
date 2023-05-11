@@ -21,9 +21,9 @@ namespace NUnit.Framework
 
         public static bool FindAttachmentShowDirectoryLinkEnabled(this TestContext context)
         {
-            var properties = PathFormatAttribute._FindProperties<AttachmentPathFormatAttribute>(context, "AttachShowDirectoryLink");
+            var properties = PathFormatAttribute._FindProperties<AttachmentPathFormatAttribute>(context, "AttachShowDirectoryShortcut");
 
-            return properties != null && properties.Get("AttachShowDirectoryLink") is bool value && value;
+            return properties != null && properties.Get("AttachShowDirectoryShortcut") is bool value && value;
         }
 
         public static string FindAttachmentPathFormat(this TestContext context)
@@ -111,8 +111,17 @@ namespace NUnit.Framework
 
             _FindUpperFile(context, ref format, "{SolutionDirectory}", finfo => finfo.Extension.ToLower().EndsWith("sln"));
             _FindUpperFile(context, ref format, "{ProjectDirectory}", finfo => finfo.Extension.ToLower().EndsWith("csproj"));
-            _FindUpperFile(context, ref format, "{Directory.Build.Props}", finfo => finfo.Name.ToLower() == "directory.build.props");
-            _FindUpperFile(context, ref format, "{Directory.Packages.Props}", finfo => finfo.Name.ToLower() == "directory.packages.props");
+
+            if (format.Length > 4 && format.StartsWith("{\"")) // handle "{\"somefilename.ext\"}\whatever\whatever"
+            {                
+                var idx = format.IndexOf("\"}");
+                if (idx >= 0)
+                {
+                    var key = format.Substring(0, idx + 2);
+                    var val = key.Substring(2, key.Length - 4).ToLower();
+                    _FindUpperFile(context, ref format, key, finfo => finfo.Name.ToLower() == val);
+                }
+            }
 
             _ReplacePrefix(ref format, "{CurrentDirectory}", Environment.CurrentDirectory);
 
@@ -126,6 +135,8 @@ namespace NUnit.Framework
             _ReplacePrefix(ref format, "{TempDirectory}", System.IO.Path.GetTempPath());
 
             //--------------------------------------------------------- relative path macros:
+
+            if (format.StartsWith("{")) throw new ArgumentException($"Invalid format: {format}", nameof(format));
 
             format = format.Replace("{Date}", DateTime.Now.ToString("yyyyMMdd"));
             format = format.Replace("{Time}", DateTime.Now.ToString("hhmmss"));
@@ -149,7 +160,7 @@ namespace NUnit.Framework
             if (defaultBasePath != null && !System.IO.Path.IsPathRooted(format))
             {
                 format = System.IO.Path.Combine(defaultBasePath, format);
-            }
+            }            
 
             return format;
         }

@@ -23,12 +23,12 @@ namespace NUnit.Framework
         /// Declares a directory formatter to write test attachments.
         /// </summary>
         /// <param name="format">Recommended patterns are: "?" , "*/?" or "*/yourClassName/?" </param>
-        /// <param name="attachShowDirectoryLink">true to automatically add a "show directory" attachment for every test.</param>
-        public AttachmentPathFormatAttribute(string format, bool attachShowDirectoryLink) : base(format)
+        /// <param name="attachShowDirectoryShortcut">true to automatically add a "show directory" attachment for every test.</param>
+        public AttachmentPathFormatAttribute(string format, bool attachShowDirectoryShortcut) : base(format)
         {
-            if (attachShowDirectoryLink)
+            if (attachShowDirectoryShortcut)
             {
-                this.Properties.Add("AttachShowDirectoryLink", true);
+                this.Properties.Add("AttachShowDirectoryShortcut", true);
             }
         }
 

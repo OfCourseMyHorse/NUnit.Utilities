@@ -10,14 +10,14 @@ organize the attached files based on the test IDs.
 NUnit provides the properties needed to build per test paths in the `TestContext` object,
 but the rest is up to the developer.
 
-This library provides the last mile, easing the process of working with resources and file attachments.
+This library provides a last mile API, easing the process of working with resources and file attachments.
 
 ## Usage
 
 The library defines two attributes
 
-`ResourcePathFormat(string format)`
-`AttachmentPathFormat(string format)`
+- `ResourcePathFormat(string format)`
+- `AttachmentPathFormat(string format)`
 
 Which can be used in assemblies, classes and individual methods.
 

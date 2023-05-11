@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using FILEINFO = System.IO.FileInfo;
+
 namespace NUnit.Framework
 {
     /// <summary>
@@ -71,12 +73,12 @@ namespace NUnit.Framework
             _File = new Lazy<FileInfo>(() => _ResolveFileLink(finfo));
         }
 
-        private ResourceInfo(System.IO.FileInfo finfo)
+        private ResourceInfo(FILEINFO finfo)
         {
             _File = new Lazy<FileInfo>(()=>_ResolveFileLink(finfo));
         }
 
-        private static System.IO.FileInfo _ResolveFileLink(System.IO.FileInfo finfo)
+        private static FILEINFO _ResolveFileLink(FILEINFO finfo)
         {
             if (finfo == null) return null;
 
@@ -85,7 +87,7 @@ namespace NUnit.Framework
             // TODO: if final is a network address, download it to a cache
 
             return final != null
-                ? new System.IO.FileInfo(final)
+                ? new FILEINFO(final)
                 : finfo;
         }
 
@@ -93,13 +95,13 @@ namespace NUnit.Framework
 
         #region data
 
-        private readonly Lazy<System.IO.FileInfo> _File;        
+        private readonly Lazy<FILEINFO> _File;        
 
         #endregion
 
         #region properties
 
-        public System.IO.FileInfo File => _File.Value;
+        public FILEINFO File => _File.Value;
 
         public string Name => File?.Name ?? string.Empty;
 
@@ -109,7 +111,7 @@ namespace NUnit.Framework
 
         #region operators
 
-        public static implicit operator System.IO.FileInfo(ResourceInfo rinfo) { return rinfo.File; }
+        public static implicit operator FILEINFO(ResourceInfo rinfo) { return rinfo.File; }
 
         public static implicit operator string(ResourceInfo rinfo) { return rinfo.File.FullName; }
 
