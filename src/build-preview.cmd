@@ -12,5 +12,6 @@ dotnet pack -c:Release --version-suffix %VERSIONSUFFIX% /p:Authors=vpenades ..\N
 md bin
 
 for /r %%i in (*.*nupkg) do move %%i bin
+for /r %%i in (*.*snupkg) do move %%i bin
 
 pause
