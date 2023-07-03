@@ -41,8 +41,10 @@ namespace NUnit.Framework
         {
             AttachAllFiles();
 
-            _Watcher?.Dispose();
-            _Watcher = null;            
+            System.Threading.Interlocked.Exchange(ref _Watcher, null)?.Dispose();
+
+            var dir = System.Threading.Interlocked.Exchange(ref _PreviousWorkingDirectory, null);
+            if (!string.IsNullOrEmpty(dir)) Environment.CurrentDirectory = dir;
         }
 
         private void _SetWatcher(string directory, bool includeSubDir = false)
@@ -85,16 +87,28 @@ namespace NUnit.Framework
 
         private readonly System.Collections.Concurrent.ConcurrentDictionary<string, string> _Files = new System.Collections.Concurrent.ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
+        private string _PreviousWorkingDirectory;
+
         #endregion
 
         #region properties
 
-        public System.IO.DirectoryInfo Directory => new System.IO.DirectoryInfo(_Watcher.Path);
+        public System.IO.DirectoryInfo Directory
+        {
+            get
+            {
+                if (_Watcher == null) throw new ObjectDisposedException(nameof(AttachmentDirectory));
+
+                return new System.IO.DirectoryInfo(_Watcher.Path);
+            }
+        }
 
         public IReadOnlyList<System.IO.FileInfo> UpdatedFiles
         {
             get
             {
+                if (_Watcher == null) throw new ObjectDisposedException(nameof(AttachmentDirectory));
+
                 _Watcher.EnableRaisingEvents = false;
 
                 var files = _Files
@@ -111,10 +125,20 @@ namespace NUnit.Framework
 
         #endregion
 
-        #region API        
+        #region API
+
+        public void SetAsCurrentDirectory()
+        {
+            if (_Watcher == null) throw new ObjectDisposedException(nameof(AttachmentDirectory));
+
+            _PreviousWorkingDirectory ??= Environment.CurrentDirectory;
+            Environment.CurrentDirectory = _Watcher.Path;
+        }
 
         public System.IO.FileInfo GetFileInfo(string filePath)
         {
+            if (_Watcher == null) throw new ObjectDisposedException(nameof(AttachmentDirectory));
+
             if (filePath == null) throw new ArgumentNullException(nameof(filePath));
 
             filePath = System.IO.Path.Combine(_Watcher.Path, filePath);
