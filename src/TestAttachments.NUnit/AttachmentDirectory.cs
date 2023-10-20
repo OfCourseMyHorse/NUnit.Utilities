@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using NUnit.Framework.Internal;
-
 namespace NUnit.Framework
 {
     /// <summary>
-    /// Creates a directory context that tracks all the changes that happen within it.
+    /// Creates a directory context that tracks all the changes that happen within it, so any
+    /// file created inside the directory is automatically added as an attachment.
     /// </summary>
     [System.Diagnostics.DebuggerDisplay("Directory.FullName")]
     public class AttachmentDirectory : IDisposable
