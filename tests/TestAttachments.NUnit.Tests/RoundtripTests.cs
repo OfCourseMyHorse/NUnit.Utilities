@@ -19,13 +19,13 @@ namespace TestAttachments
                 .From("text1.txt")
                 .ReadAllText();
 
-            Assert.AreEqual("hello world", text);
+            Assert.That(text, Is.EqualTo("hello world"));
 
             var finfo = AttachmentInfo
                 .From("text1.txt")
                 .WriteAllText(text);
 
-            Assert.IsTrue(finfo.Exists);
+            Assert.That(finfo.Exists);
 
             TestContext.WriteLine(finfo);
 
@@ -41,13 +41,13 @@ namespace TestAttachments
                 .From("text2.txt")
                 .ReadAllText();
 
-            Assert.AreEqual("extended hello world", text);
+            Assert.That(text, Is.EqualTo("extended hello world"));
 
             var finfo = AttachmentInfo
                 .From("text2.txt")
                 .WriteAllText(text);
 
-            Assert.IsTrue(finfo.Exists);
+            Assert.That(finfo.Exists);
         }
 
         [Test]
@@ -58,11 +58,11 @@ namespace TestAttachments
                 .From("hello.txt")
                 .WriteAllText("hello world");
 
-            Assert.IsTrue(finfo.Exists);
+            Assert.That(finfo.Exists);
 
             TestContext.WriteLine(finfo);
 
-            Assert.IsTrue(finfo.FullName.Contains("\\Explicit"));
+            Assert.That(finfo.FullName, Does.Contain("\\Explicit"));
         }        
 
         [Test]        
@@ -72,7 +72,7 @@ namespace TestAttachments
                 .From("hello.md")
                 .WriteTextLines("### Hello World", "This is a markdown example.", "[dir](D:/Github/(_Owned_)/(_LIBS_)/_GIT/NUnit.Utilities/tests/TestAttachments.NUnit.Tests/bin/Debug/net6.0/AttachmentResults/0-1007)");
 
-            Assert.IsTrue(finfo.Exists);
+            Assert.That(finfo.Exists);
         }
 
         [Test]

@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0</TargetFrameworks>
+    <TargetFrameworks>net462;net6.0</TargetFrameworks>
     <RootNamespace>NUnit.Framework</RootNamespace>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>  
 
   <PropertyGroup>
@@ -13,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>

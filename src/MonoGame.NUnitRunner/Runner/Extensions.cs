@@ -126,12 +126,9 @@ namespace MonoGame.Tests {
 
 	class ServiceNotFoundException : Exception {
 		public ServiceNotFoundException (Type serviceType)
-			: base(string.Format("Required service of type '{0}' was not found.", serviceType))
+			: base($"Required service of type '{serviceType}' was not found.")
 		{
-			if (serviceType == null)
-				throw new ArgumentNullException ("serviceType");
-			ServiceType = serviceType;
-
+            ServiceType = serviceType ?? throw new ArgumentNullException (nameof(serviceType));
 		}
 
 		public Type ServiceType { get; private set; }

@@ -30,6 +30,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestImages.ImageSharp", "src\TestImages.ImageSharp\TestImages.ImageSharp.csproj", "{8C2C08AA-E8A4-4E98-944D-66E92139A900}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{29542E70-BCE1-4CDB-BAFB-F79D67C2B867}"
+	ProjectSection(SolutionItems) = preProject
+		tests\Directory.Build.props = tests\Directory.Build.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+
 using NUnit.Framework.Internal;
 
 using FILEINFO = System.IO.FileInfo;
@@ -149,7 +150,7 @@ namespace NUnit.Framework
         public FILEINFO WriteAllBytes<T>(List<T> collection)
             where T:unmanaged
         {
-            #if NETSTANDARD
+            #if NETFRAMEWORK
             var span = collection.ToArray();
             #else
             var span = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(collection);
@@ -166,7 +167,7 @@ namespace NUnit.Framework
 
             using (var stream = File.Create())
             {
-                #if NETSTANDARD2_0
+                #if NETFRAMEWORK
                 foreach (var b in byteContent) stream.WriteByte(b);
                 #else
                 stream.Write(byteContent);

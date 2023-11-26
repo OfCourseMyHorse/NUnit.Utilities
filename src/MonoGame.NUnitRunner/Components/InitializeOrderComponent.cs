@@ -8,10 +8,10 @@ namespace MonoGame.Tests.Framework.Components
 {
     class InitializeOrderComponent: GameComponent
     {
-        static int g_initOrder = 0;
+        static int g_initOrder;
 
         public int InitOrder { get; private set; }
-        public IGameComponent ChildComponent = null;
+        public IGameComponent ChildComponent;
 
         public InitializeOrderComponent(Game game):base(game)
         {            

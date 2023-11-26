@@ -162,14 +162,9 @@ namespace MonoGame.Tests.Components {
 			string fileNameFormat, string referenceImageDirectory, string outputDirectory)
 			: base (game)
 		{
-			if (fileNameFormat == null)
-				throw new ArgumentNullException ("fileNameFormat");
-			if (referenceImageDirectory == null)
-				throw new ArgumentNullException ("compareSourceDirectory");
-
-			CaptureWhen = captureWhen;
-			_fileNameFormat = fileNameFormat;
-			_referenceImageDirectory = referenceImageDirectory;
+            CaptureWhen = captureWhen;
+			_fileNameFormat = fileNameFormat ?? throw new ArgumentNullException (nameof(fileNameFormat));
+			_referenceImageDirectory = referenceImageDirectory ?? throw new ArgumentNullException ("compareSourceDirectory");
 			OutputDirectory = outputDirectory;
 		}
 
@@ -223,9 +218,9 @@ namespace MonoGame.Tests.Components {
 		public void Add (IFrameComparer comparer, float weight)
 		{
 			if (comparer == null)
-				throw new ArgumentNullException ("comparer");
+				throw new ArgumentNullException (nameof(comparer));
 			if (weight < 0)
-				throw new ArgumentOutOfRangeException ("weight", "weight must not be negative");
+				throw new ArgumentOutOfRangeException (nameof(weight), "weight must not be negative");
 
 			_frameComparers.Add (Tuple.Create (comparer, weight));
 		}
@@ -405,7 +400,7 @@ namespace MonoGame.Tests.Components {
 				// TODO: It would be nice to communicate
 				//       information about what went wrong, when
 				//       things go wrong.
-				return new FramePixelData (0, 0, new Color[0]);
+				return new FramePixelData (0, 0, Array.Empty<Color>());
 			}
 		}
 
@@ -470,7 +465,7 @@ namespace MonoGame.Tests.Components {
 		public ConstantComparer (float value)
 		{
 			if (value < 0)
-				throw new ArgumentOutOfRangeException ("value", "value must not be negative");
+				throw new ArgumentOutOfRangeException (nameof(value), "value must not be negative");
 			_value = value;
 		}
 

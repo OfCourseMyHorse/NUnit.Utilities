@@ -17,7 +17,7 @@ namespace TestAttachments
 
             TestContext.WriteLine(r.File.FullName);
 
-            Assert.AreEqual("hello world", r.ReadAllText());
+            Assert.That(r.ReadAllText(), Is.EqualTo("hello world"));
         }
 
         
@@ -29,7 +29,7 @@ namespace TestAttachments
 
             TestContext.WriteLine(r.File.FullName);
 
-            Assert.AreEqual("hello world!", r.ReadAllText());
+            Assert.That(r.ReadAllText(), Is.EqualTo("hello world!"));
         }
 
         [Test]

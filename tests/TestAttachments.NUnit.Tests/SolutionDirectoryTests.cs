@@ -19,13 +19,13 @@ namespace TestAttachments
                 .From("text1.txt")
                 .ReadAllText();
 
-            Assert.AreEqual("Extra Resources", text);
+            Assert.That(text, Is.EqualTo("Extra Resources"));
 
             var finfo = AttachmentInfo
                 .From("text1.txt")
                 .WriteAllText(text);
 
-            Assert.IsTrue(finfo.Exists);
+            Assert.That(finfo.Exists);
 
             TestContext.WriteLine(finfo);
         }
@@ -38,13 +38,13 @@ namespace TestAttachments
                 .From("text1.txt")
                 .ReadAllText();
 
-            Assert.AreEqual("Extra Resources", text);
+            Assert.That(text, Is.EqualTo("Extra Resources"));
 
             var finfo = AttachmentInfo
                 .From("text1.txt")
                 .WriteAllText(text);
 
-            Assert.IsTrue(finfo.Exists);
+            Assert.That(finfo.Exists);
 
             TestContext.WriteLine(finfo);
         }

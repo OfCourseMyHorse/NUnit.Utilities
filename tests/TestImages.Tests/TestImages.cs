@@ -8,6 +8,7 @@ using NUnit.Framework;
 
 namespace TestImages
 {
+    [TestFixture]
     [AttachmentPathFormat("?")]
     internal class TestImageOperations
     {

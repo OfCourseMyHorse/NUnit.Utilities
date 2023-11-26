@@ -50,7 +50,7 @@ namespace TestImages
 
             // run command
             ButtonAClickCmd.Execute(null);
-            Assert.IsTrue(_ButtonAClicked);
+            Assert.That(_ButtonAClicked);
 
             // change a property
             DynamicProperty = "Modified";

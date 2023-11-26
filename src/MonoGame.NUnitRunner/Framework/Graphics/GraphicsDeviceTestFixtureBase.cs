@@ -238,22 +238,17 @@ namespace MonoGame.Tests.Graphics
             // now do the actual assertions
             if (ExactNumberSubmits && _totalFramesExpected != allResults.Count)
             {
-				Assert.Fail (
-					"Expected {0} frame comparison result(s), but found {1}",
-					_totalFramesExpected, allResults.Count);
+				Assert.Fail ($"Expected {_totalFramesExpected} frame comparison result(s), but found {allResults.Count}");
             }
 
             if (failedResults.Count > 0)
             {
-                Assert.Fail(
-					"{0} of {1} frames failed the similarity test.",
-					failedResults.Count, allResults.Count);
+                Assert.Fail("{failedResults.Count} of {allResults.Count} frames failed the similarity test.");
             }
 
             if (noReference.Count > 0)
             {
-                Assert.Fail(
-                    "Did not find reference image(s): " + noReference.Aggregate((s1, s2) => s1 + ", " + s2));
+                Assert.Fail($"Did not find reference image(s): {noReference.Aggregate((s1, s2) => s1 + ", " + s2)}");
             }
         }
 
@@ -263,15 +258,13 @@ namespace MonoGame.Tests.Graphics
 
         private void WriteComparisonResultReport(IEnumerable<FrameComparisonResult> results, List<string> noReference)
 		{
-			Console.WriteLine ("Required similarity: {0:0.####}", Similarity);
+			Console.WriteLine($"Required similarity: {Similarity:0.####}");
 		    foreach (var result in results)
 		    {
-		        var captureString = result.SaveImage ? ", Capture: " + result.CapturedImagePath : "";
-		        var referenceString = ", Reference: " + result.ReferenceImagePath;
-                var diffString = result.SaveDiff ? ", Diff: " + result.DiffPath : "";
-		        Console.WriteLine(
-		            "Similarity: {0:0.####}{1}{2}{3}",
-		            result.Similarity, captureString, referenceString, diffString);
+		        var captureString = result.SaveImage ? $", Capture: {result.CapturedImagePath}" : String.Empty;
+		        var referenceString = $", Reference: {result.ReferenceImagePath}";
+                var diffString = result.SaveDiff ? $", Diff: {result.DiffPath}" : String.Empty;
+		        Console.WriteLine($"Similarity: {result.Similarity:0.####}{captureString}{referenceString}{diffString}");
 		    }
 		}
 
@@ -309,7 +302,7 @@ namespace MonoGame.Tests.Graphics
         {
 			var folderName = TestContext.CurrentContext.GetTestFolderName();
             var directory = Paths.CapturedFrameDiff(folderName);
-            var diffFileName = string.Format("diff-{0}", name);
+            var diffFileName = $"diff-{name}";
             return Path.Combine (directory, diffFileName);
         }
 
@@ -322,10 +315,9 @@ namespace MonoGame.Tests.Graphics
         
         private static FramePixelData CreateDiff (FramePixelData a, FramePixelData b)
 		{
-			int minWidth, maxWidth, minHeight, maxHeight;
 
-			MathUtility.MinMax (a.Width, b.Width, out minWidth, out maxWidth);
-			MathUtility.MinMax (a.Height, b.Height, out minHeight, out maxHeight);
+            MathUtility.MinMax(a.Width, b.Width, out int minWidth, out int maxWidth);
+            MathUtility.MinMax (a.Height, b.Height, out int minHeight, out int maxHeight);
 
 			var diff = new FramePixelData (maxWidth, maxHeight);
 

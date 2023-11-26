@@ -47,7 +47,7 @@ namespace NUnit.Framework
                 .Select(item => new ResourceInfo(item));
         }
 
-        #if !NETSTANDARD2_0
+        #if !NETFRAMEWORK
         public static IEnumerable<ResourceInfo> EnumerateFromDirectory(string mask, EnumerationOptions options)
         {
             return TestContext.CurrentContext

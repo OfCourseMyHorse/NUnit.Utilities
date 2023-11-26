@@ -205,7 +205,11 @@ namespace NUnit.Framework
 
         private static string _GetProcessDirectory()
         {
+            #if NET6_0_OR_GREATER
+            var path = Environment.ProcessPath;
+            #else
             var path = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+            #endif
             return System.IO.Path.GetDirectoryName(path);
         }
 
@@ -243,6 +247,6 @@ namespace NUnit.Framework
             if (format.Any(invalidChars.Contains)) throw new ArgumentException("Must not contain invalid chars", nameof(format));
         }
 
-        #endregion
+#endregion
     }
 }

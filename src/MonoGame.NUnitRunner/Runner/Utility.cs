@@ -6,7 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+
 using Microsoft.Xna.Framework;
+
 using NUnit.Framework;
 
 namespace MonoGame.Tests {
@@ -44,7 +46,9 @@ namespace MonoGame.Tests {
 
         public int GetHashCode(Matrix obj)
         {
+            #pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
             throw new NotImplementedException();
+            #pragma warning restore CA1065 // Do not raise exceptions in unexpected locations
         }
     }
 
@@ -63,7 +67,9 @@ namespace MonoGame.Tests {
 
         public int GetHashCode(byte obj)
         {
+#pragma warning disable CA1065 // Do not raise exceptions in unexpected locations
             throw new NotImplementedException();
+#pragma warning restore CA1065 // Do not raise exceptions in unexpected locations
         }
     }
 
@@ -82,7 +88,7 @@ namespace MonoGame.Tests {
 
         public int GetHashCode(Color obj)
         {
-            throw new NotImplementedException();
+            return obj.GetHashCode();
         }
     }
 
@@ -104,7 +110,7 @@ namespace MonoGame.Tests {
 
         public int GetHashCode(float obj)
         {
-            throw new NotImplementedException();
+            return obj.GetHashCode();
         }
     }
 
@@ -129,7 +135,7 @@ namespace MonoGame.Tests {
 
         public int GetHashCode(BoundingSphere obj)
         {
-            throw new NotImplementedException();
+            return obj.GetHashCode();
         }
     }
 
@@ -152,7 +158,7 @@ namespace MonoGame.Tests {
 
         public int GetHashCode(Vector2 obj)
         {
-            throw new NotImplementedException();
+            return obj.GetHashCode();
         }
     }
 
@@ -176,7 +182,7 @@ namespace MonoGame.Tests {
 
         public int GetHashCode(Vector3 obj)
         {
-            throw new NotImplementedException();
+            return obj.GetHashCode();
         }
     }
 
@@ -201,7 +207,7 @@ namespace MonoGame.Tests {
 
         public int GetHashCode(Vector4 obj)
         {
-            throw new NotImplementedException();
+            return obj.GetHashCode();
         }
     }
 
@@ -226,7 +232,7 @@ namespace MonoGame.Tests {
 
         public int GetHashCode(Quaternion obj)
         {
-            throw new NotImplementedException();
+            return obj.GetHashCode();
         }
     }
     public class PlaneComparer : IEqualityComparer<Plane>
@@ -250,7 +256,7 @@ namespace MonoGame.Tests {
 
         public int GetHashCode(Plane obj)
         {
-            throw new NotImplementedException();
+            return obj.GetHashCode();
         }
     }
 
@@ -403,8 +409,9 @@ namespace MonoGame.Tests {
         public static void AreEqual(string expected, string actual)
         {
             expected = Path.GetFullPath(expected);
-            actual = Path.GetFullPath(actual);            
-            Assert.AreEqual(expected, actual, "Paths not equal!");
+            actual = Path.GetFullPath(actual);  
+            
+            Assert.That(actual, Is.SamePath(expected), "Paths not equal!");
         }
 
 	}
