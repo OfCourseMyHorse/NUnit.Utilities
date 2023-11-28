@@ -13,9 +13,9 @@ namespace TestImages
 
         private readonly System.IO.FileInfo _File;
 
-        public override int Width => this.GetBitmapRgba32().Width;
+        public override int Width => this.BitmapRgba32.Width;
 
-        public override int Height => this.GetBitmapRgba32().Height;
+        public override int Height => this.BitmapRgba32.Height;
 
         protected override Bitmaps.Bgra32.Bitmap CreateBitmapRgba32()
         {

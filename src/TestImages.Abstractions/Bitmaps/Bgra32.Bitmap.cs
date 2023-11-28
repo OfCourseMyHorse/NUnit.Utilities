@@ -26,6 +26,10 @@ namespace TestImages.Bitmaps
 
             public static unsafe Bitmap LoadFrom(System.IO.FileInfo finfo)
             {
+                #if !WINDOWS
+                throw new NotImplementedException();
+                #else
+
                 using (var img = System.Drawing.Image.FromFile(finfo.FullName))
                 {
                     using (var bmp = new System.Drawing.Bitmap(img))
@@ -50,10 +54,15 @@ namespace TestImages.Bitmaps
                         }
                     }
                 }
+                #endif
             }
 
             public unsafe void SaveTo(System.IO.FileInfo finfo)
             {
+                #if !WINDOWS
+                throw new NotImplementedException();
+                #else
+
                 using (var bmp = new System.Drawing.Bitmap(this.Width, this.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
                 {
                     var rect = new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height);
@@ -83,6 +92,8 @@ namespace TestImages.Bitmaps
 
                     bmp.Save(finfo.FullName);
                 }
+
+                #endif
             }
 
 

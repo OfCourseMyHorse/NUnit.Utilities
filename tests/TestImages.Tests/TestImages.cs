@@ -22,7 +22,7 @@ namespace TestImages
                 .AssertThat(Property.PixelHeight, Is.EqualTo(512))
                 .AssertThat(Property.PixelArea, Is.GreaterThan(0))
                 .AssertThat(Comparison.With("shannon.png").ByExactPixels, Is.True)
-                .SaveTo( new AttachmentInfo("result.jpg") );               
+                .SaveTo( new AttachmentInfo("result.jpg") );
         }
 
         [Test]

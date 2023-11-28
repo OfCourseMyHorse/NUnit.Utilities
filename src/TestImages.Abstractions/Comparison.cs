@@ -33,7 +33,7 @@ namespace TestImages
             get
             {
                 var img = _Image;
-                return other => img.GetBitmapRgba32().Equals(other.GetBitmapRgba32());
+                return other => img.BitmapRgba32.Equals(other.BitmapRgba32);
             }
         }
 
@@ -42,7 +42,7 @@ namespace TestImages
             get
             {
                 var img = _Image;
-                return other => Bitmaps.Bgra32.Bitmap.GetStandardDeviation(img.GetBitmapRgba32(), other.GetBitmapRgba32());
+                return other => Bitmaps.Bgra32.Bitmap.GetStandardDeviation(img.BitmapRgba32, other.BitmapRgba32);
             }
         }
 
@@ -51,7 +51,7 @@ namespace TestImages
             get
             {
                 var img = _Image;
-                return other => Bitmaps.Bgra32.Bitmap.GetVariance(img.GetBitmapRgba32(), other.GetBitmapRgba32());
+                return other => Bitmaps.Bgra32.Bitmap.GetVariance(img.BitmapRgba32, other.BitmapRgba32);
             }
         }
 
@@ -90,7 +90,7 @@ namespace TestImages
             get
             {
                 var img = _Image;
-                return other => other.GetBitmapRgba32().FindOccurences(img.GetBitmapRgba32()).Count();
+                return other => other.BitmapRgba32.FindOccurences(img.BitmapRgba32).Count();
             }
         }
     }

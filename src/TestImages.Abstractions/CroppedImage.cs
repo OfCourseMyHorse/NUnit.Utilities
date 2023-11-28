@@ -26,7 +26,7 @@ namespace TestImages
         protected override Bgra32.Bitmap CreateBitmapRgba32()
         {
             return _Source
-                .GetBitmapRgba32()
+                .BitmapRgba32
                 .Crop(_Bounds.Left, _Bounds.Top, _Bounds.Width, _Bounds.Height);
         }        
     }

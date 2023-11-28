@@ -25,10 +25,7 @@ namespace TestImages
 
         public static TestImage FromFile(System.IO.FileInfo finfo) { return new FileImage(finfo); }
 
-        protected TestImage()
-        {
-            _Rgba32Bitmap = new Lazy<Bitmaps.Bgra32.Bitmap>(CreateBitmapRgba32);
-        }
+        protected TestImage() { Invalidate(); }
 
         #endregion
 
@@ -40,12 +37,15 @@ namespace TestImages
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         private Lazy<Bitmaps.Bgra32.Bitmap> _Rgba32Bitmap;
 
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+        private Lazy<Byte[]> _PixelsSha256;
+
         /// <inheritdoc />
         public override int GetHashCode()
         {
             if (!_HashCode.HasValue)
             {
-                _HashCode = this.GetBitmapRgba32().GetHashCode();
+                _HashCode = this.BitmapRgba32.GetHashCode();
             }
 
             return _HashCode.Value;
@@ -64,8 +64,8 @@ namespace TestImages
 
             if (Object.ReferenceEquals(this, other)) return true;
 
-            var thisBitmap = this.GetBitmapRgba32();
-            var otherBitmap = other.GetBitmapRgba32();
+            var thisBitmap = this.BitmapRgba32;
+            var otherBitmap = other.BitmapRgba32;
             return Bitmaps.Bgra32.Bitmap.AreEqual(thisBitmap, otherBitmap);
         }
         
@@ -76,12 +76,29 @@ namespace TestImages
         /// <summary>
         /// Gets the image width, in pixels.
         /// </summary>
-        public abstract int Width { get; }
+        public virtual int Width => _Rgba32Bitmap.Value.Width;
 
         /// <summary>
         /// Gets the image height, in pixels.
         /// </summary>
-        public abstract int Height { get; }
+        public virtual int Height => _Rgba32Bitmap.Value.Height;
+
+        /// <summary>
+        /// Gets the underlaying bitmap, converted to Rgba32 format.
+        /// </summary>        
+        internal protected Bitmaps.Bgra32.Bitmap BitmapRgba32 => _Rgba32Bitmap.Value;
+
+        /// <summary>
+        /// Gets the Sha256 of the pixels.
+        /// </summary>
+        #pragma warning disable CA1819 // Properties should not return arrays
+        public virtual Byte[] PixelsSha256 => _PixelsSha256.Value;
+        #pragma warning restore CA1819 // Properties should not return arrays
+
+        /// <summary>
+        /// Gets the Sha256 of the pixels as an hexadecimal string.
+        /// </summary>
+        public string PixelsSha256Hex => string.Join("", PixelsSha256.Select(item=>item.ToString("X2")));
 
         #endregion
 
@@ -90,7 +107,8 @@ namespace TestImages
         protected virtual void Invalidate()
         {
             _HashCode = null;
-            _Rgba32Bitmap = new Lazy<Bitmaps.Bgra32.Bitmap>();
+            _Rgba32Bitmap = new Lazy<Bitmaps.Bgra32.Bitmap>(CreateBitmapRgba32);
+            _PixelsSha256 = new Lazy<Byte[]>(()=> _Rgba32Bitmap.Value.GetPixelsSha256());
         }
 
         /// <summary>
@@ -99,21 +117,22 @@ namespace TestImages
         /// <returns>A <see cref="Bitmaps.Bgra32.Bitmap"/> object.</returns>
         protected abstract Bitmaps.Bgra32.Bitmap CreateBitmapRgba32();
 
-        /// <summary>
-        /// Gets the underlaying bitmap, converted to Rgba32 format.
-        /// </summary>
-        /// <returns>A <see cref="Bitmaps.Bgra32.Bitmap"/> object.</returns>
-        internal protected Bitmaps.Bgra32.Bitmap GetBitmapRgba32()
-        {
-            return _Rgba32Bitmap.Value;
-        }
+        
+
 
         /// <summary>
-        /// Writes the framework image to a stream.
-        /// </summary>        
-        protected virtual void WriteTo(System.IO.FileInfo finfo)
+        /// Writes the image to a writing callback.
+        /// </summary>
+        /// <param name="writeCallback">The callback.</param>
+        /// <returns>Self</returns>
+        /// <remarks>
+        /// The callback is a placeholder for TestAttachments.NUnit's <see cref="AttachmentInfo"/> object
+        /// </remarks>
+        public TestImage SaveTo(Action<Action<System.IO.FileInfo>> writeCallback)
         {
-            GetBitmapRgba32().SaveTo(finfo);
+            writeCallback(finfo => SaveTo(finfo));
+
+            return this;
         }
 
         /// <summary>
@@ -138,25 +157,18 @@ namespace TestImages
         }
 
         /// <summary>
-        /// Writes the image to a writing callback.
-        /// </summary>
-        /// <param name="writeCallback">The callback.</param>
-        /// <returns>Self</returns>
-        /// <remarks>
-        /// The callback is a placeholder for TestAttachments.NUnit's <see cref="AttachmentInfo"/> object
-        /// </remarks>
-        public TestImage SaveTo(Action<Action<System.IO.FileInfo>> writeCallback)
+        /// Writes the framework image to a file.
+        /// </summary>        
+        protected virtual void WriteTo(System.IO.FileInfo finfo)
         {
-            writeCallback(finfo => SaveTo(finfo));
-
-            return this;
-        }
+            BitmapRgba32.SaveTo(finfo);
+        }       
 
         public TestImage Crop(int x, int y, int w, int h)
         {
             var rect = new System.Drawing.Rectangle(x, y, w, h);
             return new CroppedImage(this, rect);
-        }
+        }       
 
         #endregion
     }

@@ -15,12 +15,14 @@ namespace TestImages
         public static int PixelArea(TestImage image) => image.Width * image.Height;
         public static int PixelsHashCode(TestImage image) => image.GetHashCode();
 
+        public static string PixelsSha256Hex(TestImage image) => image.PixelsSha256Hex;
+
         /// <summary>
         /// Gets the average brightness of the image.
         /// </summary>        
         public static double AverageBrightness(TestImage image)
         {
-            return image.GetBitmapRgba32()
+            return image.BitmapRgba32
                 .EnumeratePixels()
                 .Select(pixel => (double)pixel.Brightness)
                 .Average();
@@ -31,7 +33,7 @@ namespace TestImages
         /// </summary>
         public static int TransparentPixelsCount(TestImage image)
         {
-            return image.GetBitmapRgba32()
+            return image.BitmapRgba32
                 .EnumeratePixels()
                 .Count(pixel => pixel.A == 0);
         }
@@ -41,7 +43,7 @@ namespace TestImages
         /// </summary>
         public static int OpaquePixelsCount(TestImage image)
         {
-            return image.GetBitmapRgba32()
+            return image.BitmapRgba32
                 .EnumeratePixels()
                 .Count(pixel => pixel.A == 255);
         }
@@ -51,7 +53,7 @@ namespace TestImages
         /// </summary>
         public static int NotOpaquePixelsCount(TestImage image)
         {
-            return image.GetBitmapRgba32()
+            return image.BitmapRgba32
                 .EnumeratePixels()
                 .Count(pixel => pixel.A != 255);
         }
@@ -60,7 +62,7 @@ namespace TestImages
         {
             int countColors(TestImage image)
             {
-                return image.GetBitmapRgba32().EnumeratePixels().Count(pixel => pixel == color);
+                return image.BitmapRgba32.EnumeratePixels().Count(pixel => pixel == color);
             }
 
             return countColors;

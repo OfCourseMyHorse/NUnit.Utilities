@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace TestImages.Bitmaps
@@ -21,11 +22,13 @@ namespace TestImages.Bitmaps
 
         private static unsafe BitmapRowEvaluator<T> _GetRowEvaluator(Byte[] pixels, int width, int height, int byteStride = 0)
         {
+            pixels ??= Array.Empty<Byte>();
+
             width *= sizeof(T); // pixels to bytes
 
             byteStride = Math.Max(byteStride, width);
 
-            if (pixels.Length < (byteStride * (height - 1)) + width) throw new ArgumentException(nameof(pixels));
+            if (pixels.Length < (byteStride * (height - 1)) + width) throw new ArgumentException("Invalid size for the given pixels.", nameof(pixels));
 
             ReadOnlySpan<T> getRow(int y)
             {
@@ -96,7 +99,7 @@ namespace TestImages.Bitmaps
         {
             if (object.ReferenceEquals(left, right)) return true;
             if (object.ReferenceEquals(left, null)) return false;
-            if (object.ReferenceEquals(left, null)) return false;
+            if (object.ReferenceEquals(right, null)) return false;
 
             if (left.Width != right.Width) return false;
             if (left.Height != right.Height) return false;
@@ -217,6 +220,11 @@ namespace TestImages.Bitmaps
             }
         }
 
+        /// <summary>
+        /// Finds all occurences of <paramref name="other"/> within this bitmap.
+        /// </summary>
+        /// <param name="other">A smaller bitmap</param>
+        /// <returns>The top left position in the large bitmap of each occurence.</returns>
         public IEnumerable<System.Drawing.Point> FindOccurences(Bitmap<T> other)
         {
             if (other.Width > this.Width) yield break;
@@ -231,6 +239,29 @@ namespace TestImages.Bitmaps
                     if (thisCrop.Equals(other)) yield return new System.Drawing.Point(x, y);
                 }
             }
+        }
+
+        public unsafe Byte[] GetPixelsSha256()
+        {
+            var byteLen = this.Width * this.Height * sizeof(T);
+
+            var bytes = new Byte[byteLen];
+
+            for(int y=0; y < this.Height; ++y)
+            {
+                var rowPixels = _RowEvaluator.Invoke(y);
+
+                System.Diagnostics.Debug.Assert(rowPixels.Length == this.Width);
+
+                var rowBytes = System.Runtime.InteropServices.MemoryMarshal.Cast<T, Byte>(rowPixels);
+
+                rowBytes.CopyTo(bytes.AsSpan(y * this.Width * sizeof(T)));
+            }
+
+            using (var sha256 = SHA256.Create())
+            {
+                return sha256.ComputeHash(bytes);
+            }            
         }
 
         #endregion
