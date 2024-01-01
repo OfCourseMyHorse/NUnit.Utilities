@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
+    <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
     <PackageReference Include="System.Text.Json" Version="8.0.0" />
   </ItemGroup>  
 
