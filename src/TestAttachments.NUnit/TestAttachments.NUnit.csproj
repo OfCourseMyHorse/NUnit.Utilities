@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net462;net6.0</TargetFrameworks>
+    <TargetFrameworks>net462;net6.0;net6.0-windows</TargetFrameworks>
     <IsTestProject>false</IsTestProject>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>  
 
   <PropertyGroup>
@@ -10,7 +11,7 @@
       Defines extensions and attributes to handle file attachments.
     </Description>
     <RootNamespace>NUnit.Framework</RootNamespace>
-    <PackageReadmeFile>README.MD</PackageReadmeFile>
+    <PackageReadmeFile>README.MD</PackageReadmeFile>    
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,8 +20,12 @@
 
   <ItemGroup>
     <PackageReference Include="NUnit" Version="4.0.1" />
-    <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />    
-  </ItemGroup>  
+    
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' ">    
+    <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
+  </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
     <PackageReference Include="System.Text.Json" Version="8.0.0" />
