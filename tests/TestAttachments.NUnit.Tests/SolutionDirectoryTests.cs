@@ -8,8 +8,8 @@ using NUnit.Framework;
 
 namespace TestAttachments
 {
-    [ResourcePathFormat("{SolutionDirectory}/Tests/ExtraResources")]
-    [AttachmentPathFormat("{SolutionDirectory}/Tests/TestResults/{ID}", true)]
+    [ResourcePathFormat("{SolutionDirectory}/tests/ExtraResources")]
+    [AttachmentPathFormat("{SolutionDirectory}/tests/TestResults/{ID}", true)]
     internal class SolutionDirectoryTests
     {
         [Test]
@@ -31,7 +31,7 @@ namespace TestAttachments
         }
 
         [Test]
-        [ResourcePathFormat("{\".gitignore\"}/Tests/ExtraResources")]        
+        [ResourcePathFormat("{\".gitignore\"}/tests/ExtraResources")]        
         public void WriteTextAttachmentFromGitIgnore()
         {
             var text = ResourceInfo
