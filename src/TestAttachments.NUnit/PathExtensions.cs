@@ -108,7 +108,7 @@ namespace NUnit.Framework
         {
             var tdir = context.GetAttachmentDirectoryInfo();
 
-            var t = new AttachmentInfo(context, "📂 Show Directory.lnk");
+            var t = new AttachmentInfo(context, "📂 Show Directory.url");
 
             t.WriteObjectEx(f=> ShortcutUtils.CreateLink(f.FullName, tdir.FullName) );
         }
