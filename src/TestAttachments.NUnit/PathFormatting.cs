@@ -76,8 +76,8 @@ namespace NUnit.Framework
             // shortcuts
 
             // this is the recommended path for tests: https://github.com/nunit/nunit/issues/1768#issuecomment-242454699
-            format = format.Replace("*", DefaultAttachmentFormat);
-            format = format.Replace("?", "{ID}");
+            format = format.Replace("*", DefaultAttachmentFormat, StringComparison.Ordinal);
+            format = format.Replace("?", "{ID}", StringComparison.Ordinal);
 
             return _FormatPath(format, context, context.WorkDirectory);
         }
@@ -96,7 +96,7 @@ namespace NUnit.Framework
 
             // shortcuts
             
-            format = format.Replace("*", DefaultResourceFormat);
+            format = format.Replace("*", DefaultResourceFormat, StringComparison.Ordinal);
 
             return _FormatPath(format, context, context.TestDirectory);
         }
@@ -119,7 +119,7 @@ namespace NUnit.Framework
                 {
                     var key = format.Substring(0, idx + 2);
                     var val = key.Substring(2, key.Length - 4).ToLower();
-                    _FindUpperFile(context, ref format, key, finfo => finfo.Name.ToLower() == val);
+                    _FindUpperFile(context, ref format, key, finfo => finfo.Name.ToLower() == val); // TODO: this is NOT cross platform
                 }
             }
 
@@ -138,29 +138,31 @@ namespace NUnit.Framework
 
             if (format.StartsWith("{")) throw new ArgumentException($"Invalid format: {format}", nameof(format));
 
-            format = format.Replace("{Date}", DateTime.Now.ToString("yyyyMMdd"));
-            format = format.Replace("{Time}", DateTime.Now.ToString("hhmmss"));
+            var casing = StringComparison.Ordinal;
 
-            format = format.Replace("{Id}", context.Test.ID);
-            format = format.Replace("{ID}", context.Test.ID);
-            format = format.Replace("{Name}", context.Test.Name);
-            format = format.Replace("{FullName}", context.Test.FullName);
-            format = format.Replace("{ClassName}", context.Test.ClassName);
-            format = format.Replace("{MethodName}", context.Test.MethodName);
+            format = format.Replace("{Date}", DateTime.Now.ToString("yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture), casing);
+            format = format.Replace("{Time}", DateTime.Now.ToString("hhmmss", System.Globalization.CultureInfo.InvariantCulture), casing);
 
-            format = format.Replace("{CurrentRepeatCount}", context.CurrentRepeatCount.ToString());
-            format = format.Replace("{WorkerId}", context.WorkerId);
+            format = format.Replace("{Id}", context.Test.ID, casing);
+            format = format.Replace("{ID}", context.Test.ID, casing);
+            format = format.Replace("{Name}", context.Test.Name, casing);
+            format = format.Replace("{FullName}", context.Test.FullName, casing);
+            format = format.Replace("{ClassName}", context.Test.ClassName, casing);
+            format = format.Replace("{MethodName}", context.Test.MethodName, casing);
 
-            format = format.Replace("{Category}", context.GetCurrentCategory());
+            format = format.Replace("{CurrentRepeatCount}", context.CurrentRepeatCount.ToString(), casing);
+            format = format.Replace("{WorkerId}", context.WorkerId, casing);
 
-            //--------------------------------------------------------- path sanitization:
+            format = format.Replace("{Category}", context.GetCurrentCategory(), casing);
 
-            format = format.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
+            //--------------------------------------------------------- path normalization:            
 
             if (defaultBasePath != null && !System.IO.Path.IsPathRooted(format))
             {
                 format = System.IO.Path.Combine(defaultBasePath, format);
-            }            
+            }
+
+            format = format.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
 
             return format;
         }
@@ -239,8 +241,10 @@ namespace NUnit.Framework
         {
             if (format == null) throw new ArgumentNullException(nameof(format));
             if (System.IO.Path.IsPathRooted(format)) throw new ArgumentException("Must be a relative path.", nameof(format));
-            if (format.Contains("..\\")) throw new ArgumentException("Must not redirect to outside directories.", nameof(format));
-            if (format.Contains("..//")) throw new ArgumentException("Must not redirect to outside directories.", nameof(format));
+
+
+            if (format.Contains(".." + System.IO.Path.DirectorySeparatorChar)) throw new ArgumentException("Must not redirect to outside directories.", nameof(format));
+            if (format.Contains(".." + System.IO.Path.AltDirectorySeparatorChar)) throw new ArgumentException("Must not redirect to outside directories.", nameof(format));
 
             var invalidChars = System.IO.Path.GetInvalidPathChars();
 

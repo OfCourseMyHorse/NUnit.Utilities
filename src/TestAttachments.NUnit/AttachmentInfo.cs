@@ -227,7 +227,7 @@ namespace NUnit.Framework
         private static void _AttachMarkdownTOC()
         {
             var toc = From("📂 Table of Contents.md");
-            var buri = new Uri(toc.File.Directory.FullName + "\\", UriKind.Absolute);
+            var buri = new Uri(toc.File.Directory.FullName + System.IO.Path.DirectorySeparatorChar, UriKind.Absolute);
 
             var attachments = TestExecutionContext.CurrentContext.CurrentResult.TestAttachments;
 
@@ -248,7 +248,7 @@ namespace NUnit.Framework
         private static void _AttachHtmlTOC()
         {
             var toc = From("📂 Table of Contents.html");
-            var buri = new Uri(toc.File.Directory.FullName + "\\", UriKind.Absolute);
+            var buri = new Uri(toc.File.Directory.FullName + System.IO.Path.DirectorySeparatorChar, UriKind.Absolute);
 
             var attachments = TestExecutionContext.CurrentContext.CurrentResult.TestAttachments;
 

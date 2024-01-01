@@ -6,6 +6,20 @@ namespace NUnit.Framework
 {
     internal static class _PrivateExtensions
     {
+        #if NETFRAMEWORK
+
+        public static string Replace(this string current, string oldValue, string newValue, StringComparison stringComparison)
+        {
+            if (stringComparison ==  StringComparison.OrdinalIgnoreCase || stringComparison == StringComparison.InvariantCultureIgnoreCase)
+            {
+                throw new NotImplementedException();
+            }
+
+            return current.Replace(oldValue, newValue);
+        }
+
+        #endif
+
         public static Uri ToUri(this System.IO.DirectoryInfo dinfo)
         {
             return dinfo == null
