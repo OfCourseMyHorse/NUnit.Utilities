@@ -22,7 +22,7 @@ namespace TestAttachments
 
         
         [Test]
-        [ResourcePathFormat("{SolutionDirectory}\\testdata")]
+        [ResourcePathFormat("{SolutionDirectory}/testdata")]
         public void TestCustomResourcePath()
         {
             var r = ResourceInfo.From("resource1.txt");
@@ -33,7 +33,7 @@ namespace TestAttachments
         }
 
         [Test]
-        [ResourcePathFormat("{SolutionDirectory}\\testdata")]
+        [ResourcePathFormat("{SolutionDirectory}/testdata")]
         public void TestWithTemplate()
         {
             var bytes = ResourceInfo.From("box.glb").ReadAllBytes();

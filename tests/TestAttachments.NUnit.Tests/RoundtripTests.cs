@@ -62,7 +62,7 @@ namespace TestAttachments
 
             TestContext.WriteLine(finfo);
 
-            Assert.That(finfo.FullName, Does.Contain("\\Explicit"));
+            Assert.That(finfo.FullName, Does.Contain("/Explicit"));
         }        
 
         [Test]        

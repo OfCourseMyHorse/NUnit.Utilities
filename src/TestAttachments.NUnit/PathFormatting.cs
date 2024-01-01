@@ -186,8 +186,8 @@ namespace NUnit.Framework
 
             if (idx > 0) throw new ArgumentException($"{macro} must appear at the beginning of {format}", nameof(format));
 
-            value = value.TrimEnd('\\');
-            value = value.TrimEnd('/');
+            value = value.TrimEnd(System.IO.Path.DirectorySeparatorChar);
+            value = value.TrimEnd(System.IO.Path.AltDirectorySeparatorChar);
 
             format = format.Substring(macro.Length);
             format = value + format;
