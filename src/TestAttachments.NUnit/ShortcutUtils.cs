@@ -35,6 +35,8 @@ namespace NUnit.Framework
 
             if (localLinkPath.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase))
             {
+                if (Environment.OSVersion.Platform != PlatformID.Win32NT) throw new ArgumentException(".lnk format not supported on this platform", nameof(localLinkPath));
+
                 byte[] content = null;
 
                 if (System.IO.Directory.Exists(targetPath))
