@@ -35,7 +35,7 @@ namespace NUnit.Framework
 
             if (localLinkPath.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase))
             {
-                #if WINDOWS
+                #if WINDOWS || NETFRAMEWORK
 
                 byte[] content = null;
 
