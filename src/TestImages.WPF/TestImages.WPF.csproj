@@ -4,6 +4,7 @@
     <TargetFrameworks>net462;net6.0-windows</TargetFrameworks>
     <UseWPF>true</UseWPF>        
     <RootNamespace>TestImages</RootNamespace>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>  
 
   <PropertyGroup>
