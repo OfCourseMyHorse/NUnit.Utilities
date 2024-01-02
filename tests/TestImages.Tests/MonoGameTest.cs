@@ -41,8 +41,9 @@ namespace Monogame
             _spriteBatch.Dispose();
             _texture.Dispose();
             base.TearDown();
-        }        
+        }
 
+        [Explicit] // cannot run on githun actions
         [Test]
         public void RenderTest()
         {
