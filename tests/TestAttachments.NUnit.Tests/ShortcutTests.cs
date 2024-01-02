@@ -17,13 +17,7 @@ namespace TestAttachments
             var txtdoc = AttachmentInfo.From("hello.txt").WriteAllText("hello world");
 
             AttachmentInfo.From("hello.url").WriteShortcut(txtdoc.FullName);
-            AttachmentInfo.From("open dir.url").WriteShortcut(txtdoc.Directory.FullName);
-
-            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-            {
-                AttachmentInfo.From("open dir.lnk").WriteShortcut(txtdoc.Directory.FullName);
-                AttachmentInfo.From("hello.lnk").WriteShortcut(txtdoc.FullName);
-            }            
+            AttachmentInfo.From("open dir.url").WriteShortcut(txtdoc.Directory.FullName);                
         }        
     }
 }

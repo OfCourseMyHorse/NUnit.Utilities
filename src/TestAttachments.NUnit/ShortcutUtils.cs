@@ -33,6 +33,7 @@ namespace NUnit.Framework
                 return localLinkPath;
             }
 
+            /* Removed .lnk support as being windows only.
             if (localLinkPath.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase))
             {
                 #if WINDOWS || NETFRAMEWORK
@@ -66,7 +67,7 @@ namespace NUnit.Framework
                 throw new ArgumentException(".lnk format not supported on this platform", nameof(localLinkPath));
 
                 #endif
-            }
+            }*/
 
             throw new ArgumentException("extension must be .url or .lnk", nameof(localLinkPath));
         }        
