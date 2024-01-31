@@ -40,15 +40,32 @@ namespace NUnit.Framework
             return new System.IO.DirectoryInfo(directoryPath);
         }
 
-        public static System.IO.FileInfo CombineWith(this System.IO.DirectoryInfo dinfo, string relativePath)
+        public static System.IO.FileInfo ConcatenateToFile(this System.IO.DirectoryInfo dinfo, params string[] relativePath)
         {
             if (relativePath == null) throw new ArgumentNullException(nameof(relativePath));
 
-            if (System.IO.Path.IsPathRooted(relativePath)) return new System.IO.FileInfo(relativePath);
+            if (relativePath.Length == 1)
+            {
+                if (System.IO.Path.IsPathRooted(relativePath[0])) return new System.IO.FileInfo(relativePath[0]);
+            }            
 
-            relativePath = System.IO.Path.Combine(dinfo.FullName, relativePath);
+            var finalPath = _PathUtils.ConcatenatePaths(dinfo.FullName, relativePath);
 
-            return new System.IO.FileInfo(relativePath);
+            return new System.IO.FileInfo(finalPath);
+        }
+
+        public static System.IO.DirectoryInfo ConcatenateToDirectory(this System.IO.DirectoryInfo dinfo, params string[] relativePath)
+        {
+            if (relativePath == null) throw new ArgumentNullException(nameof(relativePath));
+
+            if (relativePath.Length == 1)
+            {
+                if (System.IO.Path.IsPathRooted(relativePath[0])) return new System.IO.DirectoryInfo(relativePath[0]);
+            }
+
+            var finalPath = _PathUtils.ConcatenatePaths(dinfo.FullName, relativePath);
+
+            return new System.IO.DirectoryInfo(finalPath);
         }
     }
 }

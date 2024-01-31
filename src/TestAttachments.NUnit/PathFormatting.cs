@@ -77,6 +77,7 @@ namespace NUnit.Framework
 
             // this is the recommended path for tests: https://github.com/nunit/nunit/issues/1768#issuecomment-242454699
             format = format.Replace("*", DefaultAttachmentFormat, StringComparison.Ordinal);
+            format = format.Replace("{DefaultDirectory}", DefaultAttachmentFormat, StringComparison.Ordinal);
             format = format.Replace("?", "{ID}", StringComparison.Ordinal);
 
             return _FormatPath(format, context, context.WorkDirectory);
@@ -97,6 +98,7 @@ namespace NUnit.Framework
             // shortcuts
             
             format = format.Replace("*", DefaultResourceFormat, StringComparison.Ordinal);
+            format = format.Replace("{DefaultDirectory}", DefaultResourceFormat, StringComparison.Ordinal);
 
             return _FormatPath(format, context, context.TestDirectory);
         }
@@ -150,7 +152,7 @@ namespace NUnit.Framework
             format = format.Replace("{ClassName}", context.Test.ClassName, casing);
             format = format.Replace("{MethodName}", context.Test.MethodName, casing);
 
-            format = format.Replace("{CurrentRepeatCount}", context.CurrentRepeatCount.ToString(), casing);
+            format = format.Replace("{CurrentRepeatCount}", context.CurrentRepeatCount.ToString(System.Globalization.CultureInfo.InvariantCulture), casing);
             format = format.Replace("{WorkerId}", context.WorkerId, casing);
 
             format = format.Replace("{Category}", context.GetCurrentCategory(), casing);

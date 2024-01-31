@@ -147,21 +147,30 @@ namespace NUnit.Framework
             return _EndWriteAttachment();
         }        
 
-        public FILEINFO WriteAllBytes<T>(List<T> collection)
+        public FILEINFO WriteAllBytes<T>(IReadOnlyList<T> collection)
             where T:unmanaged
         {
-            #if NETFRAMEWORK
-            var span = collection.ToArray();
-            #else
-            var span = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(collection);
-            #endif
-
-            var bytes = System.Runtime.InteropServices.MemoryMarshal.Cast<T,Byte>(span);
-
-            return WriteAllBytes(bytes);
+            
+            switch(collection)
+            {
+                #if NET
+                case List<T> list:
+                    {
+                        var span = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(list);
+                        var bytes = System.Runtime.InteropServices.MemoryMarshal.Cast<T, Byte>(span);
+                        return WriteSpan(bytes);
+                    }
+                #endif
+                default:
+                    {
+                        var array = collection.ToArray();
+                        var bytes = System.Runtime.InteropServices.MemoryMarshal.Cast<T, Byte>(array);
+                        return WriteSpan(bytes);
+                    }
+            }            
         }
 
-        public FILEINFO WriteAllBytes(ReadOnlySpan<Byte> byteContent)
+        public FILEINFO WriteSpan(ReadOnlySpan<Byte> byteContent)
         {
             _BeginWriteAttachment();
 

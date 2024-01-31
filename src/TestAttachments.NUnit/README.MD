@@ -31,6 +31,7 @@ Predefined absolute path macross:
 | TestDirectory | context.TestDirectory |
 | TempDirectory | System.IO.Path.GetTempPath() |
 | CurrentDirectory | Environment.CurrentDirectory |
+| SolutionDirectory | finds the top most solution (.sln) file and takes its directory |
 
 predefined relative path macross:
 

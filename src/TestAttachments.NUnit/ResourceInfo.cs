@@ -17,7 +17,7 @@ namespace NUnit.Framework
     [System.Diagnostics.DebuggerDisplay("{ToDebuggerDisplay(),nq}")]
     public class ResourceInfo
     {
-        #region debug
+        #region diagnostics
 
         internal string ToDebuggerDisplay()
         {
@@ -35,9 +35,19 @@ namespace NUnit.Framework
 
         #endregion
 
-        #region lifecycle        
+        #region lifecycle
 
-        public static ResourceInfo From(string fileName) { return new ResourceInfo(fileName); }        
+        public static System.IO.DirectoryInfo ResolveDirectory(params string[] parts)
+        {
+            return ResolveDirectory(TestContext.CurrentContext, parts);
+        }
+
+        public static System.IO.DirectoryInfo ResolveDirectory(TestContext context, params string[] parts)
+        {
+            return context.GetResourceDirectoryInfo(parts);
+        }
+
+        public static ResourceInfo From(params string[] fileName) { return new ResourceInfo(fileName); }        
 
         public static IEnumerable<ResourceInfo> EnumerateFromDirectory(string mask, SearchOption options)
         {
@@ -57,7 +67,7 @@ namespace NUnit.Framework
         }
         #endif
 
-        public ResourceInfo(string fileName)
+        public ResourceInfo(params string[] fileName)
             : this(TestContext.CurrentContext, fileName) { }
         
 
@@ -67,7 +77,7 @@ namespace NUnit.Framework
             throw new NotImplementedException("we need a way to get information equivalent to a TestContext");            
         }
 
-        public ResourceInfo(TestContext context, string fileName)
+        public ResourceInfo(TestContext context, params string[] fileName)
         {
             var finfo = context.GetResourceFileInfo(fileName);
             _File = new Lazy<FileInfo>(() => _ResolveFileLink(finfo));

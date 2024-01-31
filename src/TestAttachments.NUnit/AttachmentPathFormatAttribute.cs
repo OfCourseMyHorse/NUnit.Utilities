@@ -9,7 +9,7 @@ namespace NUnit.Framework
     /// <inheritdoc/>
     [EditorBrowsable(EditorBrowsableState.Always)]
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-    public class AttachmentPathFormatAttribute : PathFormatAttribute
+    public sealed class AttachmentPathFormatAttribute : PathFormatAttribute
     {
         #region constructors
         
@@ -31,6 +31,8 @@ namespace NUnit.Framework
                 this.Properties.Add("AttachShowDirectoryShortcut", true);
             }
         }
+
+        
 
         #endregion
     }

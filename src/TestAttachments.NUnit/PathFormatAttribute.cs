@@ -13,6 +13,7 @@ namespace NUnit.Framework
     /// <para>
     /// <br/>
     /// predefined absolute path macross:<br/>
+    /// - {DefaultDirectory} = context.TestDirectory | context.WorkDirectory<br/>
     /// - {WorkDirectory} or * = context.WorkDirectory<br/>
     /// - {TestDirectory} = context.TestDirectory<br/>
     /// - {TempDirectory} = System.IO.Path.GetTempPath()<br/>
@@ -50,9 +51,15 @@ namespace NUnit.Framework
         /// Declares a directory formatter.
         /// </summary>
         /// <param name="format">Recommended patterns are: "?" , "*/?" or "*/yourClassName/?" </param>
-        public PathFormatAttribute(string format) : base(format) { }
+        protected PathFormatAttribute(string format) : base(format) { Format = format; }
 
-        #endregion        
+        #endregion
+
+        #region properties
+
+        public string Format { get; }
+
+        #endregion
 
         #region API
 

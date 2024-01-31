@@ -37,13 +37,24 @@ namespace NUnit.Framework
         }
 
         public void Dispose()
+        {            
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~AttachmentDirectory() { Dispose(false); }
+
+        protected virtual void Dispose(bool disposing)
         {
-            AttachAllFiles();
+            if (disposing)
+            {
+                AttachAllFiles();
 
-            System.Threading.Interlocked.Exchange(ref _Watcher, null)?.Dispose();
+                System.Threading.Interlocked.Exchange(ref _Watcher, null)?.Dispose();
 
-            var dir = System.Threading.Interlocked.Exchange(ref _PreviousWorkingDirectory, null);
-            if (!string.IsNullOrEmpty(dir)) Environment.CurrentDirectory = dir;
+                var dir = System.Threading.Interlocked.Exchange(ref _PreviousWorkingDirectory, null);
+                if (!string.IsNullOrEmpty(dir)) Environment.CurrentDirectory = dir;
+            }
         }
 
         private void _SetWatcher(string directory, bool includeSubDir = false)
@@ -82,7 +93,9 @@ namespace NUnit.Framework
 
         #region data        
 
-        private System.IO.FileSystemWatcher _Watcher;   // TODO: We must dispose
+        #pragma warning disable CA2213 // Disposable fields should be disposed
+        private System.IO.FileSystemWatcher _Watcher;
+        #pragma warning restore CA2213 // Disposable fields should be disposed
 
         private readonly System.Collections.Concurrent.ConcurrentDictionary<string, string> _Files = new System.Collections.Concurrent.ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
@@ -126,6 +139,10 @@ namespace NUnit.Framework
 
         #region API
 
+        /// <summary>
+        /// Sets the current directory to the directory pointed by this <see cref="AttachmentDirectory"/>
+        /// </summary>
+        [Obsolete("This is a dangerous method because multiple tests running concurrently can steal the current directory from each other.")]
         public void SetAsCurrentDirectory()
         {
             if (_Watcher == null) throw new ObjectDisposedException(nameof(AttachmentDirectory));

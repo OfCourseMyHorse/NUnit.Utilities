@@ -17,11 +17,24 @@ namespace NUnit.Framework
         /// <param name="context">The current test context</param>
         /// <param name="relativeFilePath"></param>
         /// <returns>A <see cref="System.IO.FileInfo"/> object.</returns>
-        public static System.IO.FileInfo GetResourceFileInfo(this TestContext context, string relativeFilePath)
+        public static System.IO.FileInfo GetResourceFileInfo(this TestContext context, params string[] relativeFilePath)
         {
             return context
                 .GetResourceDirectoryInfo()
-                .CombineWith(relativeFilePath);
+                .ConcatenateToFile(relativeFilePath);
+        }
+
+        /// <summary>
+        /// Gets a <see cref="System.IO.DirectoryInfo"/> for a test file attachment.
+        /// </summary>
+        /// <param name="context">The current test context</param>
+        /// <param name="relativeFilePath"></param>
+        /// <returns>A <see cref="System.IO.DirectoryInfo"/> object.</returns>
+        public static System.IO.DirectoryInfo GetResourceDirectoryInfo(this TestContext context, params string[] relativeFilePath)
+        {
+            return context
+                .GetResourceDirectoryInfo()
+                .ConcatenateToDirectory(relativeFilePath);
         }
 
         public static Uri GetResourceDirectoryUri(this TestContext context)
@@ -74,7 +87,7 @@ namespace NUnit.Framework
         {
             return context
                 .GetAttachmentDirectoryInfo()
-                .CombineWith(relativeFilePath);
+                .ConcatenateToFile(relativeFilePath);
         }
 
         public static Uri GetAttachmentDirectoryUri(this TestContext context)
