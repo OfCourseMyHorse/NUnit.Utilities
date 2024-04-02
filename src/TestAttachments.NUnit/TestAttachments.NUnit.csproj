@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>    
-    <PackageReference Include="NUnit" Version="4.0.1" />    
+    <PackageReference Include="NUnit" Version="4.1.0" />    
   </ItemGroup>
 
   <!--
@@ -29,7 +29,7 @@
   -->
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">    
-    <PackageReference Include="System.Text.Json" Version="8.0.1" />
+    <PackageReference Include="System.Text.Json" Version="8.0.3" />
     <!-- <PackageReference Include="securifybv.ShellLink" Version="0.1.0" /> -->
   </ItemGroup>  
 
