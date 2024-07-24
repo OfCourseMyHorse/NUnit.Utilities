@@ -129,11 +129,13 @@ namespace NUnit.Framework
 
             // input paths
             _ReplacePrefix(ref format, "{TestDirectory}", context.TestDirectory);
+            _ReplacePrefix(ref format, "{TestDirectoryRoot}", new System.IO.DirectoryInfo(context.TestDirectory).Root.FullName);
             _ReplacePrefix(ref format, "{AssemblyDirectory}", _GetAssemblyDirectory());
             _ReplacePrefix(ref format, "{ProcessDirectory}", _GetProcessDirectory());
 
             // output paths
             _ReplacePrefix(ref format, "{WorkDirectory}", context.WorkDirectory);
+            _ReplacePrefix(ref format, "{WorkDirectoryRoot}", new System.IO.DirectoryInfo(context.WorkDirectory).Root.FullName);
             _ReplacePrefix(ref format, "{TempDirectory}", System.IO.Path.GetTempPath());
 
             //--------------------------------------------------------- relative path macros:
@@ -151,6 +153,7 @@ namespace NUnit.Framework
             format = format.Replace("{FullName}", context.Test.FullName, casing);
             format = format.Replace("{ClassName}", context.Test.ClassName, casing);
             format = format.Replace("{MethodName}", context.Test.MethodName, casing);
+            format = format.Replace("{DisplayName}", context.Test.DisplayName, casing);            
 
             format = format.Replace("{CurrentRepeatCount}", context.CurrentRepeatCount.ToString(System.Globalization.CultureInfo.InvariantCulture), casing);
             format = format.Replace("{WorkerId}", context.WorkerId, casing);
