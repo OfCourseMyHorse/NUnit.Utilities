@@ -35,7 +35,7 @@ namespace NUnit.Framework
         /// <param name="self">The <see cref="TestImages.TestImage"/> image to test.</param>
         /// <param name="imageEvaluator">
         /// <para>A callback that evaluates the image into a measurable quantity.</para>
-        /// <para>Useful evaluators: <see cref="TestImages.Property"/> and <see cref="TestImages.Comparison"/></para>
+        /// <para>Useful evaluators: <see cref="TestImages.ImageProperty"/> and <see cref="TestImages.ImageComparison"/></para>
         /// </param>
         /// <param name="constraint">A Constraint expression to be applied.</param>
         /// <returns>Fluent self.</returns>

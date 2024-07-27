@@ -67,6 +67,20 @@ namespace TestImages.Bitmaps
 
         #region equality
 
+        public uint GetCheckSum()
+        {
+            var accum = _Crc32Accumulator.Create();
+            accum.AppendChecksum(_Width);
+            accum.AppendChecksum(_Height);
+
+            for (int y = 0; y < Height; y++)
+            {
+                accum.AppendChecksum(GetRow(y));         
+            }
+
+            return accum.Value;
+        }
+
         /// <inheritdoc />
         public override int GetHashCode()
         {
@@ -225,7 +239,7 @@ namespace TestImages.Bitmaps
         /// </summary>
         /// <param name="other">A smaller bitmap</param>
         /// <returns>The top left position in the large bitmap of each occurence.</returns>
-        public IEnumerable<System.Drawing.Point> FindOccurences(Bitmap<T> other)
+        public IEnumerable<System.Drawing.Point> FindOccurencesOf(Bitmap<T> other)
         {
             if (other.Width > this.Width) yield break;
             if (other.Height > this.Height) yield break;            
@@ -258,10 +272,14 @@ namespace TestImages.Bitmaps
                 rowBytes.CopyTo(bytes.AsSpan(y * this.Width * sizeof(T)));
             }
 
+            #if NET6_0_OR_GREATER
+            return SHA256.HashData(bytes);
+            #else
             using (var sha256 = SHA256.Create())
             {
                 return sha256.ComputeHash(bytes);
             }            
+            #endif
         }
 
         #endregion

@@ -18,10 +18,10 @@ namespace TestImages
             TestContext.CurrentContext.AttachFolderBrowserShortcut();
 
             WpfTestImage.Load("shannon.png")
-                .AssertThat(Property.PixelWidth, Is.EqualTo(512))
-                .AssertThat(Property.PixelHeight, Is.EqualTo(512))
-                .AssertThat(Property.PixelArea, Is.GreaterThan(0))
-                .AssertThat(Comparison.With("shannon.png").ByExactPixels, Is.True)
+                .AssertThat(ImageProperty.PixelWidth, Is.EqualTo(512))
+                .AssertThat(ImageProperty.PixelHeight, Is.EqualTo(512))
+                .AssertThat(ImageProperty.PixelArea, Is.GreaterThan(0))
+                .AssertThat(ImageComparison.With("shannon.png").ByExactPixels, Is.True)
                 .SaveTo( new AttachmentInfo("result.jpg") );
         }
 
@@ -34,10 +34,12 @@ namespace TestImages
 
             var crop = image.Crop(10, 10, 32, 32)
                 .SaveTo(new AttachmentInfo("result.jpg"))
-                .AssertThat(Property.PixelArea, Is.EqualTo(32*32))
-                .AssertThat(Property.PixelsHashCode, Is.EqualTo(300997758));
+                .AssertThat(ImageProperty.PixelArea, Is.EqualTo(32*32))
+                .AssertThat(ImageProperty.PixelsCheckSum, Is.EqualTo(2540420981u));
 
-            image.AssertThat(Comparison.With(crop).ByOccurrences, Is.EqualTo(1));
+            Assert.That(image.ComparedWith(crop).ByOccurrences, Is.EqualTo(1));
+
+            image.AssertThat(ImageComparison.With(crop).ByOccurrences, Is.EqualTo(1));
         }
 
         [Test]
@@ -46,9 +48,9 @@ namespace TestImages
             TestContext.CurrentContext.AttachFolderBrowserShortcut();
 
             TestImage.FromFile("shannon.png")
-                .AssertThat(Property.AverageBrightness, Is.GreaterThan(0.35))
-                .AssertThat(Property.NotOpaquePixelsCount, Is.EqualTo(0))
-                .AssertThat(Property.Count(System.Drawing.Color.FromArgb(100,120,32)) , Is.EqualTo(0));
+                .AssertThat(ImageProperty.AverageBrightness, Is.GreaterThan(0.35))
+                .AssertThat(ImageProperty.NotOpaquePixelsCount, Is.EqualTo(0))
+                .AssertThat(ImageProperty.Count(System.Drawing.Color.FromArgb(100,120,32)) , Is.EqualTo(0));
 
         }
 
@@ -56,10 +58,10 @@ namespace TestImages
         public void TestStandardDeviation()
         {            
             TestImage.FromFile("shannon.jpg")
-                .AssertThat(Property.PixelWidth, Is.EqualTo(512))
-                .AssertThat(Property.PixelHeight, Is.EqualTo(512))
-                .AssertThat(Property.PixelArea, Is.GreaterThan(0))
-                .AssertThat(Comparison.With("shannon.png").ByStandardDeviation, Is.LessThan(0.03));            
+                .AssertThat(ImageProperty.PixelWidth, Is.EqualTo(512))
+                .AssertThat(ImageProperty.PixelHeight, Is.EqualTo(512))
+                .AssertThat(ImageProperty.PixelArea, Is.GreaterThan(0))
+                .AssertThat(ImageComparison.With("shannon.png").ByStandardDeviation, Is.LessThan(0.03));            
         }
     }
 }

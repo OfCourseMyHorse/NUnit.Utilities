@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TestImages
@@ -12,9 +13,14 @@ namespace TestImages
     /// Represents a bitmap that can be used for testing purposes.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The framework image may have a different pixel format,
     /// representation or might contain rich metadata, so comparison operations
-    /// are performed using an internal bitmap using RGBA32 color space.
+    /// are performed using an internal bitmap using RGBA32 color space.    
+    /// </para>
+    /// <para>
+    /// Derived classes: <see cref="CroppedImage"/> , <see cref="FileImage"/>
+    /// </para>
     /// </remarks>
     [System.Diagnostics.DebuggerDisplay("TestImage: {Width}×{Height}")]
     public abstract partial class TestImage : IEquatable<TestImage>
@@ -35,19 +41,25 @@ namespace TestImages
         private int? _HashCode;
 
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
+        private uint? _CheckSum;
+
+        [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         private Lazy<Bitmaps.Bgra32.Bitmap> _Rgba32Bitmap;
 
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
         private Lazy<Byte[]> _PixelsSha256;
 
         /// <inheritdoc />
+
+        public uint GetCheckSum()
+        {
+            _CheckSum ??= this.BitmapRgba32.GetCheckSum();
+            return _CheckSum.Value;
+        }
+
         public override int GetHashCode()
         {
-            if (!_HashCode.HasValue)
-            {
-                _HashCode = this.BitmapRgba32.GetHashCode();
-            }
-
+            _HashCode ??= this.BitmapRgba32.GetHashCode();
             return _HashCode.Value;
         }
 
@@ -98,7 +110,13 @@ namespace TestImages
         /// <summary>
         /// Gets the Sha256 of the pixels as an hexadecimal string.
         /// </summary>
-        public string PixelsSha256Hex => string.Join("", PixelsSha256.Select(item=>item.ToString("X2")));
+        public string PixelsSha256Hex
+        {
+            get
+            {
+                return string.Join("", PixelsSha256.Select(item => item.ToString("X2", System.Globalization.CultureInfo.InvariantCulture)));
+            }
+        }
 
         #endregion
 
@@ -111,14 +129,21 @@ namespace TestImages
             _PixelsSha256 = new Lazy<Byte[]>(()=> _Rgba32Bitmap.Value.GetPixelsSha256());
         }
 
+        public TestImage Crop(int x, int y, int w, int h)
+        {
+            var rect = new System.Drawing.Rectangle(x, y, w, h);
+            return new CroppedImage(this, rect);
+        }
+
         /// <summary>
         /// used to convert from the framework image being tested to our internal bitmap format.
         /// </summary>
         /// <returns>A <see cref="Bitmaps.Bgra32.Bitmap"/> object.</returns>
         protected abstract Bitmaps.Bgra32.Bitmap CreateBitmapRgba32();
 
-        
+        #endregion
 
+        #region serialization
 
         /// <summary>
         /// Writes the image to a writing callback.
@@ -162,13 +187,13 @@ namespace TestImages
         protected virtual void WriteTo(System.IO.FileInfo finfo)
         {
             BitmapRgba32.SaveTo(finfo);
-        }       
+        }
 
-        public TestImage Crop(int x, int y, int w, int h)
-        {
-            var rect = new System.Drawing.Rectangle(x, y, w, h);
-            return new CroppedImage(this, rect);
-        }       
+        #endregion
+
+        #region testing
+
+        public TestImageComparingPair ComparedWith(TestImage other) { return new TestImageComparingPair(this, other); }
 
         #endregion
     }

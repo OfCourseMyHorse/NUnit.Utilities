@@ -13,16 +13,7 @@ namespace TestImages.Bitmaps
         [System.Diagnostics.DebuggerDisplay("{Width}×{Height}")]
         public sealed partial class Bitmap : Bitmap<Bgra32>
         {
-            public Bitmap(byte[] pixels, int width, int height, int byteStride = 0)
-                : base(pixels, width, height, byteStride)
-            { }            
-
-            public new Bitmap Crop(int x, int y, int w, int h)
-            {
-                var bmp = new Bitmap(Array.Empty<Byte>(), 0, 0);
-                bmp.CropFrom(this, x, y, w, h);
-                return bmp;
-            }
+            #region serialization
 
             public static unsafe Bitmap LoadFrom(System.IO.FileInfo finfo)
             {
@@ -96,6 +87,25 @@ namespace TestImages.Bitmaps
                 #endif
             }
 
+            #endregion
+
+            #region lifecycle
+
+            public Bitmap(byte[] pixels, int width, int height, int byteStride = 0)
+                : base(pixels, width, height, byteStride)
+            { }
+
+            #endregion
+
+            #region API
+
+            public new Bitmap Crop(int x, int y, int w, int h)
+            {
+                var bmp = new Bitmap(Array.Empty<Byte>(), 0, 0);
+                bmp.CropFrom(this, x, y, w, h);
+                return bmp;
+            }           
+
 
             public static double GetStandardDeviation(Bitmap a, Bitmap b)
             {
@@ -115,6 +125,8 @@ namespace TestImages.Bitmaps
 
                 return variance.Variance;
             }
+
+            #endregion
         }
     }
 }

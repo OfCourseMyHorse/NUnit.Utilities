@@ -6,6 +6,8 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Advanced;
 using SixLabors.ImageSharp.PixelFormats;
 
+using TestImages;
+
 namespace SixLabors.ImageSharp
 {
     public static class ImageTesting
@@ -34,58 +36,57 @@ namespace SixLabors.ImageSharp
 
         internal static Type GetPixelType(this Image image)
         {
-            if (image is Image<L8> l8) return typeof(L8);
-            if (image is Image<L16> l16) return typeof(L16);            
-            if (image is Image<La16> la16) return typeof(La16);
-            if (image is Image<La32> la32) return typeof(La32);
-
-            if (image is Image<Bgra4444> bgra4444) return typeof(Bgra4444);
-            if (image is Image<Bgra5551> bgra5551) return typeof(Bgra5551);
-            if (image is Image<Bgr565> bgr565) return typeof(Bgr565);
-            if (image is Image<Bgr24> bgr24) return typeof(Bgr24);
-            if (image is Image<Rgb24> rgb24) return typeof(Rgb24);
-
-            if (image is Image<Bgra32> bgra32) return typeof(Bgra32);
-            if (image is Image<Rgba32> rgba32) return typeof(Rgba32);
-            if (image is Image<Argb32> argb32) return typeof(Argb32);
-
-            if (image is Image<Rgb48> rgb48) return typeof(Rgb48);
-            if (image is Image<Rgba64> rgba64) return typeof(Rgba64);
-            if (image is Image<Rgba1010102> rgba1010102) return typeof(Rgba1010102);
-
-            if (image is Image<RgbaVector> rgbaVector) return typeof(RgbaVector);
-
-            // todo: could implement reflection here.
-
-            throw new NotImplementedException();
+            switch (image)
+            {
+                case Image<L8> typed: return typeof(L8);
+                case Image<L16> typed: return typeof(L16);
+                case Image<La16> typed: return typeof(La16);
+                case Image<La32> typed: return typeof(La32);
+                case Image<Bgra4444> typed: return typeof(Bgra4444);
+                case Image<Bgra5551> typed: return typeof(Bgra5551);
+                case Image<Bgr565> typed: return typeof(Bgr565);
+                case Image<Bgr24> typed: return typeof(Bgr24);
+                case Image<Rgb24> typed: return typeof(Rgb24);
+                case Image<Bgra32> typed: return typeof(Bgra32);
+                case Image<Rgba32> typed: return typeof(Rgba32);
+                case Image<Argb32> typed: return typeof(Argb32);
+                case Image<Rgb48> typed: return typeof(Rgb48);
+                case Image<Rgba64> typed: return typeof(Rgba64);
+                case Image<Rgba1010102> typed: return typeof(Rgba1010102);
+                case Image<RgbaVector> typed: return typeof(RgbaVector);
+                default:
+                    // todo: could implement reflection here.
+                    throw new NotImplementedException();
+            }
         }
 
+        [Obsolete("Use GetPixelsCheckSum")]
         internal static int GetPixelsHashCode(this Image image)
         {
-            if (image is Image<L8> l8) return l8.GetPixelsHashCode();
-            if (image is Image<L16> l16) return l16.GetPixelsHashCode();            
-            if (image is Image<La16> la16) return la16.GetPixelsHashCode();
-            if (image is Image<La32> la32) return la32.GetPixelsHashCode();
+            switch (image)
+            {
+                case Image<L8> typed: return typed.GetPixelsHashCode();
+                case Image<L16> typed: return typed.GetPixelsHashCode();
+                case Image<La16> typed: return typed.GetPixelsHashCode();
+                case Image<La32> typed: return typed.GetPixelsHashCode();
+                case Image<Bgra4444> typed: return typed.GetPixelsHashCode();
+                case Image<Bgra5551> typed: return typed.GetPixelsHashCode();
+                case Image<Bgr565> typed: return typed.GetPixelsHashCode();
+                case Image<Bgr24> typed: return typed.GetPixelsHashCode();
+                case Image<Rgb24> typed: return typed.GetPixelsHashCode();
+                case Image<Bgra32> typed: return typed.GetPixelsHashCode();
+                case Image<Rgba32> typed: return typed.GetPixelsHashCode();
+                case Image<Argb32> typed: return typed.GetPixelsHashCode();
+                case Image<Rgb48> typed: return typed.GetPixelsHashCode();
+                case Image<Rgba64> typed: return typed.GetPixelsHashCode();
+                case Image<Rgba1010102> typed: return typed.GetPixelsHashCode();
+                case Image<RgbaVector> typed: return typed.GetPixelsHashCode();
+                default:
+                    throw new NotImplementedException();
+            }
+        }
 
-            if (image is Image<Bgra4444> bgra4444) return bgra4444.GetPixelsHashCode();
-            if (image is Image<Bgra5551> bgra5551) return bgra5551.GetPixelsHashCode();
-            if (image is Image<Bgr565> bgr565) return bgr565.GetPixelsHashCode();
-            if (image is Image<Bgr24> bgr24) return bgr24.GetPixelsHashCode();
-            if (image is Image<Rgb24> rgb24) return rgb24.GetPixelsHashCode();
-
-            if (image is Image<Bgra32> bgra32) return bgra32.GetPixelsHashCode();
-            if (image is Image<Rgba32> rgba32) return rgba32.GetPixelsHashCode();
-            if (image is Image<Argb32> argb32) return argb32.GetPixelsHashCode();
-
-            if (image is Image<Rgb48> rgb48) return rgb48.GetPixelsHashCode();
-            if (image is Image<Rgba64> rgba64) return rgba64.GetPixelsHashCode();
-            if (image is Image<Rgba1010102> rgba1010102) return rgba1010102.GetPixelsHashCode();
-
-            if (image is Image<RgbaVector> rgbaVector) return rgbaVector.GetPixelsHashCode();
-
-            throw new NotImplementedException();
-        }       
-
+        [Obsolete("Use GetPixelsCheckSum")]
         internal static int GetPixelsHashCode<TPixel>(this Image<TPixel> image) where TPixel : unmanaged, IPixel<TPixel>
         {
             int h = 0;
@@ -129,16 +130,56 @@ namespace SixLabors.ImageSharp
             return h;
         }
 
+        internal static uint GetPixelsCheckSum(this Image image)
+        {
+            switch (image)
+            {
+                case Image<L8> typed: return typed.GetPixelsCheckSum();
+                case Image<L16> typed: return typed.GetPixelsCheckSum();
+                case Image<La16> typed: return typed.GetPixelsCheckSum();
+                case Image<La32> typed: return typed.GetPixelsCheckSum();
+                case Image<Bgra4444> typed: return typed.GetPixelsCheckSum();
+                case Image<Bgra5551> typed: return typed.GetPixelsCheckSum();
+                case Image<Bgr565> typed: return typed.GetPixelsCheckSum();
+                case Image<Bgr24> typed: return typed.GetPixelsCheckSum();
+                case Image<Rgb24> typed: return typed.GetPixelsCheckSum();
+                case Image<Bgra32> typed: return typed.GetPixelsCheckSum();
+                case Image<Rgba32> typed: return typed.GetPixelsCheckSum();
+                case Image<Argb32> typed: return typed.GetPixelsCheckSum();
+                case Image<Rgb48> typed: return typed.GetPixelsCheckSum();
+                case Image<Rgba64> typed: return typed.GetPixelsCheckSum();
+                case Image<Rgba1010102> typed: return typed.GetPixelsCheckSum();
+                case Image<RgbaVector> typed: return typed.GetPixelsCheckSum();
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        internal static uint GetPixelsCheckSum<TPixel>(this Image<TPixel> image) where TPixel : unmanaged, IPixel<TPixel>
+        {
+            var accum = _Crc32Accumulator.Create();
+            accum.AppendChecksum(image.Width);
+            accum.AppendChecksum(image.Height);
+
+            foreach(var pix in GetPixels(image))
+            {
+                accum.AppendChecksum(pix);
+            }
+
+            return accum.Value;
+        }
+
         internal static IEnumerable<TPixel> GetPixels<TPixel>(this Image<TPixel> image) where TPixel : unmanaged, IPixel<TPixel>
         {
             var row = new TPixel[image.Width];
 
             for(int y=0; y<image.Height; y++)
             {
-                image.DangerousGetPixelRowMemory(y).CopyTo(row);
+                image.DangerousGetPixelRowMemory(y).CopyTo(row);                
 
                 for (int x = 0; x < row.Length; x++)
                 {
+                    var v = row[x];
                     yield return row[x];
                 }
             }

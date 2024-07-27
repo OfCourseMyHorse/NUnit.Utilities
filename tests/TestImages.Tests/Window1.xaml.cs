@@ -44,9 +44,9 @@ namespace TestImages
         {
             var image1 = WpfTestImage
                 .FromRender(this)
-                .AssertThat(Property.PixelArea, Is.GreaterThan(0))
+                .AssertThat(ImageProperty.PixelArea, Is.GreaterThan(0))
                 .SaveTo(AttachmentInfo.From("window1.png", "Window1 render") )
-                .AssertThat(Property.PixelsHashCode, Is.EqualTo(1650243072));            
+                .AssertThat(ImageProperty.PixelsHashCode, Is.EqualTo(1650243072));            
 
             // run command
             ButtonAClickCmd.Execute(null);
@@ -58,9 +58,9 @@ namespace TestImages
 
             var image2 = WpfTestImage
                 .FromRender(this)
-                .AssertThat(Property.PixelArea, Is.GreaterThan(0))
+                .AssertThat(ImageProperty.PixelArea, Is.GreaterThan(0))
                 .SaveTo(AttachmentInfo.From("window2.png", "Window1 render after changes"))
-                .AssertThat(Property.PixelsHashCode, Is.EqualTo(-885369488));
+                .AssertThat(ImageProperty.PixelsHashCode, Is.EqualTo(-885369488));
 
         }        
     }

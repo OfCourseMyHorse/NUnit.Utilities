@@ -32,7 +32,7 @@ namespace TestImages
                 return SixLabors.ImageSharp.ImageTesting.GetPixelsHashCode(ximage.Image);
             }
 
-            return Property.PixelsHashCode(image);
+            return ImageProperty.PixelsHashCode(image);
         }        
     }
 }

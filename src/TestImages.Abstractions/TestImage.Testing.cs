@@ -19,7 +19,7 @@ namespace TestImages
         /// <summary>
         /// checks that bitmap hash code is one of the provided hash codes
         /// </summary>
-        /// <param name="hashCodes">A collection of valid hash codes.</param>
+        /// <param name="checkSums">A collection of valid hash codes.</param>
         /// <returns>true if this hash is included in the collection</returns>
         /// <remarks>
         /// Theoretically a runtime rendered bitmap should only have one hash code,
@@ -27,9 +27,26 @@ namespace TestImages
         /// Operating Systems, graphics adapters, installed fonts, etc.
         /// So it is safe to check against different codes, based on these variations.
         /// </remarks>
-        public bool HashCodeIsAnyOf(params int[] hashCodes)
+        [Obsolete("Use CheckSumIsAnyOf")]
+        public bool HashCodeIsAnyOf(params int[] checkSums)
         {
-            return hashCodes.Contains(this.GetHashCode());            
+            return checkSums.Contains(this.GetHashCode());            
+        }
+
+        /// <summary>
+        /// checks that bitmap checksum is one of the provided hash codes
+        /// </summary>
+        /// <param name="checkSums">A collection of valid hash codes.</param>
+        /// <returns>true if this hash is included in the collection</returns>
+        /// <remarks>
+        /// Theoretically a runtime rendered bitmap should only have one hash code,
+        /// but there can be subtle rendering differences between machines due to:
+        /// Operating Systems, graphics adapters, installed fonts, etc.
+        /// So it is safe to check against different codes, based on these variations.
+        /// </remarks>
+        public bool CheckSumIsAnyOf(params uint[] checkSums)
+        {
+            return checkSums.Contains(this.GetCheckSum());
         }
 
         #if NET6_0_OR_GREATER
@@ -44,6 +61,7 @@ namespace TestImages
         #if NET6_0_OR_GREATER
         [System.Diagnostics.StackTraceHidden]
         #endif
+        [Obsolete("use AssertCheckSumIsAnyOf")]
         public TestImage AssertHashCodeIsAnyOf(params int[] hashCodes)
         {
             var h = this.GetHashCode();
@@ -53,6 +71,25 @@ namespace TestImages
                 var expected = hashCodes.Length == 1
                     ? hashCodes[0].ToString()
                     : "any of " + string.Join(", ", hashCodes);
+
+                Exceptions.ReportFail($"Expected {expected} but was: {h}");
+            }
+
+            return this;
+        }
+
+        #if NET6_0_OR_GREATER
+        [System.Diagnostics.StackTraceHidden]
+        #endif        
+        public TestImage AssertCheckSumIsAnyOf(params uint[] checkSums)
+        {
+            var h = this.GetCheckSum();
+
+            if (!checkSums.Contains(h))
+            {
+                var expected = checkSums.Length == 1
+                    ? checkSums[0].ToString()
+                    : "any of " + string.Join(", ", checkSums);
 
                 Exceptions.ReportFail($"Expected {expected} but was: {h}");
             }

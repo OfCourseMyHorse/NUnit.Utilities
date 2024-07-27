@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace TestImages
 {
     /// <summary>
     /// General image properties, and pixel properties in BGRA32 space.
     /// </summary>
-    public static class Property
+    public static class ImageProperty
     {
         public static int PixelWidth(TestImage image) => image.Width;
         public static int PixelHeight(TestImage image) => image.Height;
         public static int PixelArea(TestImage image) => image.Width * image.Height;
+
+        [Obsolete("Use PixelCheckSum")]
         public static int PixelsHashCode(TestImage image) => image.GetHashCode();
+        public static uint PixelsCheckSum(TestImage image) => image.GetCheckSum();
 
         public static string PixelsSha256Hex(TestImage image) => image.PixelsSha256Hex;
 
