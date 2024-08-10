@@ -111,8 +111,11 @@ namespace NUnit.Framework
 
             //--------------------------------------------------------- absolute path macros (format can only have one of those):            
 
+            _FindUpperDirectory(context, ref format, "{RepositoryRoot}", dinfo => dinfo.IsRepositoryDatabase());
+
             _FindUpperFile(context, ref format, "{SolutionDirectory}", finfo => finfo.Extension.ToLower().EndsWith("sln"));
             _FindUpperFile(context, ref format, "{ProjectDirectory}", finfo => finfo.Extension.ToLower().EndsWith("csproj"));
+            
 
             if (format.Length > 4 && format.StartsWith("{\"")) // handle "{\"somefilename.ext\"}\whatever\whatever"
             {                
@@ -184,6 +187,14 @@ namespace NUnit.Framework
             _ReplacePrefix(ref format, macro, dir);
         }
 
+        private static void _FindUpperDirectory(TestContext context, ref string format, string macro, Predicate<System.IO.DirectoryInfo> predicate)
+        {
+            var dir = _FindUpperDirectoryWithDirectory(context.TestDirectory, predicate);
+            if (dir == null) return;
+
+            _ReplacePrefix(ref format, macro, dir);
+        }
+
         private static void _ReplacePrefix(ref string format, string macro, string value)
         {
             var idx = format.IndexOf(macro);
@@ -242,6 +253,21 @@ namespace NUnit.Framework
             return null;
         }
 
+        private static string _FindUpperDirectoryWithDirectory(string fromDirectoryPath, Predicate<System.IO.DirectoryInfo> predicate)
+        {
+            var dir = new System.IO.DirectoryInfo(fromDirectoryPath);
+            if (!dir.Exists) return null;
+
+            while (dir != null)
+            {
+                if (dir.EnumerateDirectories().Any(f => predicate(f))) return dir.FullName;
+
+                dir = dir.Parent;
+            }
+
+            return null;
+        }
+
         private static void _GuardIsValidRelativePath(this string format)
         {
             if (format == null) throw new ArgumentNullException(nameof(format));
@@ -256,6 +282,6 @@ namespace NUnit.Framework
             if (format.Any(invalidChars.Contains)) throw new ArgumentException("Must not contain invalid chars", nameof(format));
         }
 
-#endregion
+        #endregion
     }
 }

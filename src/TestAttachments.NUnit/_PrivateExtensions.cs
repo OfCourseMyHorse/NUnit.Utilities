@@ -20,6 +20,21 @@ namespace NUnit.Framework
 
         #endif
 
+        public static bool IsRepositoryDatabase(this System.IO.DirectoryInfo dinfo)
+        {
+            if (dinfo.Name == ".svn")
+            {
+                return true;
+            }
+
+            if (dinfo.Name == ".git")
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public static Uri ToUri(this System.IO.DirectoryInfo dinfo)
         {
             return dinfo == null
