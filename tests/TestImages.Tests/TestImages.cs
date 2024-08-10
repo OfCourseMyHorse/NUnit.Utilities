@@ -35,9 +35,9 @@ namespace TestImages
             var crop = image.Crop(10, 10, 32, 32)
                 .SaveTo(new AttachmentInfo("result.jpg"))
                 .AssertThat(ImageProperty.PixelArea, Is.EqualTo(32*32))
-                .AssertThat(ImageProperty.PixelsCheckSum, Is.EqualTo(2540420981u));
+                .AssertThat(ImageProperty.CheckSum, Is.EqualTo(2540420981u));
 
-            Assert.That(image.ComparedWith(crop).ByOccurrences, Is.EqualTo(1));
+            Assert.That(image.ComparedTo(crop).ByOccurrences, Is.EqualTo(1));
 
             image.AssertThat(ImageComparison.With(crop).ByOccurrences, Is.EqualTo(1));
         }
