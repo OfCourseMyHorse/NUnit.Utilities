@@ -29,11 +29,11 @@ namespace TestImages
 
         #region properties
 
-        public bool ByExactPixels => _Left.BitmapRgba32.Equals(_Right.BitmapRgba32);
+        public bool ByExactPixels => _Left._GetBitmapRgba32().Equals(_Right._GetBitmapRgba32());
 
-        public double ByStandardDeviation => Bitmaps.Bgra32.Bitmap.GetStandardDeviation(_Left.BitmapRgba32, _Right.BitmapRgba32);
+        public double ByStandardDeviation => Bitmaps.Bgra32.Bitmap.GetStandardDeviation(_Left._GetBitmapRgba32(), _Right._GetBitmapRgba32());
 
-        public double ByVariance => Bitmaps.Bgra32.Bitmap.GetVariance(_Left.BitmapRgba32, _Right.BitmapRgba32);
+        public double ByVariance => Bitmaps.Bgra32.Bitmap.GetVariance(_Left._GetBitmapRgba32(), _Right._GetBitmapRgba32());
 
         public int ByPixelWidth => _Left.Width - _Right.Width;
 
@@ -56,7 +56,7 @@ namespace TestImages
         {
             get
             {
-                return _Left.BitmapRgba32.FindOccurencesOf(_Right.BitmapRgba32).Count();
+                return _Left._GetBitmapRgba32().FindOccurencesOf(_Right._GetBitmapRgba32()).Count();
             }
         }
 

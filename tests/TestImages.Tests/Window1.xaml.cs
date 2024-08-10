@@ -46,7 +46,7 @@ namespace TestImages
                 .FromRender(this)
                 .AssertThat(ImageProperty.PixelArea, Is.GreaterThan(0))
                 .SaveTo(AttachmentInfo.From("window1.png", "Window1 render") )
-                .AssertThat(ImageProperty.PixelsHashCode, Is.EqualTo(1650243072));            
+                .AssertThat(ImageProperty.CheckSum, Is.EqualTo(4030796632));            
 
             // run command
             ButtonAClickCmd.Execute(null);
@@ -60,7 +60,7 @@ namespace TestImages
                 .FromRender(this)
                 .AssertThat(ImageProperty.PixelArea, Is.GreaterThan(0))
                 .SaveTo(AttachmentInfo.From("window2.png", "Window1 render after changes"))
-                .AssertThat(ImageProperty.PixelsHashCode, Is.EqualTo(-885369488));
+                .AssertThat(ImageProperty.CheckSum, Is.EqualTo(201499534));
 
         }        
     }

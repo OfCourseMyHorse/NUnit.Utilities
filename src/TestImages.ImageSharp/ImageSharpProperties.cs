@@ -24,7 +24,8 @@ namespace TestImages
 
         /// <summary>
         /// calculates the hash code of the image pixels in their native pixel format.
-        /// </summary>        
+        /// </summary>
+        [Obsolete("Use Checksum", true)]
         public static int PixelsHashCode(TestImage image)
         {
             if (image is _ImageSharpTestImage ximage)
@@ -33,6 +34,16 @@ namespace TestImages
             }
 
             return ImageProperty.PixelsHashCode(image);
-        }        
+        }
+
+        public static uint Checksum(TestImage image)
+        {
+            if (image is _ImageSharpTestImage ximage)
+            {
+                return SixLabors.ImageSharp.ImageTesting.GetPixelsCheckSum(ximage.Image);
+            }
+
+            return ImageProperty.CheckSum(image);
+        }
     }
 }

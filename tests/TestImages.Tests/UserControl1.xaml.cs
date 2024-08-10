@@ -26,7 +26,7 @@ namespace TestImages
                 .FromRender(this)                                                       // renders this WPF control to a bitmap.
                 .AssertThat(ImageProperty.PixelArea, Is.GreaterThan(0))
                 .SaveTo(AttachmentInfo.From("render.png"))                          // saves the bitmap to current test directory.                
-                .AssertThat(ImageProperty.PixelsHashCode, Is.EqualTo(79668204))
+                .AssertThat(ImageProperty.CheckSum, Is.EqualTo(1362971363))
                 .AssertThat(Is.EqualTo(WpfTestImage.Load("UserControl1.reference.png")))
                 .AssertThat(ImageComparison.With(WpfTestImage.Load("UserControl1.reference.png")).ByStandardDeviation, Is.LessThan(1));
         }

@@ -13,7 +13,7 @@ namespace TestImages
 
         public static double GetStandardDeviation(TestImage left, TestImage right)
         {
-            return Bitmaps.Bgra32.Bitmap.GetStandardDeviation(left.BitmapRgba32, right.BitmapRgba32);
+            return Bitmaps.Bgra32.Bitmap.GetStandardDeviation(left._GetBitmapRgba32(), right._GetBitmapRgba32());
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace TestImages
         /// </remarks>
         public bool CheckSumIsAnyOf(params uint[] checkSums)
         {
-            return checkSums.Contains(this.GetCheckSum());
+            return checkSums.Contains(this.CheckSum);
         }
 
         #if NET6_0_OR_GREATER
@@ -83,7 +83,7 @@ namespace TestImages
         #endif        
         public TestImage AssertCheckSumIsAnyOf(params uint[] checkSums)
         {
-            var h = this.GetCheckSum();
+            var h = this.CheckSum;
 
             if (!checkSums.Contains(h))
             {

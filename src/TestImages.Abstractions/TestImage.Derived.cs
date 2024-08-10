@@ -30,10 +30,10 @@ namespace TestImages
 
         public override int Height => _Bounds.Height;
 
-        protected override Bgra32.Bitmap CreateBitmapRgba32()
+        protected override Bitmaps.Bgra32.Bitmap CreateBitmapRgba32()
         {
             return _Source
-                .BitmapRgba32
+                ._GetBitmapRgba32()
                 .Crop(_Bounds.Left, _Bounds.Top, _Bounds.Width, _Bounds.Height);
         }
 
@@ -58,9 +58,9 @@ namespace TestImages
 
         #region API
 
-        public override int Width => this.BitmapRgba32.Width;
+        public override int Width => this._GetBitmapRgba32().Width;
 
-        public override int Height => this.BitmapRgba32.Height;
+        public override int Height => this._GetBitmapRgba32().Height;
 
         protected override Bitmaps.Bgra32.Bitmap CreateBitmapRgba32()
         {

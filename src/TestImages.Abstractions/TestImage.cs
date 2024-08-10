@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,36 +32,45 @@ namespace TestImages
 
         public static TestImage FromFile(System.IO.FileInfo finfo) { return new FileImage(finfo); }
 
-        protected TestImage() { Invalidate(); }
+        protected TestImage() { }        
 
         #endregion
 
-        #region data
+        #region data        
 
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        private int? _HashCode;
+        private Bitmaps.Bgra32.Bitmap _Rgba32Bitmap;
 
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        private uint? _CheckSum;
+        private int? _Rgba32HashCode;
 
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        private Lazy<Bitmaps.Bgra32.Bitmap> _Rgba32Bitmap;
+        private uint? _Rgba32CheckSum;
 
         [System.Diagnostics.DebuggerBrowsable(System.Diagnostics.DebuggerBrowsableState.Never)]
-        private Lazy<Byte[]> _PixelsSha256;
+        private Byte[] _Rgba32Sha256;        
 
-        /// <inheritdoc />
-
-        public uint GetCheckSum()
+        protected virtual void Invalidate()
         {
-            _CheckSum ??= this.BitmapRgba32.GetCheckSum();
-            return _CheckSum.Value;
+            _Rgba32Bitmap = null;
+            _Rgba32HashCode = null;
+            _Rgba32CheckSum = null;
+            _Rgba32Sha256 = null;            
         }
 
+        /// <summary>
+        /// Gets the underlaying bitmap, converted to Rgba32 format to simplify comparison across multiple pixel formats.
+        /// </summary>        
+        protected internal Bitmaps.Bgra32.Bitmap _GetBitmapRgba32()
+        {
+            return LazyInitializer.EnsureInitialized(ref _Rgba32Bitmap, CreateBitmapRgba32);
+        }
+
+        /// <inheritdoc />
         public override int GetHashCode()
         {
-            _HashCode ??= this.BitmapRgba32.GetHashCode();
-            return _HashCode.Value;
+            _Rgba32HashCode ??= this._GetBitmapRgba32().GetHashCode();
+            return _Rgba32HashCode.Value;
         }
 
         /// <inheritdoc />
@@ -76,35 +86,30 @@ namespace TestImages
 
             if (Object.ReferenceEquals(this, other)) return true;
 
-            var thisBitmap = this.BitmapRgba32;
-            var otherBitmap = other.BitmapRgba32;
+            var thisBitmap = this._GetBitmapRgba32();
+            var otherBitmap = other._GetBitmapRgba32();
             return Bitmaps.Bgra32.Bitmap.AreEqual(thisBitmap, otherBitmap);
         }
-        
-        #endregion
 
-        #region properties
+        #endregion        
+
+        #region properties        
 
         /// <summary>
         /// Gets the image width, in pixels.
         /// </summary>
-        public virtual int Width => _Rgba32Bitmap.Value.Width;
+        public virtual int Width => _GetBitmapRgba32().Width;
 
         /// <summary>
         /// Gets the image height, in pixels.
         /// </summary>
-        public virtual int Height => _Rgba32Bitmap.Value.Height;
-
-        /// <summary>
-        /// Gets the underlaying bitmap, converted to Rgba32 format.
-        /// </summary>        
-        internal protected Bitmaps.Bgra32.Bitmap BitmapRgba32 => _Rgba32Bitmap.Value;
+        public virtual int Height => _GetBitmapRgba32().Height;
 
         /// <summary>
         /// Gets the Sha256 of the pixels.
         /// </summary>
         #pragma warning disable CA1819 // Properties should not return arrays
-        public virtual Byte[] PixelsSha256 => _PixelsSha256.Value;
+        public virtual Byte[] PixelsSha256 => LazyInitializer.EnsureInitialized(ref _Rgba32Sha256, _GetBitmapRgba32().GetPixelsSha256);
         #pragma warning restore CA1819 // Properties should not return arrays
 
         /// <summary>
@@ -118,16 +123,21 @@ namespace TestImages
             }
         }
 
+        /// <summary>
+        /// Gets the checksum of the properties and pixels of the bitmap.
+        /// </summary>
+        public uint CheckSum
+        {
+            get
+            {
+                _Rgba32CheckSum ??= this._GetBitmapRgba32().GetCheckSum();
+                return _Rgba32CheckSum.Value;
+            }
+        }
+
         #endregion
 
-        #region API
-
-        protected virtual void Invalidate()
-        {
-            _HashCode = null;
-            _Rgba32Bitmap = new Lazy<Bitmaps.Bgra32.Bitmap>(CreateBitmapRgba32);
-            _PixelsSha256 = new Lazy<Byte[]>(()=> _Rgba32Bitmap.Value.GetPixelsSha256());
-        }
+        #region API        
 
         public TestImage Crop(int x, int y, int w, int h)
         {
@@ -186,14 +196,14 @@ namespace TestImages
         /// </summary>        
         protected virtual void WriteTo(System.IO.FileInfo finfo)
         {
-            BitmapRgba32.SaveTo(finfo);
+            _GetBitmapRgba32().SaveTo(finfo);
         }
 
         #endregion
 
         #region testing
 
-        public TestImageComparingPair ComparedWith(TestImage other) { return new TestImageComparingPair(this, other); }
+        public TestImageComparingPair ComparedTo(TestImage other) { return new TestImageComparingPair(this, other); }
 
         #endregion
     }

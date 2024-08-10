@@ -13,9 +13,10 @@ namespace TestImages
         public static int PixelHeight(TestImage image) => image.Height;
         public static int PixelArea(TestImage image) => image.Width * image.Height;
 
-        [Obsolete("Use PixelCheckSum")]
+        [Obsolete("Use CheckSum", true)]
         public static int PixelsHashCode(TestImage image) => image.GetHashCode();
-        public static uint PixelsCheckSum(TestImage image) => image.GetCheckSum();
+
+        public static uint CheckSum(TestImage image) => image.CheckSum;
 
         public static string PixelsSha256Hex(TestImage image) => image.PixelsSha256Hex;
 
@@ -24,7 +25,7 @@ namespace TestImages
         /// </summary>        
         public static double AverageBrightness(TestImage image)
         {
-            return image.BitmapRgba32
+            return image._GetBitmapRgba32()
                 .EnumeratePixels()
                 .Select(pixel => (double)pixel.Brightness)
                 .Average();
@@ -35,7 +36,7 @@ namespace TestImages
         /// </summary>
         public static int TransparentPixelsCount(TestImage image)
         {
-            return image.BitmapRgba32
+            return image._GetBitmapRgba32()
                 .EnumeratePixels()
                 .Count(pixel => pixel.A == 0);
         }
@@ -45,7 +46,7 @@ namespace TestImages
         /// </summary>
         public static int OpaquePixelsCount(TestImage image)
         {
-            return image.BitmapRgba32
+            return image._GetBitmapRgba32()
                 .EnumeratePixels()
                 .Count(pixel => pixel.A == 255);
         }
@@ -55,7 +56,7 @@ namespace TestImages
         /// </summary>
         public static int NotOpaquePixelsCount(TestImage image)
         {
-            return image.BitmapRgba32
+            return image._GetBitmapRgba32()
                 .EnumeratePixels()
                 .Count(pixel => pixel.A != 255);
         }
@@ -64,7 +65,7 @@ namespace TestImages
         {
             int countColors(TestImage image)
             {
-                return image.BitmapRgba32.EnumeratePixels().Count(pixel => pixel == color);
+                return image._GetBitmapRgba32().EnumeratePixels().Count(pixel => pixel == color);
             }
 
             return countColors;
