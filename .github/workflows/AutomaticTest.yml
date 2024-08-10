@@ -1,4 +1,4 @@
-name: SharpGLTF
+name: Automatic Tests Run
 
 on: [push, pull_request]
 
