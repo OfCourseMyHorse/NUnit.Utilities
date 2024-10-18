@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net462;net6.0;net6.0-windows</TargetFrameworks>
+    <TargetFrameworks>net462;net6.0</TargetFrameworks>
     <IsTestProject>false</IsTestProject>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>  
@@ -18,19 +18,12 @@
     <None Include="README.MD" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-  <ItemGroup>    
-    <PackageReference Include="NUnit" Version="4.1.0" />    
-  </ItemGroup>
-
-  <!--
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' ">    
-    <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
-  </ItemGroup>
-  -->
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="4.2.2" />    
+  </ItemGroup>  
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">    
-    <PackageReference Include="System.Text.Json" Version="8.0.4" />
-    <!-- <PackageReference Include="securifybv.ShellLink" Version="0.1.0" /> -->
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />  
   </ItemGroup>  
 
 </Project>
