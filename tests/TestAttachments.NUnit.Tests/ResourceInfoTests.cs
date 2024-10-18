@@ -40,5 +40,14 @@ namespace TestAttachments
 
             AttachmentInfo.From("cube.glb").WriteAllBytes(bytes);
         }
+
+        [Test]
+        [ResourcePathFormat("{RepositoryRoot}/testdata")]
+        public void TestWithRepositoryPath()
+        {
+            var bytes = ResourceInfo.From("box.glb").ReadAllBytes();
+
+            AttachmentInfo.From("cube.glb").WriteAllBytes(bytes);
+        }
     }
 }

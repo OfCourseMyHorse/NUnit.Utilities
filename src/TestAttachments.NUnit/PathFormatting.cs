@@ -103,7 +103,7 @@ namespace NUnit.Framework
             return _FormatPath(format, context, context.TestDirectory);
         }
 
-        private static string _FormatPath(string format, TestContext context, string defaultBasePath)
+        private static string _FormatPath(string currPath, TestContext context, string defaultBasePath)
         {
             // TODO:
             // - support {<<<} and {>>>} as macro for paths search
@@ -111,68 +111,82 @@ namespace NUnit.Framework
 
             //--------------------------------------------------------- absolute path macros (format can only have one of those):            
 
-            _FindUpperDirectory(context, ref format, "{RepositoryRoot}", dinfo => dinfo.IsRepositoryDatabase());
+            _FindUpperDirectory(context, ref currPath, "{RepositoryRoot}", dinfo => dinfo.IsRepositoryDatabase());
 
-            _FindUpperFile(context, ref format, "{SolutionDirectory}", finfo => finfo.Extension.ToLower().EndsWith("sln"));
-            _FindUpperFile(context, ref format, "{ProjectDirectory}", finfo => finfo.Extension.ToLower().EndsWith("csproj"));
+            _FindUpperFile(context, ref currPath, "{SolutionDirectory}", finfo => finfo.Extension.ToLower().EndsWith("sln"));
+            _FindUpperFile(context, ref currPath, "{ProjectDirectory}", finfo => finfo.Extension.ToLower().EndsWith("csproj"));
             
 
-            if (format.Length > 4 && format.StartsWith("{\"")) // handle "{\"somefilename.ext\"}\whatever\whatever"
+            if (currPath.Length > 4 && currPath.StartsWith("{\"")) // handle "{\"somefilename.ext\"}\whatever\whatever"
             {                
-                var idx = format.IndexOf("\"}");
+                var idx = currPath.IndexOf("\"}");
                 if (idx >= 0)
                 {
-                    var key = format.Substring(0, idx + 2);
+                    var key = currPath.Substring(0, idx + 2);
                     var val = key.Substring(2, key.Length - 4).ToLower();
-                    _FindUpperFile(context, ref format, key, finfo => finfo.Name.ToLower() == val); // TODO: this is NOT cross platform
+                    _FindUpperFile(context, ref currPath, key, finfo => finfo.Name.ToLower() == val); // TODO: this is NOT cross platform
                 }
             }
 
-            _ReplacePrefix(ref format, "{CurrentDirectory}", Environment.CurrentDirectory);
+            _ReplacePrefix(ref currPath, "{CurrentDirectory}", Environment.CurrentDirectory);
 
             // input paths
-            _ReplacePrefix(ref format, "{TestDirectory}", context.TestDirectory);
-            _ReplacePrefix(ref format, "{TestDirectoryRoot}", new System.IO.DirectoryInfo(context.TestDirectory).Root.FullName);
-            _ReplacePrefix(ref format, "{AssemblyDirectory}", _GetAssemblyDirectory());
-            _ReplacePrefix(ref format, "{ProcessDirectory}", _GetProcessDirectory());
+            _ReplacePrefix(ref currPath, "{TestDirectory}", context.TestDirectory);
+            _ReplacePrefix(ref currPath, "{TestDirectoryRoot}", new System.IO.DirectoryInfo(context.TestDirectory).Root.FullName);
+            _ReplacePrefix(ref currPath, "{AssemblyDirectory}", _GetAssemblyDirectory());
+            _ReplacePrefix(ref currPath, "{ProcessDirectory}", _GetProcessDirectory());
 
             // output paths
-            _ReplacePrefix(ref format, "{WorkDirectory}", context.WorkDirectory);
-            _ReplacePrefix(ref format, "{WorkDirectoryRoot}", new System.IO.DirectoryInfo(context.WorkDirectory).Root.FullName);
-            _ReplacePrefix(ref format, "{TempDirectory}", System.IO.Path.GetTempPath());
+            _ReplacePrefix(ref currPath, "{WorkDirectory}", context.WorkDirectory);
+            _ReplacePrefix(ref currPath, "{WorkDirectoryRoot}", new System.IO.DirectoryInfo(context.WorkDirectory).Root.FullName);
+            _ReplacePrefix(ref currPath, "{TempDirectory}", System.IO.Path.GetTempPath());
 
             //--------------------------------------------------------- relative path macros:
 
-            if (format.StartsWith("{")) throw new ArgumentException($"Invalid format: {format}", nameof(format));
+            if (currPath.StartsWith("{")) throw new ArgumentException($"Invalid format: {currPath}", nameof(currPath));
 
             var casing = StringComparison.Ordinal;
 
-            format = format.Replace("{Date}", DateTime.Now.ToString("yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture), casing);
-            format = format.Replace("{Time}", DateTime.Now.ToString("hhmmss", System.Globalization.CultureInfo.InvariantCulture), casing);
+            currPath = currPath.Replace("{Date}", DateTime.Now.ToString("yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture), casing);
+            currPath = currPath.Replace("{Time}", DateTime.Now.ToString("hhmmss", System.Globalization.CultureInfo.InvariantCulture), casing);
 
-            format = format.Replace("{Id}", context.Test.ID, casing);
-            format = format.Replace("{ID}", context.Test.ID, casing);
-            format = format.Replace("{Name}", context.Test.Name, casing);
-            format = format.Replace("{FullName}", context.Test.FullName, casing);
-            format = format.Replace("{ClassName}", context.Test.ClassName, casing);
-            format = format.Replace("{MethodName}", context.Test.MethodName, casing);
-            format = format.Replace("{DisplayName}", context.Test.DisplayName, casing);            
+            currPath = currPath.Replace("{Id}", context.Test.ID, casing);
+            currPath = currPath.Replace("{ID}", context.Test.ID, casing);
+            currPath = currPath.Replace("{Name}", context.Test.Name, casing);
+            currPath = currPath.Replace("{FullName}", context.Test.FullName, casing);
+            currPath = currPath.Replace("{ClassName}", context.Test.ClassName, casing);
+            currPath = currPath.Replace("{MethodName}", context.Test.MethodName, casing);
+            currPath = currPath.Replace("{DisplayName}", context.Test.DisplayName, casing);            
 
-            format = format.Replace("{CurrentRepeatCount}", context.CurrentRepeatCount.ToString(System.Globalization.CultureInfo.InvariantCulture), casing);
-            format = format.Replace("{WorkerId}", context.WorkerId, casing);
+            currPath = currPath.Replace("{CurrentRepeatCount}", context.CurrentRepeatCount.ToString(System.Globalization.CultureInfo.InvariantCulture), casing);
+            currPath = currPath.Replace("{WorkerId}", context.WorkerId, casing);
 
-            format = format.Replace("{Category}", context.GetCurrentCategory(), casing);
+            currPath = currPath.Replace("{Category}", context.GetCurrentCategory(), casing);
 
-            //--------------------------------------------------------- path normalization:            
+            //--------------------------------------------------------- redirections
 
-            if (defaultBasePath != null && !System.IO.Path.IsPathRooted(format))
+            if (defaultBasePath != null && !System.IO.Path.IsPathRooted(currPath))
             {
-                format = System.IO.Path.Combine(defaultBasePath, format);
+                currPath = System.IO.Path.Combine(defaultBasePath, currPath);
             }
 
-            format = format.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
+            // resolve dynamic resource link
+            // this can be used both for attachments and resources
 
-            return format;
+            if (currPath.EndsWith(".testpath.txt", StringComparison.OrdinalIgnoreCase))
+            {                
+                if (System.IO.File.Exists(currPath))
+                {
+                    currPath = System.IO.File.ReadAllText(currPath);
+                    return _FormatPath(currPath, context, defaultBasePath);
+                }
+            }
+
+            // sanitize
+
+            currPath = currPath.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
+
+            return currPath;
         }
 
         #endregion

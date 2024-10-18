@@ -20,6 +20,7 @@ namespace NUnit.Framework
     /// - {CurrentDirectory} = Environment.CurrentDirectory<br/>
     /// - {ProjectDirectory} = directory of the first .csproj found up the directory tree.
     /// - {SolutionDirectory} = directory of the first .sln found up the directory tree.
+    /// - {RepositoryRoot} = directory containing .git or .svn directories
     /// </para>    
     /// <para>
     /// <br/>
@@ -106,6 +107,7 @@ namespace NUnit.Framework
             // this is a hack, but it's the only way to retrieve class level information from the TestContext.
 
             // see https://github.com/nunit/nunit/issues/548
+            // see https://github.com/nunit/nunit/pull/4757
 
             var testObject = NUnit.Framework.Internal.TestExecutionContext.CurrentContext.TestObject;
             return testObject.GetType();
