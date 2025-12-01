@@ -113,9 +113,21 @@ namespace NUnit.Framework
 
             _FindUpperDirectory(context, ref currPath, "{RepositoryRoot}", dinfo => dinfo.IsRepositoryDatabase());
 
-            _FindUpperFile(context, ref currPath, "{SolutionDirectory}", finfo => finfo.Extension.ToLower().EndsWith("sln"));
-            _FindUpperFile(context, ref currPath, "{ProjectDirectory}", finfo => finfo.Extension.ToLower().EndsWith("csproj"));
-            
+            bool isSolutionDir(System.IO.FileInfo fileInfo)
+            {
+                if (fileInfo.Extension.EndsWith(".sln", StringComparison.OrdinalIgnoreCase)) return true;
+                if (fileInfo.Extension.EndsWith(".slnx", StringComparison.OrdinalIgnoreCase)) return true;
+                return false;
+            }
+
+            bool isProjectDir(System.IO.FileInfo fileInfo)
+            {
+                if (fileInfo.Extension.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase)) return true;                
+                return false;
+            }
+
+            _FindUpperFile(context, ref currPath, "{SolutionDirectory}", isSolutionDir);
+            _FindUpperFile(context, ref currPath, "{ProjectDirectory}", isProjectDir);            
 
             if (currPath.Length > 4 && currPath.StartsWith("{\"")) // handle "{\"somefilename.ext\"}\whatever\whatever"
             {                
@@ -123,8 +135,8 @@ namespace NUnit.Framework
                 if (idx >= 0)
                 {
                     var key = currPath.Substring(0, idx + 2);
-                    var val = key.Substring(2, key.Length - 4).ToLower();
-                    _FindUpperFile(context, ref currPath, key, finfo => finfo.Name.ToLower() == val); // TODO: this is NOT cross platform
+                    var val = key.Substring(2, key.Length - 4);
+                    _FindUpperFile(context, ref currPath, key, finfo => finfo.Name.Equals(val , StringComparison.OrdinalIgnoreCase)); // TODO: this is NOT cross platform
                 }
             }
 
