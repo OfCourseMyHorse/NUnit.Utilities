@@ -16,6 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TestImages.Abstractions\TestImages.Abstractions.csproj" />    
-  </ItemGroup>
+  </ItemGroup>  
 
 </Project>

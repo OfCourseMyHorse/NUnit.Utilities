@@ -1,12 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
-    <UseWPF>true</UseWPF>    
+    <TargetFramework>net8.0</TargetFramework>    
     <IsTestProject>true</IsTestProject>
-    <RootNamespace>TestImages</RootNamespace>
-    <EnableWindowsTargeting>true</EnableWindowsTargeting>
-    <LangVersion>latest</LangVersion>
+    <RootNamespace>TestImages</RootNamespace>    
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,17 +16,18 @@
     <Content Include="*.jpg" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
-  <ItemGroup>    
-    <PackageReference Include="Prism.Wpf" Version="9.0.537" />
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.4.1" />
+  <ItemGroup>
+    <PackageReference Include="Prism.Avalonia" Version="9.0.537.11130" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.9" />
+    <PackageReference Include="Avalonia.Headless.NUnit" Version="11.3.9" />
+    <PackageReference Include="Avalonia.Themes.Simple" Version="11.3.9" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\TestAttachments.NUnit\TestAttachments.NUnit.csproj" />
-    <ProjectReference Include="..\..\src\MonoGame.NUnitRunner\MonoGame.NUnitRunner.csproj" />
-    <ProjectReference Include="..\..\src\TestImages.ImageSharp\TestImages.ImageSharp.csproj" />
+    <ProjectReference Include="..\..\src\TestAttachments.NUnit\TestAttachments.NUnit.csproj" />    
+    <ProjectReference Include="..\..\src\TestImages.ImageSharp\TestImages.ImageSharp.csproj" />    
+    <ProjectReference Include="..\..\src\TestImages.Avalonia\TestImages.Avalonia.csproj" />
     <ProjectReference Include="..\..\src\TestImages.NUnit\TestImages.NUnit.csproj" />
-    <ProjectReference Include="..\..\src\TestImages.WPF\TestImages.WPF.csproj" />
   </ItemGroup>
 
   <ItemGroup>

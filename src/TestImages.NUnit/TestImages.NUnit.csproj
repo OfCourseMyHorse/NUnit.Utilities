@@ -14,11 +14,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="4.2.2" />
+    <PackageReference Include="NUnit" Version="4.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TestImages.Abstractions\TestImages.Abstractions.csproj" />
-  </ItemGroup>
+  </ItemGroup>  
 
 </Project>
