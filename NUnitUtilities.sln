@@ -20,8 +20,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{518EA44B-96E5-4B45-A150-874686DB634E}"
 	ProjectSection(SolutionItems) = preProject
 		src\.editorconfig = src\.editorconfig
-		src\build-preview.cmd = src\build-preview.cmd
 		.github\workflows\AutomaticTest.yml = .github\workflows\AutomaticTest.yml
+		src\build-preview.cmd = src\build-preview.cmd
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAttachments.NUnit.Tests", "tests\TestAttachments.NUnit.Tests\TestAttachments.NUnit.Tests.csproj", "{ADE5A026-47E4-48C5-A1A9-E17DA7C7E2D3}"
@@ -34,6 +34,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{29542E70
 	ProjectSection(SolutionItems) = preProject
 		tests\Directory.Build.props = tests\Directory.Build.props
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestImages.Avalonia", "src\TestImages.Avalonia\TestImages.Avalonia.csproj", "{1C7230E5-BD9B-4411-8D23-D107D019B6BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestImages.Avalonia.Tests", "tests\TestImages.Avalonia.Tests\TestImages.Avalonia.Tests.csproj", "{98ECD890-CE15-4AD7-9D70-CC04BF9562D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +77,14 @@ Global
 		{8C2C08AA-E8A4-4E98-944D-66E92139A900}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C2C08AA-E8A4-4E98-944D-66E92139A900}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C2C08AA-E8A4-4E98-944D-66E92139A900}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C7230E5-BD9B-4411-8D23-D107D019B6BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C7230E5-BD9B-4411-8D23-D107D019B6BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C7230E5-BD9B-4411-8D23-D107D019B6BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C7230E5-BD9B-4411-8D23-D107D019B6BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98ECD890-CE15-4AD7-9D70-CC04BF9562D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98ECD890-CE15-4AD7-9D70-CC04BF9562D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98ECD890-CE15-4AD7-9D70-CC04BF9562D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98ECD890-CE15-4AD7-9D70-CC04BF9562D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,6 +98,8 @@ Global
 		{ADE5A026-47E4-48C5-A1A9-E17DA7C7E2D3} = {29542E70-BCE1-4CDB-BAFB-F79D67C2B867}
 		{4D8D6C96-AC75-46C7-AC59-0CA299F7280F} = {91DBCC8D-A083-4D22-AEE5-345B09553EED}
 		{8C2C08AA-E8A4-4E98-944D-66E92139A900} = {91DBCC8D-A083-4D22-AEE5-345B09553EED}
+		{1C7230E5-BD9B-4411-8D23-D107D019B6BF} = {91DBCC8D-A083-4D22-AEE5-345B09553EED}
+		{98ECD890-CE15-4AD7-9D70-CC04BF9562D2} = {29542E70-BCE1-4CDB-BAFB-F79D67C2B867}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8A8233E3-48DC-4947-BCAC-E3A7A1DB8B30}
