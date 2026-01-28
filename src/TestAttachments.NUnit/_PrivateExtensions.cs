@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NUnit.Framework
+using NUnit.Framework;
+
+namespace TestAttachments
 {
     internal static class _PrivateExtensions
     {

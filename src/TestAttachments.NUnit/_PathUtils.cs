@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NUnit.Framework
+namespace TestAttachments
 {
     internal static class _PathUtils
     {

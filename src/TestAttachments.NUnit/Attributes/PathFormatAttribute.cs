@@ -97,9 +97,9 @@ namespace NUnit.Framework
         {
             if (t == null) return null;
 
-            return t.GetCustomAttributes(typeof(T), true)
+            return t.GetCustomAttributes(true)
                 .OfType<T>()
-                .FirstOrDefault();
+                .LastOrDefault();
         }
 
         private static Type _GetCurrentClassInstanceType()

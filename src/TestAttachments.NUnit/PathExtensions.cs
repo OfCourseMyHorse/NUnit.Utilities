@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
+using TestAttachments;
+
 namespace NUnit.Framework
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
