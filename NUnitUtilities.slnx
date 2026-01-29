@@ -17,8 +17,8 @@
   </Folder>
   <Folder Name="/tests/">
     <File Path="tests/Directory.Build.props" />
-    <Project Path="TestAttachments.TUnit.Tests/TestAttachments.TUnit.Tests.csproj" Id="00ced585-909e-4867-bc8c-e6848d117930" />
     <Project Path="tests/TestAttachments.NUnit.Tests/TestAttachments.NUnit.Tests.csproj" />
+    <Project Path="tests/TestAttachments.TUnit.Tests/TestAttachments.TUnit.Tests.csproj" />
     <Project Path="tests/TestImages.Avalonia.Tests/TestImages.Avalonia.Tests.csproj" />
     <Project Path="tests/TestImages.Tests/TestImages.Tests.csproj" />
   </Folder>

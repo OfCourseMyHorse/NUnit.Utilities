@@ -34,14 +34,7 @@
     -->
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <!-- <CodeAnalysisRuleSet>$(MsBuildThisFileDirectory)..\solution.ruleset</CodeAnalysisRuleSet>  -->
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0" >
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>  
+  </PropertyGroup>  
   
   <!-- Packaging =================================================================================== -->
 

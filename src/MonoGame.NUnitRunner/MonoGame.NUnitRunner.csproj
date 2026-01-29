@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net8.0;net10.0</TargetFrameworks>
     <RootNamespace>NUnitForImages</RootNamespace>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <IsTestProject>false</IsTestProject>
@@ -20,10 +20,6 @@
   <ItemGroup>    
     <ProjectReference Include="..\TestImages.Abstractions\TestImages.Abstractions.csproj" />    
     <ProjectReference Include="..\TestAttachments.NUnit\TestAttachments.NUnit.csproj" />
-  </ItemGroup>  
-  
-  <ItemGroup>
-    <PackageReference Update="Microsoft.CodeAnalysis.NetAnalyzers" Version="10.0.102" />
   </ItemGroup>  
   
 </Project>

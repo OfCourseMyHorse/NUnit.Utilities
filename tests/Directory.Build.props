@@ -13,8 +13,7 @@
 
   <!-- Configuration =================================================================================== -->
 
-  <PropertyGroup>
-    <LangVersion>8.0</LangVersion>
+  <PropertyGroup>    
     <IsPackable>false</IsPackable>
   </PropertyGroup>  
   
@@ -30,26 +29,6 @@
     -->
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <!-- <CodeAnalysisRuleSet>$(MsBuildThisFileDirectory)..\solution.ruleset</CodeAnalysisRuleSet>  -->
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="NUnit" Version="4.0.1" />
-    <PackageReference Include="NUnit.Analyzers" Version="4.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
-    
-    <PackageReference Include="coverlet.collector" Version="6.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0" >
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>  
+  </PropertyGroup>  
   
 </Project>

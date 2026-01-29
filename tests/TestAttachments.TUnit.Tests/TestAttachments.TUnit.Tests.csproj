@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\TestAttachments.TUnit\TestAttachments.TUnit.csproj" />
-  </ItemGroup>
+    <ProjectReference Include="..\..\src\TestAttachments.TUnit\TestAttachments.TUnit.csproj" />
+  </ItemGroup>  
 
 </Project>
