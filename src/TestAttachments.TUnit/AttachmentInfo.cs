@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using TestAttachments;
+
 namespace TUnit
 {
     /// <summary>
@@ -18,20 +20,20 @@ namespace TUnit
     {
         #region lifecycle
 
-        public static IEnumerable<FINFO> AttachDirectoryFiles(string directory, string mask="*", SearchOption soption = SearchOption.AllDirectories)
+        public static IEnumerable<FILEINFO> AttachDirectoryFiles(string directory, string mask="*", SearchOption soption = SearchOption.AllDirectories)
         {
-            var dinfo = TestContext.Current.GetAttachmentDirectoryInfo();
+            var DIRINFO = TestContext.Current.GetAttachmentDirectoryInfo();
 
             if (!string.IsNullOrWhiteSpace(directory))
             {
                 directory = System.IO.Path.IsPathRooted(directory)
                     ? directory
-                    : System.IO.Path.Combine(dinfo.FullName, directory);
+                    : System.IO.Path.Combine(DIRINFO.FullName, directory);
 
-                dinfo = new System.IO.DirectoryInfo(directory);
+                DIRINFO = new System.IO.DirectoryInfo(directory);
             }
 
-            foreach (var f in dinfo.EnumerateFiles(mask, soption))
+            foreach (var f in DIRINFO.EnumerateFiles(mask, soption))
             {                
                 yield return f;
                 TestContext.Current!.Output.AttachArtifact(f.FullName);
@@ -55,7 +57,7 @@ namespace TUnit
 
         #region data        
 
-        public FINFO File { get; }
+        public FILEINFO File { get; }
         public string Description { get; set; }
 
         #endregion
@@ -67,7 +69,7 @@ namespace TUnit
             File.Directory.Create();
         }
 
-        private FINFO _EndWriteAttachment()
+        private FILEINFO _EndWriteAttachment()
         {
             if (!File.Exists) return File;
 
@@ -90,7 +92,7 @@ namespace TUnit
         /// without importing this library dependency.
         /// </summary>
         /// <param name="ainfo">A <see cref="AttachmentInfo"/> instance.</param>
-        public static implicit operator Action<Action<FINFO>>(AttachmentInfo ainfo)
+        public static implicit operator Action<Action<FILEINFO>>(AttachmentInfo ainfo)
         {
             return action => ainfo.WriteObjectEx(action);
         }
@@ -103,12 +105,12 @@ namespace TUnit
             return WriteAllBytes(Array.Empty<Byte>()).Create();
         }
 
-        public FINFO WriteObject(Action<string> writeAction)
+        public FILEINFO WriteObject(Action<string> writeAction)
         {
             return WriteObjectEx(f => writeAction(f.FullName));
         }
         
-        public FINFO WriteObjectEx(Action<FINFO> writeAction)
+        public FILEINFO WriteObjectEx(Action<FILEINFO> writeAction)
         {
             if (writeAction == null) throw new ArgumentNullException(nameof(writeAction));
 
@@ -117,7 +119,7 @@ namespace TUnit
             return _EndWriteAttachment();
         }
 
-        public FINFO WriteToStream(Action<System.IO.Stream> writeAction)
+        public FILEINFO WriteToStream(Action<System.IO.Stream> writeAction)
         {
             _BeginWriteAttachment();
 
@@ -129,10 +131,9 @@ namespace TUnit
             return _EndWriteAttachment();
         }        
 
-        public FINFO WriteAllBytes<T>(IReadOnlyList<T> collection)
+        public FILEINFO WriteAllBytes<T>(IReadOnlyList<T> collection)
             where T:unmanaged
         {
-            
             switch(collection)
             {
                 #if NET
@@ -152,9 +153,9 @@ namespace TUnit
             }            
         }
 
-        public FINFO WriteSpan(ReadOnlySpan<Byte> byteContent)
+        public FILEINFO WriteSpan(ReadOnlySpan<Byte> byteContent)
         {
-            _BeginWriteAttachment();
+            _BeginWriteAttachment();            
 
             using (var stream = File.Create())
             {
@@ -168,41 +169,29 @@ namespace TUnit
             return _EndWriteAttachment();
         }        
 
-        public FINFO WriteTextLines(params String[] textLines)
+        public FILEINFO WriteTextLines(params String[] textLines)
         {
             var text = string.Join("\r\n", textLines.Select(line => line == null ? string.Empty : line) );
             return WriteAllText(text);
         }
 
-        public FINFO WriteAllText(String textContent)
+        public FILEINFO WriteAllText(String textContent)
         {
-            if (textContent == null) textContent = string.Empty;
+            textContent ??= string.Empty;
 
-            void writeText(FINFO finfo)
+            void writeText(FILEINFO FILEINFO)
             {
-                System.IO.File.WriteAllText(finfo.FullName, textContent);
+                FILEINFO.WriteAllText(textContent);
             }
 
             return WriteObjectEx(writeText);
-        }        
-
-        public FINFO WriteJson<T>(T value, System.Text.Json.JsonSerializerOptions options = null)
-        {
-            _BeginWriteAttachment();
-
-            using (var stream = File.Create())
-            {
-                System.Text.Json.JsonSerializer.Serialize(stream, value, options);
-            }            
-
-            return _EndWriteAttachment();
         }
 
-        public FINFO WriteShortcut(string fileOrDirectoryPath)
+        public FILEINFO WriteShortcut(string fileOrDirectoryPath)
         {
-            // return this.WriteObjectEx(f => ShortcutUtils.CreateLink(f.FullName, fileOrDirectoryPath));
+            var uri = new Uri(fileOrDirectoryPath);
 
-            throw new NotImplementedException();
+            return WriteObjectEx(f => f.WriteShortcut(uri));
         }
 
         #endregion

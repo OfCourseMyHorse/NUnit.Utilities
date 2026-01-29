@@ -10,13 +10,15 @@ namespace TUnit
     [EditorBrowsable(EditorBrowsableState.Always)]    
     public sealed class AttachmentPathFormatAttribute : PathFormatAttribute
     {
+        private const string _PropertyKey = "AttachmentPathFormat";
+
         #region constructors
-        
+
         /// <summary>
         /// Declares a directory formatter to write test attachments.
         /// </summary>
         /// <param name="format">Recommended patterns are: "?" , "*/?" or "*/yourClassName/?" </param>
-        public AttachmentPathFormatAttribute(string format) : base("AttachmentPathFormat", format) { }
+        public AttachmentPathFormatAttribute(string format) : base(_PropertyKey, format) { }
 
         #endregion
 
@@ -29,7 +31,7 @@ namespace TUnit
                 .Metadata
                 .TestDetails
                 .CustomProperties
-                .TryGetValue("AttachmentPathFormat", out var list)
+                .TryGetValue(_PropertyKey, out var list)
                 ? list.FirstOrDefault() // ToDo: we could resolve incrementally
                 : null;
         }

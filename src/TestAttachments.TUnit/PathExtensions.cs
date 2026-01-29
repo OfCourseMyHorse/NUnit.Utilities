@@ -21,24 +21,24 @@ namespace TUnit
         /// <param name="context">The current test context</param>
         /// <param name="relativeFilePath"></param>
         /// <returns>A <see cref="System.IO.FileInfo"/> object.</returns>
-        public static FINFO GetResourceFileInfo(this TestContext context, params string[] relativeFilePath)
+        public static FILEINFO GetResourceFileInfo(this TestContext context, params string[] relativeFilePath)
         {
             return context
                 .GetResourceDirectoryInfo()
-                .ConcatenateToFile(relativeFilePath);
+                .DefineFileInfo(relativeFilePath);
         }
 
         /// <summary>
-        /// Gets a <see cref="System.IO.DirectoryInfo"/> for a test file attachment.
+        /// Gets a <see cref="DIRINFO"/> for a test file attachment.
         /// </summary>
         /// <param name="context">The current test context</param>
-        /// <param name="relativeFilePath"></param>
-        /// <returns>A <see cref="System.IO.DirectoryInfo"/> object.</returns>
-        public static DINFO GetResourceDirectoryInfo(this TestContext context, params string[] relativeFilePath)
+        /// <param name="relativeDirectoryPath"></param>
+        /// <returns>A <see cref="DIRINFO"/> object.</returns>
+        public static DIRINFO GetResourceDirectoryInfo(this TestContext context, params string[] relativeDirectoryPath)
         {
             return context
                 .GetResourceDirectoryInfo()
-                .ConcatenateToDirectory(relativeFilePath);
+                .DefineDirectoryInfo(relativeDirectoryPath);
         }
 
         public static Uri GetResourceDirectoryUri(this TestContext context)
@@ -52,30 +52,14 @@ namespace TUnit
         /// Gets the resource directory for the current test.
         /// </summary>
         /// <param name="context">The current test context.</param>
-        /// <returns>A <see cref="System.IO.DirectoryInfo"/> object.</returns>
-        public static DINFO GetResourceDirectoryInfo(this TestContext context)
+        /// <returns>A <see cref="DIRINFO"/> object.</returns>
+        public static DIRINFO GetResourceDirectoryInfo(this TestContext context)
         {
-            return TUnit.ResourcePathFormatAttribute
+            return ResourcePathFormatAttribute
                 .FindPathFormat(context)
                 .FormatResourcePath(context)
                 .ToDirectoryInfo();
-        }
-
-        /// <summary>
-        /// Gets the resource directory for the current test.
-        /// </summary>
-        /// <param name="context">The current type context.</param>
-        /// <returns>A <see cref="System.IO.DirectoryInfo"/> object.</returns>
-        public static DINFO GetResourceDirectoryInfo(this Type context)
-        {
-            throw new NotImplementedException();
-
-            /*
-            return context
-                .FindResourcesPathFormat()
-                .FormatResourcePath(context)
-                .ToDirectoryInfo();*/
-        }
+        }        
 
         #endregion
 
@@ -87,11 +71,11 @@ namespace TUnit
         /// <param name="context">The current test context</param>
         /// <param name="relativeFilePath"></param>
         /// <returns>A <see cref="System.IO.FileInfo"/> object.</returns>
-        public static FINFO GetAttachmentFileInfo(this TestContext context, string relativeFilePath)
+        public static FILEINFO GetAttachmentFileInfo(this TestContext context, string relativeFilePath)
         {
             return context
                 .GetAttachmentDirectoryInfo()
-                .ConcatenateToFile(relativeFilePath);
+                .DefineFileInfo(relativeFilePath);
         }
 
         public static Uri GetAttachmentDirectoryUri(this TestContext context)
@@ -105,17 +89,15 @@ namespace TUnit
         /// Gets the attachments directory for the current test.
         /// </summary>
         /// <param name="context">The current test context.</param>
-        /// <returns>A <see cref="System.IO.DirectoryInfo"/> object.</returns>
-        public static DINFO GetAttachmentDirectoryInfo(this TestContext context)
+        /// <returns>A <see cref="DIRINFO"/> object.</returns>
+        public static DIRINFO GetAttachmentDirectoryInfo(this TestContext context)
         {
-            return TUnit.AttachmentPathFormatAttribute
+            return AttachmentPathFormatAttribute
                 .FindPathFormat(context)
                 .FormatAttachmentPath(context)
                 .ToDirectoryInfo();
         }
 
-        #endregion
-
-        
+        #endregion        
     }
 }

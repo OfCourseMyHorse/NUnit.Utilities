@@ -25,26 +25,5 @@ namespace TestAttachments
         public static string WorkDirectory(this TestContext ctx) => AppContext.BaseDirectory;
 
         #endregion
-
-        #region Resource paths        
-
-        public static DINFO ResolveResourceDirectory(params string[] parts)
-        {
-            return ResolveResourceDirectory(TestContext.Current, parts);
-        }
-
-        public static DINFO ResolveResourceDirectory(this TestContext context, params string[] parts)
-        {
-            return context.GetResourceDirectoryInfo(parts);
-        }
-
-        public static DINFO ResolveResourceDirectory()
-        {
-            return TestContext.Current.GetResourceDirectoryInfo();
-        }
-
-        #endregion
-
-
     }
 }

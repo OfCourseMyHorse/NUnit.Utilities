@@ -1,26 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+		<RootNamespace>TestAttachments</RootNamespace>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <IsTestProject>false</IsTestProject>
     <LangVersion>latest</LangVersion>
-    <EnableWindowsTargeting>true</EnableWindowsTargeting>
-  </PropertyGroup>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>		
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<IsAotCompatible>true</IsAotCompatible>
+	</PropertyGroup>
 
   <PropertyGroup>
     <Description>
       Defines extensions and attributes to handle file attachments.
     </Description>
-    <RootNamespace>TestAttachments</RootNamespace>
-    
+		<PackageReadmeFile>README.MD</PackageReadmeFile>
   </PropertyGroup>
+
+	<ItemGroup>
+		<None Include="README.MD" Pack="true" PackagePath="\" />
+	</ItemGroup>	
   
   <ItemGroup>
-    <PackageReference Include="TUnit" Version="1.12.65" />
+		<PackageReference Include="TUnit" Version="1.12.65" />
+    <PackageReference Include="CodeSugar.Sys.IO.Sources" Version="1.0.0-Prv-20251216">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>    
   </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="System.Text.Json" Version="10.0.2" />
-  </ItemGroup>
-
 </Project>

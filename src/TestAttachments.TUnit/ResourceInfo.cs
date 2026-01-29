@@ -6,8 +6,6 @@ using System.Text;
 
 using TestAttachments;
 
-using TUnit.Assertions;
-
 namespace TUnit
 {
     /// <summary>
@@ -39,81 +37,67 @@ namespace TUnit
 
         #region lifecycle
 
-        public static DINFO ResolveDirectory(params string[] parts)
+        public static ResourceInfo From(params string[] fileName) { return new ResourceInfo(fileName); }
+
+        public static DIRINFO ResolveDirectory(params string[] parts)
         {
-            return ResolveDirectory(TestContext.Current, parts);
+            return ResolveDirectory(TESTCONTEXT.Current, parts);
         }
 
-        public static DINFO ResolveDirectory(TestContext context, params string[] parts)
+        public static DIRINFO ResolveDirectory(TESTCONTEXT context, params string[] parts)
         {
-            return _TestContextExtensions.ResolveResourceDirectory(parts);
-        }
-
-        public static ResourceInfo From(params string[] fileName) { return new ResourceInfo(fileName); }        
+            return context.GetResourceDirectoryInfo(parts);
+        }        
 
         public static IEnumerable<ResourceInfo> EnumerateFromDirectory(string mask, SearchOption options)
         {
-            return _TestContextExtensions
-                .ResolveResourceDirectory()
+            return TESTCONTEXT
+                .Current
+                .GetResourceDirectoryInfo()
                 .EnumerateFiles(mask, options)
                 .Select(item => new ResourceInfo(item));
         }
-
-        #if !NETFRAMEWORK
+        
         public static IEnumerable<ResourceInfo> EnumerateFromDirectory(string mask, EnumerationOptions options)
         {
-            return _TestContextExtensions
-                .ResolveResourceDirectory()
+            return TESTCONTEXT
+                .Current
+                .GetResourceDirectoryInfo()
                 .EnumerateFiles(mask, options)
                 .Select(item => new ResourceInfo(item));
-        }
-        #endif
+        }        
 
         public ResourceInfo(params string[] fileName)
-            : this(TestContext.Current, fileName) { }
-        
+            : this(TESTCONTEXT.Current.GetResourceFileInfo(fileName)) { }        
 
-        // this would be useful to initialize static class fields
-        private ResourceInfo(Type context, string fileName)
+        public ResourceInfo(TESTCONTEXT context, params string[] fileName)
+            : this(context.GetResourceFileInfo(fileName)) { }
+
+        private ResourceInfo(FILEINFO FILEINFO)
         {
-            throw new NotImplementedException("we need a way to get information equivalent to a TestContext");            
+            _File = new Lazy<FileInfo>(()=>_ResolveFileLink(FILEINFO));
         }
 
-        public ResourceInfo(TestContext context, params string[] fileName)
-        {
-            var finfo = context.GetResourceFileInfo(fileName);
-            _File = new Lazy<FINFO>(() => _ResolveFileLink(finfo));
-        }
+        private static FILEINFO _ResolveFileLink(FILEINFO FILEINFO)
+        {            
+            if (FILEINFO == null) return null;
 
-        private ResourceInfo(FINFO finfo)
-        {
-            _File = new Lazy<FileInfo>(()=>_ResolveFileLink(finfo));
-        }
+            if (FILEINFO.TryResolveShortcutFile(out var final)) return final;
 
-        private static FINFO _ResolveFileLink(FINFO finfo)
-        {
-            
-            if (finfo == null) return null;
-
-            // var final = ShortcutUtils.TryGetSystemPathFromFile(finfo.FullName, true);
-            // finfo ??= new FINFO(final);
-
-            // TODO: if final is a network address, download it to a cache
-
-            return finfo;
+            return FILEINFO;
         }
 
         #endregion
 
         #region data
 
-        private readonly Lazy<FINFO> _File;        
+        private readonly Lazy<FILEINFO> _File;        
 
         #endregion
 
         #region properties
 
-        public FINFO File => _File.Value;
+        public FILEINFO File => _File.Value;
 
         public string Name => File?.Name ?? string.Empty;
 
@@ -123,7 +107,7 @@ namespace TUnit
 
         #region operators
 
-        public static implicit operator FINFO(ResourceInfo rinfo) { return rinfo.File; }
+        public static implicit operator FILEINFO(ResourceInfo rinfo) { return rinfo.File; }
 
         public static implicit operator string(ResourceInfo rinfo) { return rinfo.File.FullName; }
 
@@ -141,31 +125,9 @@ namespace TUnit
             }
         }
 
-        public string ReadAllText()
-        {
-            using(var s = OpenRead())
-            {
-                using(var t = new System.IO.StreamReader(s, true))
-                {
-                    return t.ReadToEnd();
-                }
-            }
-        }
+        public string ReadAllText() { return File.ReadAllText(); }
 
-        public ArraySegment<Byte> ReadAllBytes()
-        {
-            using(var m = new System.IO.MemoryStream())
-            {
-                using (var s = OpenRead())
-                {
-                    s.CopyTo(m);
-                }
-
-                return m.TryGetBuffer(out var segment)
-                    ? segment
-                    : new ArraySegment<byte>(m.ToArray());
-            }            
-        }        
+        public ArraySegment<Byte> ReadAllBytes() { return File.ReadAllBytes(); }        
 
         #endregion
     }

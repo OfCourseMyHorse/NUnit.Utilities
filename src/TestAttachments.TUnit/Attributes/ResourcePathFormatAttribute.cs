@@ -10,13 +10,15 @@ namespace TUnit
     [EditorBrowsable(EditorBrowsableState.Always)]    
     public class ResourcePathFormatAttribute : PathFormatAttribute
     {
+        private const string _PropertyKey = "ResourcePathFormat";
+
         #region constructors
 
         /// <summary>
         /// Declares a directory formatter to read resource files.
         /// </summary>
         /// <param name="format">Recommended patterns is: "*/Resources"</param>
-        public ResourcePathFormatAttribute(string format) : base("ResourcePathFormat", format) { }
+        public ResourcePathFormatAttribute(string format) : base(_PropertyKey, format) { }
 
         #endregion
 
@@ -30,7 +32,7 @@ namespace TUnit
                 .Metadata
                 .TestDetails
                 .CustomProperties
-                .TryGetValue("ResourcePathFormat", out var list)
+                .TryGetValue(_PropertyKey, out var list)
                 ? list.FirstOrDefault() // ToDo: we could resolve incrementally
                 : null;
         }

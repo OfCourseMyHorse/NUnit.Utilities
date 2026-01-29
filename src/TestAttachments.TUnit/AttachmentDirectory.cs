@@ -17,21 +17,20 @@ namespace TUnit
         #region lifecycle
 
         public AttachmentDirectory()
-            : this(string.Empty)
-        { }
+            : this(string.Empty) { }
 
         public AttachmentDirectory(string relativePath)
         {
-            var dinfo = TestContext.Current.GetAttachmentDirectoryInfo();
+            var DIRINFO = TestContext.Current.GetAttachmentDirectoryInfo();
 
-            if (!string.IsNullOrWhiteSpace(relativePath)) dinfo = dinfo.CreateSubdirectory(relativePath);
+            if (!string.IsNullOrWhiteSpace(relativePath)) DIRINFO = DIRINFO.CreateSubdirectory(relativePath);
 
-            dinfo.Create();
+            DIRINFO.Create();
 
-            _SetWatcher(dinfo.FullName);
+            _SetWatcher(DIRINFO.FullName);
         }
 
-        public AttachmentDirectory(System.IO.DirectoryInfo dir)
+        public AttachmentDirectory(DIRINFO dir)
         {
             dir.Create();
 
@@ -76,18 +75,18 @@ namespace TUnit
 
         private void _OnUpdate(object sender, System.IO.FileSystemEventArgs e)
         {
-            var finfo = new System.IO.FileInfo(e.FullPath);
-            if (finfo.Exists)
+            var FILEINFO = new FILEINFO(e.FullPath);
+            if (FILEINFO.Exists)
             {
-                TestContext.Current.GetDefaultLogger().LogInformation($"Attach {finfo.Name}");
+                TestContext.Current.GetDefaultLogger().LogInformation($"Attach {FILEINFO.Name}");
 
-                _Files.TryAdd(finfo.FullName, null);
+                _Files.TryAdd(FILEINFO.FullName, null);
             }
             else
             {
-                TestContext.Current.GetDefaultLogger().LogInformation($"Detach {finfo.Name}");
+                TestContext.Current.GetDefaultLogger().LogInformation($"Detach {FILEINFO.Name}");
 
-                _Files.TryRemove(finfo.FullName, out _);
+                _Files.TryRemove(FILEINFO.FullName, out _);
             }
         }
 
@@ -107,61 +106,46 @@ namespace TUnit
 
         #region properties
 
-        public DINFO Directory
+        public DIRINFO Directory
         {
             get
             {
                 if (_Watcher == null) throw new ObjectDisposedException(nameof(AttachmentDirectory));
 
-                return new System.IO.DirectoryInfo(_Watcher.Path);
+                return new DIRINFO(_Watcher.Path);
             }
         }
 
-        public IReadOnlyList<System.IO.FileInfo> UpdatedFiles
+        public IReadOnlyList<FILEINFO> GetUpdatedFiles()
         {
-            get
-            {
-                if (_Watcher == null) throw new ObjectDisposedException(nameof(AttachmentDirectory));
+            if (_Watcher == null) throw new ObjectDisposedException(nameof(AttachmentDirectory));
 
-                _Watcher.EnableRaisingEvents = false;
+            _Watcher.EnableRaisingEvents = false;
 
-                var files = _Files
-                    .Keys
-                    .Select(item => new System.IO.FileInfo(item))
-                    .Where(item => item.Exists)
-                    .ToList();
+            var files = _Files
+                .Keys
+                .Select(item => new FILEINFO(item))
+                .Where(item => item.Exists)
+                .ToList();
 
-                _Watcher.EnableRaisingEvents = true;
+            _Watcher.EnableRaisingEvents = true;
 
-                return files;
-            }
+            return files;
         }
 
         #endregion
 
-        #region API
+        #region API        
 
-        /// <summary>
-        /// Sets the current directory to the directory pointed by this <see cref="AttachmentDirectory"/>
-        /// </summary>
-        [Obsolete("This is a dangerous method because multiple tests running concurrently can steal the current directory from each other.")]
-        public void SetAsCurrentDirectory()
+        public FILEINFO GetFileInfo(string filePath)
         {
-            if (_Watcher == null) throw new ObjectDisposedException(nameof(AttachmentDirectory));
+            ObjectDisposedException.ThrowIf(_Watcher == null, typeof(System.IO.FileSystemWatcher));
 
-            _PreviousWorkingDirectory ??= Environment.CurrentDirectory;
-            Environment.CurrentDirectory = _Watcher.Path;
-        }
-
-        public FINFO GetFileInfo(string filePath)
-        {
-            if (_Watcher == null) throw new ObjectDisposedException(nameof(AttachmentDirectory));
-
-            if (filePath == null) throw new ArgumentNullException(nameof(filePath));
+            ArgumentNullException.ThrowIfNull(filePath);
 
             filePath = System.IO.Path.Combine(_Watcher.Path, filePath);
 
-            return new System.IO.FileInfo(filePath);
+            return new FILEINFO(filePath);
         }
 
         public void AttachAllFiles()
