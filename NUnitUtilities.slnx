@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Solution Items/">
     <File Path=".github/workflows/AutomaticTest.yml" />
+    <File Path=".github/workflows/publish_tag_to_nuget.yml" />
     <File Path="src/.editorconfig" />
     <File Path="src/build-preview.cmd" />
   </Folder>
