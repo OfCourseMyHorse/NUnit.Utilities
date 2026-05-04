@@ -15,7 +15,7 @@ namespace TestAttachments
         {
             var r = ResourceInfo.From("text1.txt");
 
-            TestContext.Current!.Output.WriteLine(r.File.FullName);
+            Console.WriteLine(r.File.FullName);
 
             await Assert.That(r.ReadAllText()).IsEqualTo("hello world");
         }
@@ -27,7 +27,7 @@ namespace TestAttachments
         {
             var r = ResourceInfo.From("resource1.txt");
 
-            TestContext.Current!.Output.WriteLine(r.File.FullName);
+            Console.WriteLine(r.File.FullName);
 
             await Assert.That(r.ReadAllText()).IsEqualTo("hello world!");
         }

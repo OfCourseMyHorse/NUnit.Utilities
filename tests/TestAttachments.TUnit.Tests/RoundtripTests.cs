@@ -27,7 +27,7 @@ namespace TestAttachments
 
             await Assert.That(finfo.Exists).IsTrue();
 
-            TestContext.Current!.Output.WriteLine(finfo.FullName);
+            Console.WriteLine(finfo.FullName);
 
             AttachmentInfo.AttachTOC();
         }
@@ -60,7 +60,7 @@ namespace TestAttachments
 
             await Assert.That(finfo.Exists).IsTrue();
 
-            TestContext.Current!.Output.WriteLine(finfo.FullName);
+            Console.WriteLine(finfo.FullName);
 
             await Assert.That(finfo.FullName).Contains("ExplicitMethodResult");
         }        
@@ -75,18 +75,18 @@ namespace TestAttachments
             await Assert.That(finfo.Exists).IsTrue();
         }
 
-        /*
+        
         [Test]
         public async Task WriteDirectoryContext()
         {
             using(var dirctx = new AttachmentDirectory())
             {
-                System.IO.File.WriteAllText(dirctx.GetFileInfo("hello.txt").FullName, "hello world");
-                System.IO.File.WriteAllText(dirctx.GetFileInfo("hello2.txt").FullName, "hello world 2");
-                System.IO.File.WriteAllText(dirctx.GetFileInfo("hello2.html").FullName, "<html> <body>hello world</body> </hrml>");
+                await System.IO.File.WriteAllTextAsync(dirctx.GetFileInfo("hello.txt").FullName, "hello world").ConfigureAwait(true);
+                await System.IO.File.WriteAllTextAsync(dirctx.GetFileInfo("hello2.txt").FullName, "hello world 2").ConfigureAwait(true);
+                await System.IO.File.WriteAllTextAsync(dirctx.GetFileInfo("hello2.html").FullName, "<html> <body>hello world</body> </hrml>").ConfigureAwait(true);
             }
 
             AttachmentInfo.AttachTOC();
-        }*/
+        }
     }
 }

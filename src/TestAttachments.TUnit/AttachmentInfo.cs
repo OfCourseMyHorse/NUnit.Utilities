@@ -203,7 +203,7 @@ namespace TUnit
         /// </summary>
         public static void AttachTOC()
         {
-            _AttachHtmlTOC();
+            _AttachMarkdownTOC();
         }
 
         private static void _AttachMarkdownTOC()
@@ -214,6 +214,10 @@ namespace TUnit
             var attachments = TestContext.Current.Output.Artifacts;
 
             var md = new StringBuilder();
+
+            md.AppendLine($"📂 {toc.File.Directory.FullName}");
+            md.AppendLine("");
+
             foreach (var attachment in attachments)
             {
                 var key = attachment.File.Name;
