@@ -171,6 +171,24 @@ namespace TestImages
         }
 
         /// <summary>
+        /// Writes the image to a writing callback.
+        /// </summary>
+        /// <param name="writeCallback">The callback.</param>
+        /// <returns>Self</returns>
+        /// <remarks>
+        /// The callback is a placeholder for TestAttachments.NUnit's <see cref="AttachmentInfo"/> object
+        /// </remarks>
+        public TestImage SaveTo(Func<System.IO.Stream> stream)
+        {
+            using(var s = stream.Invoke())
+            {
+                _GetBitmapRgba32().WriteTo(s);
+            }
+
+            return this;
+        }
+
+        /// <summary>
         /// Writes the framework image to a file.
         /// </summary>
         /// <param name="filePath">The file path.</param>

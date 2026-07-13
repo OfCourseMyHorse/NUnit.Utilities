@@ -92,11 +92,30 @@ namespace TUnit
         /// without importing this library dependency.
         /// </summary>
         /// <param name="ainfo">A <see cref="AttachmentInfo"/> instance.</param>
+        [Obsolete("Use GetStreamFunction()", true)]
         public static implicit operator Action<Action<FILEINFO>>(AttachmentInfo ainfo)
         {
             return action => ainfo.WriteObjectEx(action);
         }
 
+        public static implicit operator Func<Stream>(AttachmentInfo ainfo)
+        {
+            return ainfo.GetStreamFunction();
+        }
+
+        public Func<System.IO.Stream> GetStreamFunction()
+        {
+            Stream func()
+            {
+                this._BeginWriteAttachment();                
+                var stream = this.File.Create();
+                return stream.WithDisposeObserver(() => this._EndWriteAttachment());
+            }
+
+            return func;
+        }
+
+        [Obsolete("Use GetStreamFunction()", true)]
         public System.IO.Stream CreateStream()
         {
             // we need to create a file so we can attach it.
@@ -181,7 +200,7 @@ namespace TUnit
 
             void writeText(FILEINFO FILEINFO)
             {
-                FILEINFO.WriteAllText(textContent);
+                FILEINFO.GetWriteStreamFunction().WriteAllText(textContent);
             }
 
             return WriteObjectEx(writeText);

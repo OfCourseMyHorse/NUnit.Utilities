@@ -80,12 +80,12 @@ namespace NUnit.Framework
         public ResourceInfo(TestContext context, params string[] fileName)
         {
             var finfo = context.GetResourceFileInfo(fileName);
-            _File = new Lazy<FileInfo>(() => _ResolveFileLink(finfo));
+            _File = new Lazy<FILEINFO>(() => _ResolveFileLink(finfo));
         }
 
         private ResourceInfo(FILEINFO finfo)
         {
-            _File = new Lazy<FileInfo>(()=>_ResolveFileLink(finfo));
+            _File = new Lazy<FILEINFO>(()=>_ResolveFileLink(finfo));
         }
 
         private static FILEINFO _ResolveFileLink(FILEINFO finfo)
@@ -128,6 +128,13 @@ namespace NUnit.Framework
         #endregion
 
         #region API
+
+        public static implicit operator Func<System.IO.Stream>(ResourceInfo rinfo)
+        {
+            return rinfo.GetStreamFunction();
+        }
+
+        public Func<System.IO.Stream> GetStreamFunction() => File.OpenRead;
 
         public System.IO.Stream OpenRead() => File.OpenRead();
 

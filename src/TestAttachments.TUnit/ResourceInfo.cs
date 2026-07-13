@@ -115,19 +115,24 @@ namespace TUnit
 
         #region API
 
-        public System.IO.Stream OpenRead() => File.OpenRead();
+        public static implicit operator Func<System.IO.Stream>(ResourceInfo rinfo) => rinfo.GetStreamFunction();
 
-        public T OpenRead<T>(Func<System.IO.Stream,T> readFunc)
+        public Func<System.IO.Stream> GetStreamFunction() => File.GetReadStreamFunction();
+
+        public System.IO.Stream OpenRead() => File.OpenRead();        
+
+        public string ReadAllText() { return File.GetReadStreamFunction().ReadAllText(); }
+
+        public ArraySegment<Byte> ReadAllBytes() { return File.GetReadStreamFunction().ReadAllBytes(); }
+
+        [Obsolete("Use GetStreamFunction()", true)]
+        public T OpenRead<T>(Func<System.IO.Stream, T> readFunc)
         {
-            using(var s = OpenRead())
+            using (var s = OpenRead())
             {
                 return readFunc(s);
             }
         }
-
-        public string ReadAllText() { return File.ReadAllText(); }
-
-        public ArraySegment<Byte> ReadAllBytes() { return File.ReadAllBytes(); }        
 
         #endregion
     }

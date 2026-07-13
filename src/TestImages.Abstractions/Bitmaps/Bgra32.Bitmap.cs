@@ -50,6 +50,14 @@ namespace TestImages.Bitmaps
 
             public unsafe void SaveTo(System.IO.FileInfo finfo)
             {
+                using(var s = finfo.OpenRead())
+                {
+                    WriteTo(s);
+                }
+            }
+
+            public unsafe void WriteTo(System.IO.Stream stream)
+            {
                 #if !WINDOWS
                 throw new NotImplementedException();
                 #else
@@ -81,7 +89,7 @@ namespace TestImages.Bitmaps
                         if (bits != null) bmp.UnlockBits(bits);
                     }
 
-                    bmp.Save(finfo.FullName);
+                    bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
                 }
 
                 #endif

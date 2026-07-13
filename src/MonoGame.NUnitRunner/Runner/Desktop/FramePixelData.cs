@@ -26,7 +26,7 @@ namespace MonoGame.Tests
 
         public unsafe void SaveTo(NUnit.Framework.AttachmentInfo ainfo)
         {
-			using (var stream = ainfo.CreateStream())
+			using (var stream = ainfo.GetStreamFunction().Invoke())
             {
                 WriteTo(stream);
             }
